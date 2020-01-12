@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'check_invited.dart';
+import 'package:gulmate/screens/sign_up/check_invited.dart';
 
 
 class Signin extends StatefulWidget {

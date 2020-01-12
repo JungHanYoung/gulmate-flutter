@@ -1,7 +1,6 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:gulmate/sign_up/sign_in.dart';
-import 'package:quick_actions/quick_actions.dart';
+import 'package:gulmate/screens/sign_up/sign_in.dart';
 
 const pages = [
   {

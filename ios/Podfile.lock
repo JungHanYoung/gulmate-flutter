@@ -36,8 +36,6 @@ PODS:
   - GTMSessionFetcher/Core (1.3.0)
   - GTMSessionFetcher/Full (1.3.0):
     - GTMSessionFetcher/Core (= 1.3.0)
-  - quick_actions (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - FBSDKLoginKit
@@ -46,7 +44,6 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - google_sign_in_web (from `.symlinks/plugins/google_sign_in_web/ios`)
   - GoogleSignIn
-  - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
 
 SPEC REPOS:
   trunk:
@@ -66,8 +63,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   google_sign_in_web:
     :path: ".symlinks/plugins/google_sign_in_web/ios"
-  quick_actions:
-    :path: ".symlinks/plugins/quick_actions/ios"
 
 SPEC CHECKSUMS:
   AppAuth: 73574f3013a1e65b9601a3ddc8b3158cce68c09d
@@ -80,7 +75,6 @@ SPEC CHECKSUMS:
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
   GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
   GTMSessionFetcher: 43b8b64263023d4f32caa0b40f4c8bfa3c5f36d8
-  quick_actions: 5eaa421abc932a71d9804fb86186d173020da63d
 
 PODFILE CHECKSUM: 0484260328db4cf47cce6583dcb741fe5b95a37f
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gulmate/sign_up/sign_in.dart';
+import 'package:gulmate/screens/sign_up/sign_in.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 const bodyStyle = TextStyle(

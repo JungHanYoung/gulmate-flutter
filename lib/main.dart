@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gulmate/introduction_screen/my_introduction_screen.dart';
-import 'package:quick_actions/quick_actions.dart';
+import 'package:gulmate/screens/introduction_screen/my_introduction_screen.dart';
 
 void main() => runApp(MyApp());
 

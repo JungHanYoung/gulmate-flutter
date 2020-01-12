@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gulmate/component/GulmateLogo.dart';
-import 'package:gulmate/sign_up/create_family/create_family_screen.dart';
-import 'package:gulmate/sign_up/join_family/join_family_screen.dart';
+import 'package:gulmate/widgets/GulmateLogo.dart';
+import 'package:gulmate/screens/sign_up/create_family/create_family_screen.dart';
+import 'package:gulmate/screens/sign_up/join_family/join_family_screen.dart';
 
 class CheckInvitedPage extends StatelessWidget {
 
