@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gulmate/component/GulmateLogo.dart';
+import 'package:gulmate/sign_up/create_family/create_family_screen.dart';
+import 'package:gulmate/sign_up/join_family/join_family_screen.dart';
 
 class CheckInvitedPage extends StatelessWidget {
-  const CheckInvitedPage({Key key}) : super(key: key);
+
+  String email;
+
+  CheckInvitedPage({@required this.email});
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +22,13 @@ class CheckInvitedPage extends StatelessWidget {
               SizedBox(
                 height: 70.0,
               ),
-              Center(child: FlutterLogo(size: 180.0,)),
+              Center(child: GulmateLogo(
+                size: 180.0,
+              )),
               SizedBox(
                 height: 50.0,
               ),
+              Text("$email 님 안녕하세요."),
               Align(
                 alignment: Alignment.center,
                 child: Text("혹시 초대를 받으셨나요?", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
@@ -36,6 +46,9 @@ class CheckInvitedPage extends StatelessWidget {
                 textColor: Colors.white,
                 onPressed: () {
                   print("초대쪽으로");
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => JoinFamilyScreen(),
+                  ));
                 },
               ),
               SizedBox(
@@ -50,7 +63,9 @@ class CheckInvitedPage extends StatelessWidget {
                 color: Colors.black,
                 textColor: Colors.white,
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => CreateFamilyScreen()
+                  ));
                 },
               ),
             ],

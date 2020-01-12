@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:gulmate/sign_up/sign_in.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 const pages = [
   {
@@ -25,19 +26,48 @@ class MyIntroductionScreen extends StatefulWidget {
 class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
   PageController _pageController;
   double _currentPage = 0.0;
+  bool _isLastPage = false;
 
   @override
   void initState() {
     super.initState();
-    _currentPage = 0.0;
+    _currentPage = 0;
     _pageController = PageController(initialPage: _currentPage.toInt());
+
   }
 
   bool _onScroll(ScrollNotification notification) {
     final PageMetrics metrics = notification.metrics;
+//    print(metrics.extentAfter);
+    final extentAfter = metrics.extentAfter;
+    final deviceWidth = MediaQuery.of(context).size.width;
+//    print(extentAfter < deviceWidth);
+    if(extentAfter < deviceWidth && !_isLastPage) {
+      print("page is last page $_currentPage");
+      setState(() {
+        _isLastPage = true;
+      });
+    } else if(extentAfter >= deviceWidth && _isLastPage) {
+      print("No page is last page $_currentPage");
+      setState(() {
+        _isLastPage = false;
+      });
+    }
     setState(() {
       _currentPage = metrics.page;
     });
+//    print(metrics.atEdge);
+//    if(metrics.page == pages.length) {
+//      setState(() {
+//        _currentPage = metrics.page;
+//        _isLastPage = true;
+//      });
+//    } else {
+//      setState(() {
+//        _currentPage = metrics.page;
+//        _isLastPage = false;
+//      });
+//    }
     return false;
   }
 
@@ -50,6 +80,7 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -59,10 +90,17 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
               controller: _pageController,
               children: pages
                   .map((p) => Center(
-                        child: _buildPage(p["title"], p["description"]),
+                        child: _buildPage(p["title"], p["description"], deviceSize.height * 4/5 ),
                       ))
                   .toList(),
               scrollDirection: Axis.horizontal,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: deviceSize.height / 10),
+            child: Container(
+              child: Image(image: AssetImage('images/logo_symbol/logoSymbolYy.png'),),
+              alignment: Alignment.topCenter,
             ),
           ),
           Positioned(
@@ -71,9 +109,9 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
             right: 0,
             child: Center(
               child: DotsIndicator(
-                dotsCount: 3,
-                position: _currentPage,
-                decorator: DotsDecorator(activeColor: Colors.black),
+                dotsCount: pages.length,
+                position: _currentPage.toDouble(),
+                decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
               ),
             ),
           ),
@@ -82,7 +120,7 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
             left: 0,
             right: 0,
             child: FlatButton(
-              child: pages.length - 1 == _currentPage.toInt()
+              child: _isLastPage
                   ? Text(
                       "로그인",
                       style: TextStyle(fontSize: 16.0),
@@ -104,44 +142,38 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
     );
   }
 
-  Widget _buildPage(String title, String description) {
+  Widget _buildPage(String title, String description, double topPadding) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 74.0),
       child: SafeArea(
         top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(
-              height: 120.0,
-            ),
-            FlutterLogo(
-              size: 180.0,
-            ),
-            SizedBox(
-              height: 60.0,
-            ),
-            Center(
-                child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 320.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Center(
+                  child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              )),
+              SizedBox(
+                height: 40.0,
               ),
-              textAlign: TextAlign.center,
-            )),
-            SizedBox(
-              height: 40.0,
-            ),
-            Center(
-                child: Text(
-              description,
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              textAlign: TextAlign.center,
-            )),
-          ],
+              Center(
+                  child: Text(
+                description,
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                textAlign: TextAlign.center,
+              )),
+            ],
+          ),
         ),
       ),
     );
