@@ -43,6 +43,9 @@ flutter_icons:
   ios: true
   image_path: "images/gulmate_app_icon.svg"
 
+module:
+  androidX: true
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
