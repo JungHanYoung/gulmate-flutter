@@ -80,63 +80,72 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          NotificationListener<ScrollNotification>(
-            onNotification: _onScroll,
-            child: PageView(
-              controller: _pageController,
-              children: pages
-                  .map((p) => Center(
-                        child: _buildPage(p["title"], p["description"], deviceSize.height * 4/5 ),
-                      ))
-                  .toList(),
-              scrollDirection: Axis.horizontal,
+      body: Container(
+        color: Colors.black,
+        child: SafeArea(
+          child: Container(
+            color: Colors.white,
+            child: Stack(
+              children: <Widget>[
+                NotificationListener<ScrollNotification>(
+                  onNotification: _onScroll,
+                  child: PageView(
+                    controller: _pageController,
+                    children: pages
+                        .map((p) => Center(
+                              child: _buildPage(p["title"], p["description"], deviceSize.height * 4/5 ),
+                            ))
+                        .toList(),
+                    scrollDirection: Axis.horizontal,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: deviceSize.height / 10),
+                  child: Container(
+                    child: Image(image: AssetImage('images/logo_symbol/logoSymbolYy.png'),),
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
+                Positioned(
+                  bottom: 130.0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: DotsIndicator(
+                      dotsCount: pages.length,
+                      position: _currentPage.toDouble(),
+                      decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 0.0,
+                  left: 0,
+                  right: 0,
+                  child: FlatButton(
+                    child: _isLastPage
+                        ? Text(
+                            "로그인",
+                            style: TextStyle(fontSize: 16.0),
+                          )
+                        : Text("다음", style: TextStyle(fontSize: 16.0)),
+                    onPressed: pages.length - 1 == _currentPage.toInt()
+                        ? () {
+                            Navigator.pushReplacement(context,
+                                MaterialPageRoute(builder: (context) => Signin()));
+                          }
+                        : _onNextButton,
+                    textColor: Colors.white,
+                    color: Colors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  ),
+                ),
+              ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: deviceSize.height / 10),
-            child: Container(
-              child: Image(image: AssetImage('images/logo_symbol/logoSymbolYy.png'),),
-              alignment: Alignment.topCenter,
-            ),
-          ),
-          Positioned(
-            bottom: 130.0,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: DotsIndicator(
-                dotsCount: pages.length,
-                position: _currentPage.toDouble(),
-                decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 0.0,
-            left: 0,
-            right: 0,
-            child: FlatButton(
-              child: _isLastPage
-                  ? Text(
-                      "로그인",
-                      style: TextStyle(fontSize: 16.0),
-                    )
-                  : Text("다음", style: TextStyle(fontSize: 16.0)),
-              onPressed: pages.length - 1 == _currentPage.toInt()
-                  ? () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => Signin()));
-                    }
-                  : _onNextButton,
-              textColor: Colors.white,
-              color: Colors.black,
-              padding: const EdgeInsets.symmetric(vertical: 20.0),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

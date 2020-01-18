@@ -32,6 +32,7 @@ dependencies:
   pin_entry_text_field: ^0.1.4
   font_awesome_flutter: ^8.0.0
   modal_progress_hud: ^0.1.3
+  provider: ^4.0.2
 
 
 dev_dependencies:
@@ -51,10 +52,14 @@ module:
 
 # The following section is specific to Flutter.
 flutter:
-#  fonts:
-#    - family: Spoqa
-#      fonts:
-#        - asset: fonts/Spoqa Han Sans Regular.ttf
+  fonts:
+    - family: Spoqa
+      fonts:
+        - asset: fonts/Spoqa-Han-Sans-Regular.ttf
+        - asset: fonts/Spoqa-Han-Sans-Bold.ttf
+          weight: 700
+        - asset: fonts/Spoqa-Han-Sans-Light.ttf
+          weight: 300
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -80,18 +85,18 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
 
-#        - asset: fonts/Spoqa Han Sans Thin.ttf
+#        - asset: fonts/Spoqa-Han-Sans-Thin.ttf
 #          weight: 100
-#        - asset: fonts/Spoqa Han Sans Light.ttf
+#        - asset: fonts/Spoqa-Han-Sans-Light.ttf
 #          weight: 300
-#        - asset: fonts/Spoqa Han Sans Bold.ttf
+#        - asset: fonts/Spoqa-Han-Sans-Bold.ttf
 #          weight: 700
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+# fonts:
+#   - family: Schyler
+#     fonts:
+#       - asset: fonts/Schyler-Regular.ttf
+#       - asset: fonts/Schyler-Italic.ttf
+#         style: italic
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

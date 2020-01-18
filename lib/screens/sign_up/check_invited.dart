@@ -1,72 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:gulmate/widgets/GulmateLogo.dart';
+import 'package:gulmate/const/color.dart';
+import 'package:gulmate/services/auth_service.dart';
 import 'package:gulmate/screens/sign_up/create_family/create_family_screen.dart';
 import 'package:gulmate/screens/sign_up/join_family/join_family_screen.dart';
+import 'package:provider/provider.dart';
 
 class CheckInvitedPage extends StatelessWidget {
 
-  String email;
-
-  CheckInvitedPage({@required this.email});
-
-
   @override
   Widget build(BuildContext context) {
+
+    final AuthService authService = Provider.of<AuthService>(context);
+
+    final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
+        backgroundColor: DEFAULT_BACKGROUND_COLOR,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               SizedBox(
-                height: 70.0,
+                height: size.height * 0.1,
               ),
-              Center(child: GulmateLogo(
-                size: 180.0,
+              Center(child: Image(image: AssetImage('images/logo_symbol/logoSymbolYy.png'))),
+              SizedBox(
+                height: 30.0,
+              ),
+              Center(child: Image(image: AssetImage('images/logo_symbol/logoTypeface_white.png'))),
+              SizedBox(
+                height: 20.0
+              ),
+              Center(child: Text("${authService.getAccount.name}님 반갑습니다.\n혹시 초대를 받으셨나요?",
+                  style: TextStyle(fontSize: 20.0, color: Colors.white, fontWeight: FontWeight.w300,),
+                  textAlign: TextAlign.center,
               )),
               SizedBox(
-                height: 50.0,
+                height: size.height * 0.15,
               ),
-              Text("$email 님 안녕하세요."),
-              Align(
-                alignment: Alignment.center,
-                child: Text("혹시 초대를 받으셨나요?", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
-              ),
-              SizedBox(
-                height: 208.0,
-              ),
-              FlatButton(
-                padding: const EdgeInsets.symmetric(vertical: 17.0),
-                child: Text(
-                  "네, 초대 받았습니다.",
-                  style: TextStyle(fontSize: 16.0),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: FlatButton(
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 17.0),
+                  child: Text(
+                    "네, 초대 받았습니다.",
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                  textColor: Color(0xFFFF6D00),
+                  onPressed: () {
+                    print("초대쪽으로");
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => JoinFamilyScreen(),
+                    ));
+                  },
                 ),
-                color: Colors.black,
-                textColor: Colors.white,
-                onPressed: () {
-                  print("초대쪽으로");
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => JoinFamilyScreen(),
-                  ));
-                },
               ),
               SizedBox(
                 height: 10.0,
               ),
-              FlatButton(
-                padding: const EdgeInsets.symmetric(vertical: 17.0),
-                child: Text(
-                  "아니오, 제가 첫 가족 구성원입니다.",
-                  style: TextStyle(fontSize: 16.0),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: FlatButton(
+                  padding: const EdgeInsets.symmetric(vertical: 17.0),
+                  child: Text(
+                    "아니오, 처음입니다.",
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                  color: Colors.white,
+                  textColor: Color(0xFFFFA200),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CreateFamilyScreen()
+                    ));
+                  },
                 ),
-                color: Colors.black,
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => CreateFamilyScreen()
-                  ));
-                },
               ),
             ],
           ),

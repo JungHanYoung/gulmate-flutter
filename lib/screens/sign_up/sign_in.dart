@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:gulmate/model/facebook_account.dart';
+import 'package:gulmate/model/google_account.dart';
+import 'package:gulmate/services/auth_service.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:gulmate/screens/sign_up/check_invited.dart';
+import 'package:provider/provider.dart';
 
 
 class Signin extends StatefulWidget {
@@ -26,29 +30,48 @@ class _SigninState extends State<Signin> {
   FacebookLogin _facebookSignIn = FacebookLogin();
 
   Future<String> _handleGoogleSignIn() async {
+    setState(() {
+      _isSigning = true;
+    });
     GoogleSignInAccount account = await _googleSignIn.signIn();
-    print(account.email);
+    setState(() {
+      _isSigning = false;
+    });
+    AuthService authService = Provider.of<AuthService>(context, listen: false);
+    authService.setAccount(GoogleAccount.fromGoogleSignInAccount(account));
     return account.email;
   }
 
-  Future<String> _handleFacebookSignIn() async {
-    _facebookSignIn.loginBehavior = FacebookLoginBehavior.nativeOnly;
-    final result = await _facebookSignIn.logIn(["email"]);
+  Future<void> _handleFacebookSignIn() async {
+    setState(() {
+      _isSigning = true;
+    });
+    final FacebookLoginResult result = await _facebookSignIn.logIn(["email"]);
+    setState(() {
+      _isSigning = false;
+    });
     print(result.status);
 
     switch(result.status) {
       case FacebookLoginStatus.loggedIn:
         final token = result.accessToken.token;
         print("success Facebook Login ${result.accessToken.token}");
-        final graphResponse = await Dio().get('https://graph.facebook.com/v2.12/me?fields=name,email&access_token=$token');
+        final graphResponse = await Dio().get('https://graph.facebook.com/v5.0/${result.accessToken.userId}?access_token=$token&fields=email,name,picture');
+        print('${graphResponse.data}\n');
+        print(result.accessToken.userId);
         final rawData =json.decode(graphResponse.data);
-        print(rawData['email']);
-        return rawData['email'];
+        AuthService auth = Provider.of<AuthService>(context, listen: false);
+        auth.setAccount(FacebookAccount.fromJSON(rawData));
+        Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) => CheckInvitedPage(),
+        ));
+        break;
       case FacebookLoginStatus.cancelledByUser:
         print("페이스북 로그인 취소");
         break;
       case FacebookLoginStatus.error:
-        print("에러 발생");
+        print("에러 발생 ${result.errorMessage}");
+        await showDialog(context: context, builder: (context) => AlertDialog(title: Text("Facebook Login Error"), content: Text("${result.errorMessage}"),));
         break;
       default:
         break;
@@ -79,7 +102,7 @@ class _SigninState extends State<Signin> {
                     ),
                     Center(child: Image(image: AssetImage('images/logo_symbol/logoSymbolYy.png'))),
                     SizedBox(height: 30.0),
-                    Center(child: Image(image: AssetImage('images/logo_symbol/logoTypeface.png'))),
+                    Center(child: Image(image: AssetImage('images/logo_symbol/logoTypeface_white.png'))),
                     SizedBox(
                       height: 20.0,
                     ),
@@ -109,7 +132,7 @@ class _SigninState extends State<Signin> {
                           print("구글로 로그인 성공");
                           String email = await _handleGoogleSignIn();
                           Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => CheckInvitedPage(email: email),
+                            builder: (context) => CheckInvitedPage(),
                           ));
                         },
                       ),
@@ -130,16 +153,7 @@ class _SigninState extends State<Signin> {
                         color: Colors.white,
                         textColor: Color(0xFF3B5998),
                         onPressed: () async {
-                          setState(() {
-                            _isSigning = true;
-                          });
-                          String email = await _handleFacebookSignIn();  // COMPLETED: FACEBOOK 로그인 확인 완료, 토큰으로 이메일 조회
-                          setState(() {
-                            _isSigning = false;
-                          });
-                          Navigator.pushReplacement(context, MaterialPageRoute(
-                            builder: (context) => CheckInvitedPage(email: email,),
-                          ));
+                          await _handleFacebookSignIn();  // COMPLETED: FACEBOOK 로그인 확인 완료, 토큰으로 이메일 조회
 //                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CreateFamilyScreen()));
                         },
                       ),
