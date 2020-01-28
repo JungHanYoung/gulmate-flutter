@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gulmate/screens/introduction_screen/my_introduction_screen.dart';
-import 'package:provider/provider.dart';
+
+import 'home/home_screen.dart';
+
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,8 +12,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
 
-
-
   static final offsetTop = 1000.0;
   final top1 = 44.0 + offsetTop;
   final top2 = 376.0 + offsetTop;
@@ -20,23 +19,19 @@ class _SplashScreenState extends State<SplashScreen>
   bool _isAnimating = false;
 
   AnimationController _controller;
-  Animation<double> _animation;
 
   final Image iconImage = Image.asset("images/logo_symbol/logoSymbolYy.png");
   final double animatedEnd = 2000.0;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 2)).then((value) {
-      setState(() {
-        _isAnimating = true;
-      });
-      Future.delayed(Duration(milliseconds: 1500))
+    setState(() {
+      _isAnimating = true;
+    });
+    Future.delayed(Duration(milliseconds: 1500))
         .then((value) {
-          _controller.forward();
-      });
+      _controller.forward();
     });
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
@@ -45,22 +40,14 @@ class _SplashScreenState extends State<SplashScreen>
         if (status == AnimationStatus.completed) {
           Future.delayed(Duration(seconds: 1))
             .then((value) {
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => MyIntroductionScreen()));
+              // TODO: 임시로 대쉬보드 스크린으로, 추후에 원래대로 돌려야
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => HomeScreen()));
+//              Navigator.of(context).pushReplacement(
+//                  MaterialPageRoute(builder: (context) => MyIntroductionScreen()));
           });
         }
       });
-//    )..addStatusListener((status) {
-//        if (status == AnimationStatus.completed) {
-//          print("animation complete!!");
-//        }
-//      });
-//    _animation = Tween<double>(begin: 0, end: 3000).animate(_controller);
-//    _controller.forward();
-//    Future.delayed(const Duration(seconds: 2))
-//      .then((value) {
-//        _controller.forward();
-//    });
   }
 
   @override
@@ -74,14 +61,14 @@ class _SplashScreenState extends State<SplashScreen>
         Container(
           decoration: BoxDecoration(color: Color(0xFFFF6D00)),
         ),
-        _buildAnimatedImage(top: top1, left: -50),
-        _buildAnimatedImage(top: top2, left: -50),
-        _buildAnimatedImage(top: top3, left: -50),
-        _buildAnimatedImage(top: top1, left: 290),
-        _buildAnimatedImage(top: top2, left: 290),
-        _buildAnimatedImage(top: top3, left: 290),
-        _buildAnimatedImage(top: 210 + offsetTop, left: size.width / 2 - 60),
-        _buildAnimatedImage(top: 542 + offsetTop, left: size.width / 2 - 60),
+        _buildAnimatedImage(offset: Offset(top1, -50)),
+        _buildAnimatedImage(offset: Offset(top2, -50)),
+        _buildAnimatedImage(offset: Offset(top3, -50)),
+        _buildAnimatedImage(offset: Offset(top1, 290)),
+        _buildAnimatedImage(offset: Offset(top2, 290)),
+        _buildAnimatedImage(offset: Offset(top3, 290)),
+        _buildAnimatedImage(offset: Offset(size.width / 2 -60, 210 + offsetTop)),
+        _buildAnimatedImage(offset: Offset(size.width / 2 - 60, 542 + offsetTop)),
         FadeTransition(
           opacity: Tween(begin: 0.0, end: 1.0).animate(_controller),
           child: Center(
@@ -98,12 +85,12 @@ class _SplashScreenState extends State<SplashScreen>
     ));
   }
 
-  Widget _buildAnimatedImage({@required double top, @required double left}) =>
-      AnimatedPositioned(
+  Widget _buildAnimatedImage({@required Offset offset})
+    => AnimatedPositioned(
         child: iconImage,
         duration: const Duration(milliseconds: 2000),
-        left: left,
-        top: _isAnimating ? top - animatedEnd : top,
+        left: offset.dx,
+        top: _isAnimating ? offset.dy - animatedEnd : offset.dy,
         curve: Curves.easeIn,
       );
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gulmate/const/color.dart';
 import 'package:gulmate/screens/splash_screen.dart';
 import 'package:gulmate/services/auth_service.dart';
 import 'package:gulmate/services/family_service.dart';
 import 'package:provider/provider.dart';
+
+import 'app_config.dart';
 
 
 void main() => runApp(MyApp());
@@ -11,9 +14,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    var appConfig = AppConfig.of(context);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthService>.value(value: AuthService()),
+        ChangeNotifierProvider<AuthService>.value(value: AuthService(apiBaseUrl: appConfig.apiBaseUrl)),
         ChangeNotifierProvider<FamilyService>.value(value: FamilyService()),
       ],
       child: MaterialApp(
@@ -22,29 +26,10 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           accentColor: Color(0xFFFF6D00),
           fontFamily: "Spoqa",
+          textSelectionColor: DEFAULT_BACKGROUND_COLOR,
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
-//      home: FutureBuilder(
-//        future: Future.delayed(Duration(seconds: 2)),
-//        builder: (context, snapshot) {
-//          return MyIntroductionScreen();
-//        },
-//      )
-//      home: CustomSplash(
-//        imagePath: 'images/logo_symbol/logoSymbolYy.png',
-//        backGroundColor: Colors.deepOrange,
-//        animationEffect: 'zoom-in',
-//        logoSize: 200,
-//        home: MyIntroductionScreen(),
-//        customFunction: () {
-//          print("animated..");
-//          return "value";
-//        },
-//        duration: 2500,
-//        type: CustomSplashType.StaticDuration,
-//      ),
-//      home: SafeArea(child: MyIntroductionScreen()),
       ),
     );
   }
