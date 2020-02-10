@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:gulmate/screens/sign_up/sign_in.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gulmate/bloc/intro/intro.dart';
 
 const pages = [
   {
@@ -18,6 +19,7 @@ const pages = [
 ];
 
 class MyIntroductionScreen extends StatefulWidget {
+
   @override
   _MyIntroductionScreenState createState() => _MyIntroductionScreenState();
 }
@@ -133,8 +135,9 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
                         : Text("다음", style: TextStyle(fontSize: 16.0)),
                     onPressed: pages.length - 1 == _currentPage.toInt()
                         ? () {
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) => Signin()));
+                            BlocProvider.of<IntroBloc>(context).add(IntroUpdateEvent(IntroState.signIn));
+//                            Navigator.pushReplacement(context,
+//                                MaterialPageRoute(builder: (context) => Signin()));
                           }
                         : _onNextButton,
                     textColor: Colors.white,

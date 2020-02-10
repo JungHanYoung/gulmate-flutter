@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gulmate/model/family.dart';
+import 'package:gulmate/model/family_type.dart';
 import 'package:gulmate/screens/sign_up/create_family/show_invite_link_screen.dart';
 import 'package:gulmate/services/family_service.dart';
 import 'package:provider/provider.dart';
@@ -9,10 +9,7 @@ class CreateFamilyScreen extends StatefulWidget {
   _CreateFamilyScreenState createState() => _CreateFamilyScreenState();
 }
 
-enum FamilyType { ONLY, MORE_TWO }
-
 class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
-  bool _isSubmitting = false;
   FamilyType _selectedFamilyType;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _familyNameController = TextEditingController();
@@ -29,6 +26,23 @@ class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
     // TODO: implement dispose
     _familyNameController.dispose();
     super.dispose();
+  }
+
+  void handleCreateFamily() async {
+    if (_formKey.currentState.validate()) {
+      try {
+        await Provider.of<FamilyService>(context, listen: false)
+            .createFamily(_familyNameController.text, _selectedFamilyType);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => ShowInviteLinkScreen()));
+      } catch (e) {
+        showDialog(
+            context: context,
+            child: AlertDialog(
+              title: Text("만드는 중 에러가 발생했습니다."),
+            ));
+      }
+    }
   }
 
   @override
@@ -106,6 +120,12 @@ class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
                       Text("가족 명", style: TextStyle(fontSize: 14)),
                       TextFormField(
                         controller: _familyNameController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return "가족 이름을 입력해주세요.";
+                          }
+                          return null;
+                        },
                         decoration:
                             _buildInputDeco(hintText: "가족 구성의 이름을 입력해 주세요"),
                         cursorColor: Color(0xFFFF6D00),
@@ -120,13 +140,19 @@ class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
                           focusColor: Colors.white,
                         ),
                         elevation: 2,
+                        validator: (value) {
+                          if (value == null) {
+                            return "가족 타입을 선택해주세요.";
+                          }
+                          return null;
+                        },
                         items: [
                           DropdownMenuItem(
                             child: Text("1"),
                             value: FamilyType.ONLY,
                           ),
                           DropdownMenuItem(
-                              child: Text("2인 이상"), value: FamilyType.MORE_TWO),
+                              child: Text("2인 이상"), value: FamilyType.MORE_THAN_ONE),
                         ],
                         onChanged: (value) {
                           setState(() {
@@ -142,25 +168,7 @@ class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
                   borderRadius: BorderRadius.circular(8.0),
                   child: RaisedButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        final familyName = _familyNameController.text;
-                        print("가족명: $familyName, 가족 구성원: $_selectedFamilyType");
-                        // Backend API - create Family..
-                        setState(() {
-                          _isSubmitting = true;
-                        });
-                        Future.delayed(Duration(seconds: 3)).then((value) {
-                          FamilyService familyService = Provider.of<FamilyService>(context, listen: false);
-                          familyService.setFamily(Family.fromJSON({
-                            'invite_url': 'http://bit.ly/fm1234invite1001',
-                            'name': familyName,
-                          }));
-                          _isSubmitting = false;
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => ShowInviteLinkScreen()));
-                        });
-                      }
+                      handleCreateFamily();
                     },
                     color: Color(0xFFFF6D00),
                     padding: EdgeInsets.symmetric(vertical: 18.0),

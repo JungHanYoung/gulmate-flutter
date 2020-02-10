@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gulmate/bloc/authentication/authentication.dart';
+import 'package:gulmate/bloc/family/family_bloc.dart';
+import 'package:gulmate/bloc/family/family_state.dart';
 import 'package:gulmate/screens/home/profile/profile_screen.dart';
+
 
 class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final familyState = BlocProvider.of<FamilyBloc>(context).state;
+    final authState = BlocProvider.of<AuthenticationBloc>(context).state;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: ListView(
@@ -18,13 +26,15 @@ class DashboardScreen extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     child: Text(
-                      "홍길동님" /*TODO: Data access */,
+                      (authState as AuthenticationAuthenticatedWithFamily)
+                          .currentAccount.name,
                       style: TextStyle(fontSize: 30, color: Color(0xFFFF6D00)),
                     ),
                   ),
                   Container(
                     child: Text(
-                      "홍시패밀리",
+                      (familyState as FamilyLoaded)
+                          .family.familyName,
                       style: TextStyle(
                           color: Color.fromRGBO(153, 153, 153, 1),
                           fontSize: 16),
@@ -80,7 +90,7 @@ class DashboardScreen extends StatelessWidget {
             physics:
 //              PageScrollPhysics(),
 //                ClampingScrollPhysics(),
-                BouncingScrollPhysics(),
+            BouncingScrollPhysics(),
             child: Row(
               children: <Widget>[
                 _buildAlbumCard(

@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
-import 'home/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gulmate/bloc/intro/intro.dart';
 
 
 class SplashScreen extends StatefulWidget {
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -40,11 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
         if (status == AnimationStatus.completed) {
           Future.delayed(Duration(seconds: 1))
             .then((value) {
-              // TODO: 임시로 대쉬보드 스크린으로, 추후에 원래대로 돌려야
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => HomeScreen()));
-//              Navigator.of(context).pushReplacement(
-//                  MaterialPageRoute(builder: (context) => MyIntroductionScreen()));
+              BlocProvider.of<IntroBloc>(context).add(IntroUpdateEvent(IntroState.introduction));
           });
         }
       });
@@ -53,7 +50,6 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Scaffold(
         body: Stack(
       fit: StackFit.expand,

@@ -2,46 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/model/shopping_item.dart';
-import 'package:gulmate/utils/format_datetime_utils.dart';
+import 'package:gulmate/services/family_service.dart';
+import 'package:gulmate/widgets/gul_check_box.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'add_shopping_screen.dart';
+
 
 class ShoppingScreen extends StatefulWidget {
   @override
   _ShoppingScreenState createState() => _ShoppingScreenState();
 }
 
+
 class _ShoppingScreenState extends State<ShoppingScreen> {
-  List<ShoppingItem> items;
   int index;
   RefreshController _refreshController = RefreshController();
+  FamilyService _familyService;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    items = [
-      ShoppingItem(
-          title: "쌀 한 가마니",
-          place: "중앙 할인 마트",
-          author: "작성자",
-          isComplete: false,
-          date: DateTime.utc(2019, 11, 19)),
-      ShoppingItem(
-          title: "치약",
-          place: "올리브영",
-          author: "작성자",
-          isComplete: true,
-          date: DateTime.utc(2019, 11, 10)),
-      ShoppingItem(
-          title: "양파 5개",
-          place: "중앙 할인 마트",
-          author: "작성자",
-          isComplete: false,
-          date: DateTime.utc(2019, 11, 19)),
-    ];
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    final familyService = Provider.of<FamilyService>(context);
+
+    if(this._familyService != familyService) {
+      this._familyService = familyService;
+      Future.microtask(() => familyService.fetchShoppingItems());
+    }
   }
+
 
   void _onRefresh() async {
     // monitor network fetch
@@ -61,7 +52,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-
     return SafeArea(
         child: Stack(
           children: [
@@ -74,8 +64,8 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     padding: const EdgeInsets.only(bottom: 8.0, top: 50),
                     child: Text(
                       "장보기",
-                      style: TextStyle(
-                          fontSize: 30, color: DEFAULT_BACKGROUND_COLOR),
+                      style:
+                      TextStyle(fontSize: 30, color: DEFAULT_BACKGROUND_COLOR),
                     ),
                   ),
                   Padding(
@@ -117,17 +107,17 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       onRefresh: _onRefresh,
                       onLoading: _onLoading,
                       child: ListView(
-                        children: items
+                        children: _familyService.shoppingItems
                             .map(
                               (item) => _buildShoppingTile(
-                                  item: item,
-                                  onChanged: (checked) {
-                                    setState(() {
-                                      item.isComplete = !item.isComplete;
-                                    });
-                                  },
-                                  deviceSize: size),
-                            )
+                              item: item,
+                              onChanged: (checked) {
+                                setState(() {
+                                  item.isComplete = !item.isComplete;
+                                });
+                              },
+                              deviceSize: size),
+                        )
                             .toList(),
                       ),
                       controller: _refreshController,
@@ -138,7 +128,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
             ),
             Positioned(
                 bottom: 16,
-                right: 0,
+                right: 16,
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -146,9 +136,14 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: DEFAULT_BACKGROUND_COLOR,
-                    ),
+                        borderRadius: BorderRadius.circular(30),
+                        color: DEFAULT_BACKGROUND_COLOR,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromRGBO(249, 249, 249, 0.5),
+                              blurRadius: 10,
+                              spreadRadius: 10),
+                        ]),
                     width: 60,
                     height: 60,
                     child: Icon(
@@ -163,10 +158,6 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
   }
 
   Widget _buildShoppingTile({
-    @required String title,
-    @required String place,
-    @required String author,
-    @required String date,
     void Function(bool) onChanged,
     ShoppingItem item,
     Size deviceSize,
@@ -186,7 +177,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     spreadRadius: 10)
               ]),
           width: deviceSize.width - 50,
-          height: 76,
+          height: 73,
         ),
         Slidable(
           actionExtentRatio: 0.15,
@@ -196,14 +187,22 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               color: Colors.white,
             ),
             margin: const EdgeInsets.symmetric(vertical: 10.0),
-            padding:
-                const EdgeInsets.symmetric(vertical: 14.0, horizontal: 18.0),
+            padding: const EdgeInsets.only(
+                top: 14.0, bottom: 14.0, right: 18.0, left: 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Checkbox(
-                  value: item.isComplete,
-                  onChanged: (bool value) {},
+                Padding(
+                  padding: const EdgeInsets.only(right: 4.0),
+                  child: GulCheckbox(
+                    value: item.isComplete,
+                    onChanged: (bool value) {
+                      Provider.of<FamilyService>(context, listen: false).toggleComplete(item, value);
+                    },
+                    checkColor: DEFAULT_BACKGROUND_COLOR,
+                    activeColor: Colors.white,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -239,7 +238,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       ),
                     ),
                     Text(
-                      "${item.date.month}월 ${item.date.day}일까지",
+                      "${item.deadline?.month}월 ${item.deadline?.day}일까지",
                       style: TextStyle(
                         color: Color.fromRGBO(153, 153, 153, 1),
                       ),

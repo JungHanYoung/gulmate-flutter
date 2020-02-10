@@ -1,55 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:gulmate/screens/home/shopping/shopping_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gulmate/bloc/tab/app_tab.dart';
+import 'package:gulmate/screens/home/calendar/calendar_screen.dart';
+import 'package:gulmate/screens/home/purchase/purchase_screen.dart';
+import 'package:gulmate/screens/home/widgets/bottom_tab_selector.dart';
 import 'package:gulmate/widgets/placeholder_widget.dart';
 
 import 'dashboard/dashboard_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
 
-class _HomeScreenState extends State<HomeScreen> {
-  final _children = <Widget>[
-    DashboardScreen(),
-    PlaceholderWidget(Colors.amber),
-    ShoppingScreen(),
-    PlaceholderWidget(Colors.greenAccent),
-    PlaceholderWidget(Colors.cyan),
-  ];
-
-  int _currentIdx = 0;
-
-  void _onBottomNavigationTap(int idx) {
-    print("Navigation Tap index: $idx");
-    setState(() {
-      _currentIdx = idx;
-    });
-  }
+class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(245, 245, 245, 1),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("홈")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today), title: Text("일정")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_basket), title: Text("장보기")),
-          BottomNavigationBarItem(icon: Icon(Icons.message), title: Text("채팅")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings), title: Text("더보기")),
-        ],
-        backgroundColor: Colors.white,
-        selectedItemColor: Color(0xFFFF6D00),
-        unselectedItemColor: Color.fromRGBO(204, 204, 204, 1),
-        onTap: _onBottomNavigationTap,
-        currentIndex: _currentIdx,
-        type: BottomNavigationBarType.fixed,
-      ),
-      body: _children[_currentIdx],
+    return BlocBuilder<AppTabBloc, AppTab>(
+      builder: (context, activeTab)
+        => Scaffold(
+          backgroundColor: Color.fromRGBO(245, 245, 245, 1),
+          bottomNavigationBar: BottomTabSelector(activeTab: activeTab, onTabSelected: (tab) => BlocProvider.of<AppTabBloc>(context).add(UpdateTab(tab))),
+          body: _buildBody(activeTab),
+        ),
     );
+  }
+
+  Widget _buildBody(AppTab activeTab) {
+    switch(activeTab) {
+      case AppTab.home:
+        return DashboardScreen();
+      case AppTab.calendar:
+        return CalendarScreen();
+      case AppTab.purchase:
+        return PurchaseScreen();
+      case AppTab.chatting:
+        return PlaceholderWidget(Colors.greenAccent);
+      case AppTab.settings:
+        return PlaceholderWidget(Colors.cyan);
+      default:
+        return DashboardScreen();
+    }
   }
 }

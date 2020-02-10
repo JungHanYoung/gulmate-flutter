@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gulmate/screens/sign_up/layout/join_family_layout.dart';
+import 'package:gulmate/screens/sign_up/welcome/welcome_screen.dart';
 import 'package:gulmate/services/auth_service.dart';
 import 'package:gulmate/services/family_service.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _ShowInviteLinkScreenState extends State<ShowInviteLinkScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text("${authService.getAccount.name}님의\n가족을 초대해주세요",
+          Text("${authService.account.name}님의\n가족을 초대해주세요",
               style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w300,
@@ -59,7 +60,7 @@ class _ShowInviteLinkScreenState extends State<ShowInviteLinkScreen> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       Text(
-                        "${familyService.getFamily.inviteUrl.substring(7)}",
+                        "${familyService.getFamily.inviteKey}",
                         style: TextStyle(fontSize: 16),
                       ),
                       InkWell(
@@ -68,7 +69,7 @@ class _ShowInviteLinkScreenState extends State<ShowInviteLinkScreen> {
                             _loadingCopied = true;
                           });
                           Clipboard.setData(ClipboardData(
-                                  text: familyService.getFamily.inviteUrl))
+                                  text: familyService.getFamily.inviteKey))
                               .then((result) {
                             setState(() {
                               _loadingCopied = false;
@@ -89,7 +90,7 @@ class _ShowInviteLinkScreenState extends State<ShowInviteLinkScreen> {
                                     width: 12,
                                     height: 12,
                                     child: CircularProgressIndicator())
-                                : _isCopiedLink ? Icon(Icons.check, color: Color(0xFFFF6D00),) : Text("링크 복사",
+                                : _isCopiedLink ? Icon(Icons.check, color: Color(0xFFFF6D00),) : Text(" 복사",
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFFFF6D00)))),
@@ -108,7 +109,7 @@ class _ShowInviteLinkScreenState extends State<ShowInviteLinkScreen> {
               borderRadius: BorderRadius.all(Radius.circular(8.0)),
             ),
             onPressed: () {
-
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
             },
             child: Text("다음 단계", style: TextStyle(color: Colors.white)),
           )

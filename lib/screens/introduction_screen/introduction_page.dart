@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gulmate/repository/user_repository.dart';
 import 'package:gulmate/screens/sign_up/sign_in.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
@@ -29,6 +30,12 @@ PageViewModel _buildPageViewModel(String title, String body) {
 }
 
 class IntroductionPage extends StatelessWidget {
+  final UserRepository userRepository;
+
+  IntroductionPage({
+    @required this.userRepository,
+}) : assert(userRepository != null);
+
   void _onIntroEnd(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => Signin(),
