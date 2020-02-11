@@ -5,8 +5,11 @@ import 'package:gulmate/utils/enum_value_to_string.dart';
 
 class FamilyRepository {
   final Dio dio;
+  Family _family;
 
   FamilyRepository(this.dio);
+
+  Family get family => _family;
 
   Future<Family> getMyFamily(String token) async {
     try {
@@ -15,7 +18,8 @@ class FamilyRepository {
           'Authorization': 'Bearer $token',
         },
       ));
-      return Family.fromJSON(response.data);
+      _family = Family.fromJSON(response.data);
+      return _family;
 
     } catch(e) {
       if(e is DioError) {

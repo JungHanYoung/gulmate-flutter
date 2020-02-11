@@ -51,15 +51,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Column(
         children: <Widget>[
           SizedBox(height: 94,),
           _buildCalendar(),
           _buildEventList(),
         ],
-      ),
-    );
+      );
   }
 
 
