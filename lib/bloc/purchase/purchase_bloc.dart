@@ -81,6 +81,14 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
 
   Stream<PurchaseState> _mapDeletePurchaseToState(DeletePurchase event) async* {
     // TODO: 장보기 삭제
+    if(state is PurchaseLoaded) {
+      await purchaseRepository.deletePurchase(event.purchase);
+      final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded)
+      .purchaseList
+      .where((item) => item.id != event.purchase.id)
+      .toList();
+      yield PurchaseLoaded(updatedPurchaseList);
+    }
   }
 
   @override

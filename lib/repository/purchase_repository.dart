@@ -52,4 +52,19 @@ class PurchaseRepository {
     }
     throw Exception("Error: Post purchase");
   }
+
+  Future<void> deletePurchase(Purchase purchase) async {
+
+    final familyId = familyRepository.family.id;
+    final purchaseId = purchase.id;
+    final response = await dio.delete("/api/v1/$familyId/purchase/$purchaseId", options: Options(
+      headers: {
+        'Authorization': 'Bearer ${userRepository.token}',
+      },
+    ));
+    if(response.statusCode == 200) {
+      return;
+    }
+    throw Exception("Error: delete purchase");
+  }
 }
