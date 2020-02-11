@@ -15,16 +15,19 @@ class FetchPurchaseList extends PurchaseEvent {}
 class RefreshPurchaseList extends PurchaseEvent {}
 
 class AddPurchase extends PurchaseEvent {
-  final Purchase purchase;
+  final String title;
+  final String place;
+  final DateTime deadline;
 
-  const AddPurchase(this.purchase);
+
+  const AddPurchase(this.title, this.place, this.deadline);
 
   @override
-  List<Object> get props => [purchase];
+  List<Object> get props => [title, place, deadline];
 
   @override
   String toString() {
-    return 'AddPurchase{purchase: $purchase}';
+    return 'AddPurchase{title: $title, place: $place, deadline: $deadline}';
   }
 
 }

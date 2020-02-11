@@ -12,7 +12,7 @@ class Family {
   String createdDate;
   String modifiedDate;
 
-  get id => _id;
+  int get id => _id;
 
   Family(this._id, {
     this.familyName,
@@ -34,4 +34,11 @@ class Family {
       modifiedDate: json['modifiedDate'],
     );
   }
+
+  @override
+  String toString() {
+    return 'Family{familyName: $familyName, familyType: $familyType}';
+  }
+
+
 }

@@ -1,8 +1,7 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
-import 'package:gulmate/const/color.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 const _pages = [
   {
@@ -113,10 +112,10 @@ class _IntroductionViewState extends State<IntroductionView> {
                   left: 0,
                   right: 0,
                   child: Center(
-                    child: SmoothPageIndicator(
-                      controller: _pageController,
-                      count: _pages.length,
-                      effect: WormEffect(activeDotColor: PRIMARY_COLOR),
+                    child: DotsIndicator(
+                      dotsCount: _pages.length,
+                      position: _currentPage.toDouble(),
+                      decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
                     ),
                   ),
                 ),

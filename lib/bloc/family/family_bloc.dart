@@ -22,14 +22,12 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   FamilyBloc({
     @required this.authenticationBloc,
     @required this.checkInviteViewBloc,
-  }) :
-        assert(authenticationBloc != null),
-        assert(checkInviteViewBloc != null)
-  {
+  })  : assert(authenticationBloc != null),
+        assert(checkInviteViewBloc != null) {
     _userRepository = GetIt.instance.get<UserRepository>();
     _familyRepository = GetIt.instance.get<FamilyRepository>();
     authSubscription = authenticationBloc.listen((state) {
-      if(state is AuthenticationAuthenticatedWithoutFamily) {
+      if (state is AuthenticationAuthenticatedWithoutFamily) {
         add(LoadFamily());
       }
     });
@@ -43,7 +41,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Stream<FamilyState> mapEventToState(FamilyEvent event) async* {
     if (event is LoadFamily) {
       yield* _mapLoadFamilyToState(event);
-    } else if(event is CreateFamily) {
+    } else if (event is CreateFamily) {
       yield* _mapCreateFamilyToState(event);
     }
   }
@@ -53,6 +51,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       yield FamilyLoading();
       final Family family =
           await _familyRepository.getMyFamily(_userRepository.token);
+      authenticationBloc.add(WithFamily(family));
       yield FamilyLoaded(family);
     } catch (_) {
       yield FamilyNotLoaded();
@@ -68,14 +67,14 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   Stream<FamilyState> _mapCreateFamilyToState(CreateFamily event) async* {
     try {
       yield FamilyLoading();
-      final Family family = await _familyRepository.createFamily(event.familyName, event.familyType, _userRepository.token);
+      final Family family = await _familyRepository.createFamily(
+          event.familyName, event.familyType, _userRepository.token);
 //      authenticationBloc.add(WithFamily(family));
-      checkInviteViewBloc.add(UpdateCheckInviteView(CheckInviteViewState.welcome));
+      checkInviteViewBloc
+          .add(UpdateCheckInviteView(CheckInviteViewState.welcome));
       yield FamilyLoaded(family);
-    } catch(_) {
+    } catch (_) {
       yield FamilyNotLoaded();
     }
   }
-
-
 }

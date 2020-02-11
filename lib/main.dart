@@ -9,9 +9,7 @@ import 'package:gulmate/screens/views/sign_in/sign_in_view.dart';
 
 void main() => runApp(MyApp());
 
-
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,56 +23,31 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) => _buildScreenByAuth(state),
-      )
-//      BlocListener<AuthenticationBloc, AuthenticationState>(listener: (context, state) {
-//        if(state is AuthenticationUninitialized) {
-//          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IntroWrapper()));
-//        } else if(state is AuthenticationUnauthenticated) {
-//          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => SignInWrapper()));
-//        } else if(state is AuthenticationAuthenticated) {
-//
-//        } else if(state is AuthenticationLoading) {
-//
-//        }
-//      }) ,
-//      BlocBuilder<AuthenticationBloc, AuthenticationState>(builder: (context, state) {
-//          if(state is AuthenticationUninitialized) {
-//            return IntroWrapper();
-//          } else if(state is AuthenticationUnauthenticated) {
-//            return Signin();
-//          } else if(state is AuthenticationAuthenticated) {
-//            return BlocBuilder<FamilyBloc, FamilyState>(
-//              builder: (context, familyState) {
-//                if(familyState is FamilyLoading) {
-//                  return LoadingIndicator();
-//                } else if(familyState is FamilyNotLoaded) {
-//                  return CheckInvitedPage();
-//                } else {
-//                  return HomeScreen();
-//                }
-//              },
-//            );
-//          } else {
-//            return ErrorScreen();
-//          }
-//        },),
+      ),
     );
   }
 
   Widget _buildScreenByAuth(AuthenticationState state) {
-    if(state is AuthenticationLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator(),),);
-    } else if(state is AuthenticationUninitialized) {
+    if (state is AuthenticationLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else if (state is AuthenticationUninitialized) {
       return IntroWrapper();
-    } else if(state is AuthenticationUnauthenticated) {
+    } else if (state is AuthenticationUnauthenticated) {
       return SignInView();
-    } else if(state is AuthenticationAuthenticatedWithoutFamily) {
+    } else if (state is AuthenticationAuthenticatedWithoutFamily) {
       return CheckInviteWrapper();
-    } else if(state is AuthenticationAuthenticatedWithFamily) {
+    } else if (state is AuthenticationAuthenticatedWithFamily) {
       return HomeScreen();
     } else {
-      return Scaffold(body: Center(child: Text("Bad Access"),),);
+      return Scaffold(
+        body: Center(
+          child: Text("Bad Access"),
+        ),
+      );
     }
-
   }
 }

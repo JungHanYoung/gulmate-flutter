@@ -12,15 +12,13 @@ abstract class PurchaseState extends Equatable {
 
 class PurchaseLoading extends PurchaseState {}
 
-class PurchaseRefreshing extends PurchaseState {}
-
 class PurchaseLoaded extends PurchaseState {
   final List<Purchase> purchaseList;
 
   const PurchaseLoaded(this.purchaseList);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [purchaseList];
 
   @override
   String toString() {
@@ -29,4 +27,16 @@ class PurchaseLoaded extends PurchaseState {
 
 }
 
-class PurchaseError extends PurchaseState {}
+class PurchaseError extends PurchaseState {
+  final String errorMessage;
+
+  const PurchaseError(this.errorMessage);
+
+  @override
+  List<Object> get props => [errorMessage];
+
+  @override
+  String toString() {
+    return 'PurchaseError{errorMessage: $errorMessage}';
+  }
+}

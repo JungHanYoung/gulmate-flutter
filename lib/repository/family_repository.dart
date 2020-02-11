@@ -39,7 +39,8 @@ class FamilyRepository {
           options: Options(headers: {
             'Authorization': 'Bearer $token',
           }));
-      return Family.fromJSON(response.data);
+      _family = Family.fromJSON(response.data);
+      return _family;
     } catch(e) {
       if(e is DioError) {
         throw Exception("Error: create family api");

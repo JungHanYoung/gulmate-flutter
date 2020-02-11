@@ -9,6 +9,7 @@ import 'package:gulmate/bloc/tab/app_tab.dart';
 import 'package:gulmate/bloc/view/check_invite/check_invite_view_bloc.dart';
 import 'package:gulmate/main.dart';
 import 'package:gulmate/repository/family_repository.dart';
+import 'package:gulmate/repository/purchase_repository.dart';
 import 'package:gulmate/repository/user_repository.dart';
 
 import 'app_config.dart';
@@ -19,6 +20,7 @@ void main() {
   Dio baseDio = Dio(BaseOptions(baseUrl: "http://localhost:8080"));
   GetIt.instance.registerSingleton(UserRepository(baseDio));
   GetIt.instance.registerSingleton(FamilyRepository(baseDio));
+  GetIt.instance.registerSingleton(PurchaseRepository(baseDio));
   var configuredApp = AppConfig(
     flavorName: "development",
     appName: "Gulmate",
