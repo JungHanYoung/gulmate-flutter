@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/const/color.dart';
-import 'package:gulmate/model/purchase.dart';
-import 'package:gulmate/screens/home/purchase/purchase_add_edit_screen.dart';
+import 'package:gulmate/screens/home/purchase/purchase_add_edit_bottom_sheet.dart';
 import 'package:gulmate/screens/home/purchase/widgets/purchase_list_view.dart';
 
 import 'widgets/filter_button.dart';
@@ -96,23 +95,30 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
         right: 16,
         child: InkWell(
           onTap: () async {
-            final addedPurchase =
-                await Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PurchaseAddEditScreen(
-                          prevContext: context,
-                          isEditing: false,
-                          onSave:
-                              (String title, String place, DateTime deadline) {
-                            BlocProvider.of<PurchaseBloc>(context)
-                                .add(AddPurchase(title, place, deadline));
-                          },
-                        )));
-            if (addedPurchase is Purchase && addedPurchase != null) {
-              BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(
-                  addedPurchase.title,
-                  addedPurchase.place,
-                  addedPurchase.deadline));
-            }
+//            Scaffold.of(context).showBottomSheet((context) => PurchaseAddEditBottomSheet(), backgroundColor: Colors.grey[500]);
+//            showModalBottomSheet(context: context, builder: (context) => PurchaseAddEditBottomSheet());
+              Scaffold.of(context).showBottomSheet((context) => PurchaseAddEditBottomSheet());
+//            Scaffold.of(context).showBottomSheet((context) => PurchaseAddEditBottomSheet());
+//            var showBottomSheet2 = showBottomSheet(context: context, builder: (context) {
+//              return PurchaseAddEditBottomSheet();
+//            });
+//            final addedPurchase =
+//                await Navigator.of(context).push(MaterialPageRoute(
+//                    builder: (context) => PurchaseAddEditScreen(
+//                          prevContext: context,
+//                          isEditing: false,
+//                          onSave:
+//                              (String title, String place, DateTime deadline) {
+//                            BlocProvider.of<PurchaseBloc>(context)
+//                                .add(AddPurchase(title, place, deadline));
+//                          },
+//                        )));
+//            if (addedPurchase is Purchase && addedPurchase != null) {
+//              BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(
+//                  addedPurchase.title,
+//                  addedPurchase.place,
+//                  addedPurchase.deadline));
+//            }
           },
           child: Container(
             decoration: BoxDecoration(

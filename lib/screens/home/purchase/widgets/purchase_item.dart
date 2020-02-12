@@ -97,7 +97,7 @@ class PurchaseItem extends StatelessWidget {
                     ),
                     Text(
                       purchase.complete
-                          ? "${purchase.checkedDateTime?.month}월 ${purchase.checkedDateTime.day}일"
+                          ? "${purchase.checkedDateTime?.month}월 ${purchase.checkedDateTime?.day}일"
                         : purchase.deadline != null ? "${purchase.deadline?.month}월 ${purchase.deadline?.day}일까지" : "",
                       style: TextStyle(
                         color: Color.fromRGBO(153, 153, 153, 1),
