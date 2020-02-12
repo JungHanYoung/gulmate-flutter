@@ -90,13 +90,15 @@ class PurchaseItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      purchase.creator,
+                      purchase.complete ? purchase.checker : purchase.creator,
                       style: TextStyle(
                         color: purchase.complete ? PRIMARY_COLOR : Color.fromRGBO(153, 153, 153, 1),
                       ),
                     ),
                     Text(
-                      purchase.deadline != null ? "${purchase.deadline?.month}월 ${purchase.deadline?.day}일까지" : "",
+                      purchase.complete
+                          ? "${purchase.checkedDateTime?.month}월 ${purchase.checkedDateTime.day}일"
+                        : purchase.deadline != null ? "${purchase.deadline?.month}월 ${purchase.deadline?.day}일까지" : "",
                       style: TextStyle(
                         color: Color.fromRGBO(153, 153, 153, 1),
                       ),
