@@ -39,7 +39,7 @@ class FilteredPurchaseBloc extends Bloc<FilteredPurchaseEvent, FilteredPurchaseS
 
   Stream<FilteredPurchaseState> _mapUpdateFilterToState(UpdateFilter event) async* {
     final visibilityFilter = state is FilteredPurchaseLoaded
-        ? (state as FilteredPurchaseLoaded).activeFilter
+        ? event.filter
         : VisibilityFilter.all;
     yield FilteredPurchaseLoaded(
         _mapPurchaseToFilteredPurchase(
@@ -66,7 +66,7 @@ class FilteredPurchaseBloc extends Bloc<FilteredPurchaseEvent, FilteredPurchaseS
     => purchases.where((purchase)
       => filter == VisibilityFilter.all
           ? true : filter == VisibilityFilter.active
-            ? !purchase.isComplete : purchase.isComplete).toList();
+            ? !purchase.complete : purchase.complete).toList();
 
   @override
   Future<void> close() {

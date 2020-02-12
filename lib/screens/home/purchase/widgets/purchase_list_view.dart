@@ -21,9 +21,9 @@ class PurchaseListView extends StatelessWidget {
           final purchaseItem = purchaseList[index];
           return PurchaseItem(
             purchase: purchaseItem,
-            onCheckboxChanged: (_) {
-              BlocProvider.of<PurchaseBloc>(context).add(UpdatePurchase(
-                  purchaseItem.copyWith(complete: !purchaseItem.isComplete)));
+            onCheckboxChanged: (value) {
+              BlocProvider.of<PurchaseBloc>(context).add(CheckUpdatePurchase(
+                  purchaseItem.copyWith(complete: value)));
             },
             onDelete: () {
               BlocProvider.of<PurchaseBloc>(context)

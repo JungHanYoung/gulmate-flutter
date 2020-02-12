@@ -6,6 +6,8 @@ import 'package:gulmate/model/visibility_filter.dart';
 typedef FilterSelected<T> = void Function(T value);
 
 class FilterButton extends StatelessWidget {
+
+
   FilterButton({
     Key key,
   }) : super(key: key);

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/model/purchase.dart';
-import 'package:gulmate/widgets/gul_check_box.dart';
+
 
 class PurchaseItem extends StatelessWidget {
   final Purchase purchase;
   final Function(bool) onCheckboxChanged;
   final Function onDelete;
+
+  static const _completeColor = const Color.fromRGBO(153, 153, 153, 1);
+  static const _incompleteColor = const Color.fromRGBO(34, 34, 34, 1);
 
   PurchaseItem({
     @required this.purchase,
@@ -50,8 +53,8 @@ class PurchaseItem extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 4.0),
-                  child: GulCheckbox(
-                    value: purchase.isComplete,
+                  child: Checkbox(
+                    value: purchase.complete,
                     onChanged: onCheckboxChanged,
                     checkColor: PRIMARY_COLOR,
                     activeColor: Colors.white,
@@ -64,18 +67,18 @@ class PurchaseItem extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         purchase.title,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, color: purchase.complete ? _completeColor : _incompleteColor),
                       ),
                       Row(
                         children: <Widget>[
                           Icon(
                             Icons.place,
                             size: 15,
-                            color: DEFAULT_BACKGROUND_COLOR,
+                            color: purchase.complete ? _completeColor : DEFAULT_BACKGROUND_COLOR,
                           ),
                           Text(
                             purchase.place,
-                            style: TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 14, color: purchase.complete ? _completeColor : _incompleteColor),
                           ),
                         ],
                       ),
@@ -84,15 +87,16 @@ class PurchaseItem extends StatelessWidget {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "홍길동",
+                      purchase.creator,
                       style: TextStyle(
-                        color: Color.fromRGBO(153, 153, 153, 1),
+                        color: purchase.complete ? PRIMARY_COLOR : Color.fromRGBO(153, 153, 153, 1),
                       ),
                     ),
                     Text(
-                      "${purchase.deadline?.month}월 ${purchase.deadline?.day}일까지",
+                      purchase.deadline != null ? "${purchase.deadline?.month}월 ${purchase.deadline?.day}일까지" : "",
                       style: TextStyle(
                         color: Color.fromRGBO(153, 153, 153, 1),
                       ),

@@ -219,7 +219,7 @@ class _PurchaseAddEditScreenState extends State<PurchaseAddEditScreen> {
                             onPressed: () {
                               if(_formKey.currentState.validate()) {
                                 _formKey.currentState.save();
-                                Navigator.of(context).pop(Purchase(title: _title, place: _place, deadline: _deadline));
+                                Navigator.of(context).pop(Purchase(title: _title, place: _place, deadline: _isCheckedDeadline ? _deadline : null));
                               }
                             },
                             child: Text(

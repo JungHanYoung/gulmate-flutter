@@ -38,13 +38,29 @@ class UpdatePurchase extends PurchaseEvent {
   const UpdatePurchase(this.purchase);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [purchase];
 
   @override
   String toString() {
     return 'UpdatePurchase{purchase: $purchase}';
   }
 }
+
+class CheckUpdatePurchase extends PurchaseEvent {
+  final Purchase purchase;
+
+  const CheckUpdatePurchase(this.purchase);
+
+  @override
+  List<Object> get props => [purchase];
+
+  @override
+  String toString() {
+    return 'CheckPurchase{purchase: $purchase}';
+  }
+
+}
+
 
 class DeletePurchase extends PurchaseEvent {
   final Purchase purchase;

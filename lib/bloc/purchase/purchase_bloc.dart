@@ -39,6 +39,8 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
       yield* _mapUpdatePurchaseToState(event);
     } else if (event is DeletePurchase) {
       yield* _mapDeletePurchaseToState(event);
+    } else if (event is CheckUpdatePurchase) {
+      yield* _mapCheckPurchaseToState(event);
     }
   }
 
@@ -55,6 +57,14 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
 
   Stream<PurchaseState> _mapRefreshPurchaseListToState() async* {
     // TODO: 장보기 목록 새로고침
+    if(state is PurchaseLoaded) {
+      try {
+        final purchaseList = await purchaseRepository.getPurchaseList();
+        yield PurchaseLoaded(purchaseList);
+      } catch(e) {
+        yield PurchaseLoaded((state as PurchaseLoaded).purchaseList);
+      }
+    }
   }
 
   Stream<PurchaseState> _mapAddPurchaseToState(AddPurchase event) async* {
@@ -69,7 +79,8 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
         final List<Purchase> updatedPurchaseList = List.from((state as PurchaseLoaded).purchaseList)
           ..insert(0, purchase);
         yield PurchaseLoaded(updatedPurchaseList);
-      }catch(e) {
+      } catch(e) {
+        print(e);
         yield PurchaseLoaded((state as PurchaseLoaded).purchaseList);
       }
     }
@@ -77,10 +88,23 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
 
   Stream<PurchaseState> _mapUpdatePurchaseToState(UpdatePurchase event) async* {
     // TODO: 장보기 수정
+    if(state is PurchaseLoaded) {
+      try {
+        final updatedId = await purchaseRepository.updatePurchase(event.purchase);
+        final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded).purchaseList.map((purchase) {
+          return updatedId != purchase.id ? purchase : event.purchase.copyWith(
+            creator: purchase.creator,
+          );
+        }).toList();
+
+        yield PurchaseLoaded(updatedPurchaseList);
+      } catch(_) {
+        yield PurchaseLoaded((state as PurchaseLoaded).purchaseList);
+      }
+    }
   }
 
   Stream<PurchaseState> _mapDeletePurchaseToState(DeletePurchase event) async* {
-    // TODO: 장보기 삭제
     if(state is PurchaseLoaded) {
       await purchaseRepository.deletePurchase(event.purchase);
       final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded)
@@ -95,5 +119,20 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   Future<Function> close() {
     _appTabSubscription.cancel();
     return super.close();
+  }
+
+  Stream<PurchaseState> _mapCheckPurchaseToState(CheckUpdatePurchase event) async* {
+    if(state is PurchaseLoaded) {
+      try {
+        final updatedPurchase = await purchaseRepository.checkPurchase(event.purchase);
+        final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded).purchaseList.map((purchase) {
+          return updatedPurchase.id != purchase.id ? purchase : updatedPurchase;
+        }).toList();
+        yield PurchaseLoaded(updatedPurchaseList);
+      } catch(_) {
+        print(_);
+//        yield PurchaseLoaded((state as PurchaseLoaded).purchaseList);
+      }
+    }
   }
 }

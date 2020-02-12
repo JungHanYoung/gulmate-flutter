@@ -34,10 +34,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
         } else if (state is PurchaseError) {
           return _buildErrorWidget();
         } else {
-          return BlocProvider<FilteredPurchaseBloc>(
-            create: (context) =>
-                FilteredPurchaseBloc(BlocProvider.of<PurchaseBloc>(context)),
-            child: SafeArea(
+          return BlocBuilder<FilteredPurchaseBloc, FilteredPurchaseState>(
+            builder: (context, state) => SafeArea(
                 child: Stack(
               children: [
                 Padding(
@@ -57,7 +55,8 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                         child: FilterButton(),
                       ),
                       Expanded(
-                        child: (state is PurchaseLoaded && state.purchaseList.isEmpty)
+                        child: (state is FilteredPurchaseLoaded &&
+                                state.filteredPurchases.isEmpty)
                             ? Center(
                                 child: Text(
                                   "등록된 장보기 데이터가 없습니다.",
@@ -66,7 +65,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                                 ),
                               )
                             : PurchaseListView(
-                                (state as PurchaseLoaded).purchaseList,
+                                (state as FilteredPurchaseLoaded).filteredPurchases,
                                 onRefresh: () {
                                 BlocProvider.of<PurchaseBloc>(context)
                                     .add(RefreshPurchaseList());
@@ -97,17 +96,22 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
         right: 16,
         child: InkWell(
           onTap: () async {
-            final addedPurchase = await Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => PurchaseAddEditScreen(
-                      prevContext: context,
-                      isEditing: false,
-                      onSave: (String title, String place, DateTime deadline) {
-                        BlocProvider.of<PurchaseBloc>(context)
-                            .add(AddPurchase(title, place, deadline));
-                      },
-                    )));
-            if(addedPurchase is Purchase && addedPurchase != null) {
-              BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(addedPurchase.title, addedPurchase.place, addedPurchase.deadline));
+            final addedPurchase =
+                await Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PurchaseAddEditScreen(
+                          prevContext: context,
+                          isEditing: false,
+                          onSave:
+                              (String title, String place, DateTime deadline) {
+                            BlocProvider.of<PurchaseBloc>(context)
+                                .add(AddPurchase(title, place, deadline));
+                          },
+                        )));
+            if (addedPurchase is Purchase && addedPurchase != null) {
+              BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(
+                  addedPurchase.title,
+                  addedPurchase.place,
+                  addedPurchase.deadline));
             }
           },
           child: Container(
