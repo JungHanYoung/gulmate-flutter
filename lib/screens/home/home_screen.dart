@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/bloc/tab/app_tab.dart';
+import 'package:gulmate/repository/calendar_repository.dart';
 import 'package:gulmate/repository/purchase_repository.dart';
 import 'package:gulmate/screens/home/calendar/calendar_screen.dart';
 import 'package:gulmate/screens/home/purchase/purchase_screen.dart';
@@ -15,6 +17,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final purchaseRepository = GetIt.instance.get<PurchaseRepository>();
+    final calendarRepository = GetIt.instance.get<CalendarRepository>();
     return MultiBlocProvider(
       providers: [
         BlocProvider<PurchaseBloc>(
@@ -23,6 +26,10 @@ class HomeScreen extends StatelessWidget {
         BlocProvider<FilteredPurchaseBloc>(
           create: (context) =>
               FilteredPurchaseBloc(BlocProvider.of<PurchaseBloc>(context)),
+        ),
+        BlocProvider<CalendarBloc>(
+          create: (context) => CalendarBloc(calendarRepository,
+              appTabBloc: BlocProvider.of<AppTabBloc>(context)),
         ),
       ],
       child: BlocBuilder<AppTabBloc, AppTab>(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/screens/home/calendar/calendar_add_edit_bottom_sheet.dart';
 import 'package:gulmate/screens/home/calendar/table_calendar.dart';
@@ -83,89 +85,103 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Column(
-          children: <Widget>[
-            SizedBox(
-              height: 94,
-            ),
-            _buildCalendar(),
-            _buildEventList(),
-          ],
-        ),
-        Positioned(
-            bottom: 16,
-            right: 16,
-            child: InkWell(
-              onTap: () async {
-                Scaffold.of(context).showBottomSheet((context) => CalendarAddEditBottomSheet());
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: DEFAULT_BACKGROUND_COLOR,
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color.fromRGBO(249, 249, 249, 0.5),
-                          blurRadius: 10,
-                          spreadRadius: 10),
-                    ]),
-                width: 60,
-                height: 60,
-                child: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                  size: 30,
-                ),
-              ),
-            )),
-      ],
-    );
-  }
-
-  Widget _buildCalendar() {
     final Size size = MediaQuery.of(context).size;
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events,
-      headerVisible: true,
-      initialCalendarFormat: CalendarFormat.month,
-      formatAnimation: FormatAnimation.slide,
-      availableCalendarFormats: const {
-        CalendarFormat.month: '',
-      },
-      availableGestures: AvailableGestures.horizontalSwipe,
-      daysOfWeekStyle: DaysOfWeekStyle(
-        weekendStyle: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),
-        weekdayStyle: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),
-      ),
-      calendarStyle: CalendarStyle(
-        selectedColor: Color.fromRGBO(255, 109, 0, 1),
-        weekendStyle: TextStyle(color: Color.fromRGBO(255, 163, 0, 1)),
-      ),
-      builders: CalendarBuilders(
-          todayDayBuilder: (context, date, _) =>
-              Center(child: Text("${date.day}")),
-          markersBuilder: (context, date, events, holidays) {
-            final children = <Widget>[];
-
-            if (events.isNotEmpty) {
-              children.add(
-                Positioned(
-                  child: CustomPaint(
-                    painter: EventNoti(),
+    return BlocBuilder<CalendarBloc, CalendarState>(
+      builder: (context, state) {
+        if(state is CalendarLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        // CalendarLoaded
+        else {
+          final calendarLoaded = (state as CalendarLoaded);
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 94,
                   ),
-                  bottom: 8,
-                  right: size.width / 7 / 2 + 4,
-                ),
-              );
-            }
-            return children;
-          }),
-      onDaySelected: (date, events) {
-        _onDaySelected(date, events);
+                  TableCalendar(
+                    onVisibleDaysChanged: (prev, next, format) {
+                      print("prev: ${prev.month}");
+                      print("next: ${next.month}");
+                      print("format: ${format.toString()}");
+                    },
+                    calendarController: _calendarController,
+                    events: _events,
+                    headerVisible: true,
+                    initialCalendarFormat: CalendarFormat.month,
+                    formatAnimation: FormatAnimation.slide,
+                    availableCalendarFormats: const {
+                      CalendarFormat.month: '',
+                    },
+                    availableGestures: AvailableGestures.horizontalSwipe,
+                    daysOfWeekStyle: DaysOfWeekStyle(
+                      weekendStyle: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),
+                      weekdayStyle: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),
+                    ),
+                    calendarStyle: CalendarStyle(
+                      selectedColor: Color.fromRGBO(255, 109, 0, 1),
+                      weekendStyle: TextStyle(color: Color.fromRGBO(255, 163, 0, 1)),
+                    ),
+                    builders: CalendarBuilders(
+                        todayDayBuilder: (context, date, _) =>
+                            Center(child: Text("${date.day}")),
+                        markersBuilder: (context, date, events, holidays) {
+                          final children = <Widget>[];
+
+                          if (events.isNotEmpty) {
+                            children.add(
+                              Positioned(
+                                child: CustomPaint(
+                                  painter: EventNoti(),
+                                ),
+                                bottom: 8,
+                                right: size.width / 7 / 2 + 4,
+                              ),
+                            );
+                          }
+                          return children;
+                        }),
+                    onDaySelected: (date, events) {
+                      _onDaySelected(date, events);
+                    },
+                  ),
+                  _buildEventList(),
+                ],
+              ),
+              Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: InkWell(
+                    onTap: () async {
+                      Scaffold.of(context).showBottomSheet((context) => CalendarAddEditBottomSheet());
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: DEFAULT_BACKGROUND_COLOR,
+                          boxShadow: [
+                            BoxShadow(
+                                color: Color.fromRGBO(249, 249, 249, 0.5),
+                                blurRadius: 10,
+                                spreadRadius: 10),
+                          ]),
+                      width: 60,
+                      height: 60,
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  )),
+            ],
+          );
+        }
       },
     );
   }
