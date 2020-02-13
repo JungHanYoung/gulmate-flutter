@@ -37,7 +37,7 @@ class Family {
 
   @override
   String toString() {
-    return 'Family{familyName: $familyName, familyType: $familyType}';
+    return 'Family{familyName: $familyName, familyType: $familyType, accountIds: ${accountList.map((account) => account.id).toList()}';
   }
 
 

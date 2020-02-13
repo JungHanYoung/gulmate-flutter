@@ -683,7 +683,7 @@ class _TableCalendarState extends State<TableCalendar> with SingleTickerProvider
       return Container(
         width: 8.0,
         height: 8.0,
-        margin: const EdgeInsets.symmetric(horizontal: 0.3),
+        margin: const EdgeInsets.only(top: 3, left: 0.3, right: 0.3),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: widget.calendarStyle.markersColor,

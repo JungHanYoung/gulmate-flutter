@@ -95,7 +95,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         }
         // CalendarLoaded
         else {
-          final calendarLoaded = (state as CalendarLoaded);
+//          final calendarLoaded = (state as CalendarLoaded);
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -145,7 +145,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             );
                           }
                           return children;
-                        }),
+                        },
+                    ),
                     onDaySelected: (date, events) {
                       _onDaySelected(date, events);
                     },

@@ -10,43 +10,43 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final familyState = BlocProvider.of<FamilyBloc>(context).state;
-    final authState = BlocProvider.of<AuthenticationBloc>(context).state;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
-      child: ListView(
-        children: <Widget>[
-          SizedBox(height: 46),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      (authState as AuthenticationAuthenticatedWithFamily)
-                          .currentAccount.name,
-                      style: TextStyle(fontSize: 30, color: Color(0xFFFF6D00)),
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, authState) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: ListView(
+          children: <Widget>[
+            SizedBox(height: 46),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      child: Text(
+                        (authState as AuthenticationAuthenticatedWithFamily)
+                            .currentAccount.name,
+                        style: TextStyle(fontSize: 30, color: Color(0xFFFF6D00)),
+                      ),
                     ),
-                  ),
-                  Container(
-                    child: Text(
-                      (familyState as FamilyLoaded)
-                          .family.familyName,
-                      style: TextStyle(
-                          color: Color.fromRGBO(153, 153, 153, 1),
-                          fontSize: 16),
+                    Container(
+                      child: Text(
+                        (familyState as FamilyLoaded)
+                            .family.familyName,
+                        style: TextStyle(
+                            color: Color.fromRGBO(153, 153, 153, 1),
+                            fontSize: 16),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              _buildAvatar(context),
-            ],
-          ),
-          SizedBox(height: 34),
-          _buildSubTitle(title: "다가오는 일정", moreBtnTitle: "1월"),
+                  ],
+                ),
+                _buildAvatar(context, (authState as AuthenticationAuthenticatedWithFamily).currentAccount.photoUrl),
+              ],
+            ),
+            SizedBox(height: 34),
+            _buildSubTitle(title: "다가오는 일정", moreBtnTitle: "1월"),
 //          Padding(
 //            padding: const EdgeInsets.only(top: 34),
 //            child: Row(
@@ -59,54 +59,55 @@ class DashboardScreen extends StatelessWidget {
 //              ],
 //            ),
 //          ),
-          Column(
-            children: <Widget>[
-              _buildCalendarItem("10", "가족 외식", "오후 07:00"),
-              _buildCalendarItem("16", "서영이 논술 시험", "오전 11:30"),
-              _buildCalendarItem("18", "엄마 건강검진", "오전 09:20"),
-            ],
-          ),
-          _buildShoppingList([
-            {
-              'itemName': '샴푸',
-              'authorName': '시영이',
-            },
-            {
-              'itemName': '두부 한 모',
-              'authorName': '엄마',
-            },
-            {
-              'itemName': '치약',
-              'authorName': '아빠',
-            },
-            {
-              'itemName': '양파 다섯 개',
-              'authorName': '엄마',
-            },
-          ], title: "쇼핑 목록"),
-          _buildSubTitle(title: "갤러리", moreBtnTitle: "모두 보기"),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics:
-//              PageScrollPhysics(),
-//                ClampingScrollPhysics(),
-            BouncingScrollPhysics(),
-            child: Row(
+            Column(
               children: <Widget>[
-                _buildAlbumCard(
-                    title: "Image 1",
-                    photoUrl: "https://picsum.photos/250?image=1"),
-                _buildAlbumCard(
-                    title: "Image 2",
-                    photoUrl: "https://picsum.photos/250?image=2"),
-                _buildAlbumCard(
-                    title: "Image 3",
-                    photoUrl: "https://picsum.photos/250?image=3"),
+                _buildCalendarItem("10", "가족 외식", "오후 07:00"),
+                _buildCalendarItem("16", "서영이 논술 시험", "오전 11:30"),
+                _buildCalendarItem("18", "엄마 건강검진", "오전 09:20"),
               ],
             ),
-          ),
-          SizedBox(height: 50),
-        ],
+            _buildShoppingList([
+              {
+                'itemName': '샴푸',
+                'authorName': '시영이',
+              },
+              {
+                'itemName': '두부 한 모',
+                'authorName': '엄마',
+              },
+              {
+                'itemName': '치약',
+                'authorName': '아빠',
+              },
+              {
+                'itemName': '양파 다섯 개',
+                'authorName': '엄마',
+              },
+            ], title: "쇼핑 목록"),
+            _buildSubTitle(title: "갤러리", moreBtnTitle: "모두 보기"),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics:
+//              PageScrollPhysics(),
+//                ClampingScrollPhysics(),
+              BouncingScrollPhysics(),
+              child: Row(
+                children: <Widget>[
+                  _buildAlbumCard(
+                      title: "Image 1",
+                      photoUrl: "https://picsum.photos/250?image=1"),
+                  _buildAlbumCard(
+                      title: "Image 2",
+                      photoUrl: "https://picsum.photos/250?image=2"),
+                  _buildAlbumCard(
+                      title: "Image 3",
+                      photoUrl: "https://picsum.photos/250?image=3"),
+                ],
+              ),
+            ),
+            SizedBox(height: 50),
+          ],
+        ),
       ),
     );
   }
@@ -144,9 +145,10 @@ class DashboardScreen extends StatelessWidget {
         ),
       );
 
-  Widget _buildAvatar(BuildContext context) => Stack(children: <Widget>[
+  Widget _buildAvatar(BuildContext context, String photoUrl) => Stack(children: <Widget>[
         CircleAvatar(
           radius: 40,
+          backgroundImage: NetworkImage(photoUrl),
         ),
         Positioned(
           bottom: 6,
