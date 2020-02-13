@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/model/account.dart';
+import 'package:gulmate/utils/format_datetime_utils.dart';
 
 class CalendarAddEditBottomSheet extends StatefulWidget {
   @override
@@ -18,6 +20,16 @@ class _CalendarAddEditBottomSheetState
   String _title;
   DateTime _dateTime;
   String _place;
+  List<int> accountIds = [];
+  TextEditingController _dateTimeController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _dateTime = DateTime.now();
+    _dateTimeController = TextEditingController();
+  }
 
 //  List<Account> accountList;
 
@@ -78,6 +90,7 @@ class _CalendarAddEditBottomSheetState
                           decoration: InputDecoration(
                               hintText: "예) 가족 외식",
                               hintStyle: TextStyle(
+                                  fontWeight: FontWeight.w300,
                                   fontSize: 16,
                                   color: Color.fromRGBO(204, 204, 204, 1)),
                               contentPadding:
@@ -91,12 +104,37 @@ class _CalendarAddEditBottomSheetState
                         ),
                         Text(
                           "날짜",
-                          style: TextStyle(fontSize: 14.0),
-                        ),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.arrow_drop_down),
+                          style: TextStyle(
+                            fontSize: 14.0,
                           ),
+                        ),
+                        TextField(
+                          controller: _dateTimeController,
+                          showCursor: false,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                              hintText: "탭하여 날짜를 선택하여 주세요",
+                              hintStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                  color: Color.fromRGBO(204, 204, 204, 1)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: DEFAULT_BACKGROUND_COLOR))),
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              minTime: DateTime.now(),
+                              onConfirm: (dateTime) {
+                                setState(() {
+                                  _dateTime = dateTime;
+                                });
+                                _dateTimeController.text =
+                                    formatFromDateTimeToUntilWeek(dateTime);
+                              },
+                              locale: LocaleType.ko,
+                            );
+                          },
                         ),
                         SizedBox(
                           height: 20,
@@ -114,6 +152,7 @@ class _CalendarAddEditBottomSheetState
                               hintText: "지도 검색 후 주소 자동입력",
                               hintStyle: TextStyle(
                                   fontSize: 16,
+                                  fontWeight: FontWeight.w300,
                                   color: Color.fromRGBO(204, 204, 204, 1)),
                               suffix: InkWell(
                                 onTap: () {},
@@ -169,8 +208,11 @@ class _CalendarAddEditBottomSheetState
                       borderRadius: BorderRadius.circular(8.0),
                       child: RaisedButton(
                         onPressed: () {
-                          BlocProvider.of<CalendarBloc>(context)
-                              .add(AddCalendar(_title, _place, _dateTime, []));
+                          if(_formKey.currentState.validate() && _dateTimeController.text.isNotEmpty) {
+                            _formKey.currentState.save();
+                            BlocProvider.of<CalendarBloc>(context)
+                                .add(AddCalendar(_title, _place, _dateTime, accountIds));
+                          }
 //                          Navigator.of(context).pop();
 //                          if(_formKey.currentState.validate()) {
 //                            _formKey.currentState.save();
@@ -179,7 +221,12 @@ class _CalendarAddEditBottomSheetState
 //////                            Navigator.of(context).pop(Purchase(title: _title, place: _place, deadline: _isCheckedDeadline ? _deadline : null));
 //                          }
                         },
-                        child: Text(
+                        child: BlocProvider.of<CalendarBloc>(context).state is CalendarLoading
+                        ? SizedBox(
+                          width: 16,
+                          height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2.0, backgroundColor: Colors.white, ))
+                        : Text(
                           "등록 완료",
                           style: TextStyle(
                               color: Colors.white,
@@ -202,16 +249,41 @@ class _CalendarAddEditBottomSheetState
   }
 
   Padding _buildFamilyMember(Account account) {
+    final children = <Widget>[
+      SizedBox(
+          width: 60,
+          height: 60,
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(account.photoUrl),
+          )),
+    ];
+    if (accountIds.contains(account.id))
+      children.add(Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(153, 153, 153, 0.3),
+        ),
+        child: Icon(Icons.check),
+      ));
     return Padding(
       padding: const EdgeInsets.only(right: 16.0),
       child: Column(
         children: <Widget>[
-          SizedBox(
-              width: 60,
-              height: 60,
-              child: CircleAvatar(
-                backgroundImage: NetworkImage(account.photoUrl),
-              )),
+          InkWell(
+            onTap: () {
+              // TODO: 클릭시 멤버 추가
+              setState(() {
+                if (accountIds.contains(account.id)) {
+                  accountIds.remove(account.id);
+                } else {
+                  accountIds.add(account.id);
+                }
+              });
+            },
+            child: Stack(
+              children: children,
+            ),
+          ),
           SizedBox(height: 10),
           Text(account.name),
         ],

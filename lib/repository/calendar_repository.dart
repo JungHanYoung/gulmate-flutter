@@ -28,4 +28,22 @@ class CalendarRepository {
     throw Exception("Error: get calendar list");
   }
 
+  Future<Calendar> createCalendar(String title, String place, DateTime dateTime, List<int> accountIds) async {
+    final familyId = _familyRepository.family.id;
+    final response = await dio.post("/api/v1/$familyId/calendar", data: {
+      'title': title,
+      'place': place,
+      'dateTime': dateTime.toIso8601String(),
+      'accountIds': accountIds,
+    }, options: Options(
+      headers: {
+        'Authorization': 'Bearer ${_userRepository.token}',
+      }
+    ));
+    if(response.statusCode == 200 && response.data != null) {
+      return Calendar.fromJson(response.data);
+    }
+    throw Exception("Error create calendar");
+  }
+
 }

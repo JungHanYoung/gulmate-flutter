@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/const/color.dart';
+import 'package:gulmate/model/calendar.dart';
 import 'package:gulmate/screens/home/calendar/calendar_add_edit_bottom_sheet.dart';
 import 'package:gulmate/screens/home/calendar/table_calendar.dart';
+import 'package:gulmate/screens/home/calendar/widgets/event_item_widget.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -95,7 +97,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         }
         // CalendarLoaded
         else {
-//          final calendarLoaded = (state as CalendarLoaded);
+          final calendarLoaded = (state as CalendarLoaded);
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -126,6 +128,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     calendarStyle: CalendarStyle(
                       selectedColor: Color.fromRGBO(255, 109, 0, 1),
                       weekendStyle: TextStyle(color: Color.fromRGBO(255, 163, 0, 1)),
+                      outsideDaysVisible: false,
                     ),
                     builders: CalendarBuilders(
                         todayDayBuilder: (context, date, _) =>
@@ -151,7 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       _onDaySelected(date, events);
                     },
                   ),
-                  _buildEventList(),
+                  _buildEventList(calendarLoaded.calendarList),
                 ],
               ),
               Positioned(
@@ -187,36 +190,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildEventList() {
+  Widget _buildEventList(List<Calendar> calendarList) {
     return Expanded(
       child: ListView(
         padding: const EdgeInsets.only(top: 24),
-        children: _selectedEvents.map((event) {
-          print(event);
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(249, 249, 249, 0.5),
-                    blurRadius: 10,
-                    spreadRadius: 10),
-              ],
-            ),
-            child: Row(
-              children: <Widget>[
-                Expanded(child: Text("$event")),
-                Text("오후 05:00"),
-                Icon(
-                  Icons.chevron_right,
-                  color: DEFAULT_BACKGROUND_COLOR,
-                ),
-              ],
-            ),
-          );
+        children: calendarList.map((calendar) {
+          return EventItemWidget(calendar);
         }).toList(),
       ),
     );

@@ -15,6 +15,7 @@ class Calendar {
       title: json['title'],
       place: json['place'],
       dateTime: DateTime.parse(json['dateTime']),
+      accountList: (json['accountList'] as List).map((account) => Account.fromJson(account)).toList(),
     );
   }
 
@@ -35,7 +36,7 @@ class Calendar {
 
   @override
   String toString() {
-    return 'Calendar{title: $title, place: $place, dateTime: $dateTime}';
+    return 'Calendar{title: $title, place: $place, dateTime: $dateTime, accountList: ${accountList.map((account) => account.id).join(", ")}';
   }
 
 

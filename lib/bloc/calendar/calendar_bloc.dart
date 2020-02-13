@@ -34,6 +34,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     // TODO: implement mapEventToState
     if(event is FetchCalendar) {
       yield* _mapFetchCalendarToState(event);
+    } else if(event is AddCalendar) {
+      yield* _mapAddCalendarToState(event);
     }
   }
 
@@ -47,11 +49,31 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     }
   }
 
+  Stream<CalendarState> _mapAddCalendarToState(AddCalendar event) async* {
+    if(state is CalendarLoaded) {
+      try {
+        final updatedCalendarList = (state as CalendarLoaded).calendarList;
+        final currentYear = (state as CalendarLoaded).year;
+        final currentMonth = (state as CalendarLoaded).month;
+        yield CalendarLoading();
+        final savedCalendar = await _calendarRepository.createCalendar(event.title, event.place, event.dateTime, event.accountIds);
+        if(savedCalendar.dateTime.year == currentYear && savedCalendar.dateTime.month == currentMonth) {
+          updatedCalendarList.add(savedCalendar);
+          yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+        }
+      } catch(e) {
+        print(e);
+      }
+
+    }
+  }
+
   @override
   Future<void> close() {
     _appTabSubscription.cancel();
     return super.close();
   }
+
 
 
 }
