@@ -46,4 +46,37 @@ class CalendarRepository {
     throw Exception("Error create calendar");
   }
 
+  Future<int> deleteCalendar(Calendar calendar) async {
+    final familyId = _familyRepository.family.id;
+    final calendarId = calendar.id;
+    final response = await dio.delete("/api/v1/$familyId/calendar/$calendarId", options: Options(
+      headers: {
+        'Authorization': 'Bearer ${_userRepository.token}',
+      },
+    ));
+    if(response.statusCode == 200) {
+      return calendar.id;
+    }
+    throw Exception("Error: delete calendar");
+  }
+
+  Future<Calendar> updateCalendar(Calendar calendar, List<int> accountIds) async {
+    final familyId = _familyRepository.family.id;
+    final calendarId = calendar.id;
+    final response = await dio.put("/api/v1/$familyId/calendar/$calendarId", data: {
+      'title': calendar.title,
+      'place': calendar.place,
+      'dateTime': calendar.dateTime.toIso8601String(),
+      'accountIds': accountIds,
+    }, options: Options(
+      headers: {
+        'Authorization': 'Bearer ${_userRepository.token}'
+      }
+    ));
+    if(response.statusCode == 200 && response.data is Map) {
+      return Calendar.fromJson(response.data);
+    }
+    throw Exception("Error: update calendar");
+  }
+
 }

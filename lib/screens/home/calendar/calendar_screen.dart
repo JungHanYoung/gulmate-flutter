@@ -6,6 +6,7 @@ import 'package:gulmate/model/calendar.dart';
 import 'package:gulmate/screens/home/calendar/calendar_add_edit_bottom_sheet.dart';
 import 'package:gulmate/screens/home/calendar/table_calendar.dart';
 import 'package:gulmate/screens/home/calendar/widgets/event_item_widget.dart';
+import 'package:gulmate/utils/datetime_utils.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -14,74 +15,18 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   CalendarController _calendarController;
-  Map<DateTime, List> _events;
-  List _selectedEvents;
+  DateTime _selectedDateTime;
 
   @override
   // ignore: must_call_super
   void initState() {
     _calendarController = CalendarController();
-    final _selectedDay = DateTime.now();
-    _events = {
-      _selectedDay.subtract(Duration(days: 30)): [
-        'Event A0',
-        'Event B0',
-        'Event C0'
-      ],
-      _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
-      _selectedDay.subtract(Duration(days: 20)): [
-        'Event A2',
-        'Event B2',
-        'Event C2',
-        'Event D2'
-      ],
-      _selectedDay.subtract(Duration(days: 16)): ['Event A3', 'Event B3'],
-      _selectedDay.subtract(Duration(days: 10)): [
-        'Event A4',
-        'Event B4',
-        'Event C4'
-      ],
-      _selectedDay.subtract(Duration(days: 4)): [
-        'Event A5',
-        'Event B5',
-        'Event C5'
-      ],
-      _selectedDay.subtract(Duration(days: 2)): ['Event A6', 'Event B6'],
-      _selectedDay: ['Event A7', 'Event B7', 'Event C7', 'Event D7'],
-      _selectedDay.add(Duration(days: 1)): [
-        'Event A8',
-        'Event B8',
-        'Event C8',
-        'Event D8'
-      ],
-      _selectedDay.add(Duration(days: 3)):
-          Set.from(['Event A9', 'Event A9', 'Event B9']).toList(),
-      _selectedDay.add(Duration(days: 7)): [
-        'Event A10',
-        'Event B10',
-        'Event C10'
-      ],
-      _selectedDay.add(Duration(days: 11)): ['Event A11', 'Event B11'],
-      _selectedDay.add(Duration(days: 17)): [
-        'Event A12',
-        'Event B12',
-        'Event C12',
-        'Event D12'
-      ],
-      _selectedDay.add(Duration(days: 22)): ['Event A13', 'Event B13'],
-      _selectedDay.add(Duration(days: 26)): [
-        'Event A14',
-        'Event B14',
-        'Event C14'
-      ],
-    };
-
-    _selectedEvents = _events[_selectedDay] ?? [];
+    _selectedDateTime = DateTime.now();
   }
 
   void _onDaySelected(DateTime date, List events) {
     setState(() {
-      _selectedEvents = events;
+      _selectedDateTime = date;
     });
   }
 
@@ -94,10 +39,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
           return Center(
             child: CircularProgressIndicator(),
           );
-        }
-        // CalendarLoaded
-        else {
+        } else if(state is CalendarError) {
+          return Center(
+            child: Text(state.errorMessage),
+          );
+        } else {
           final calendarLoaded = (state as CalendarLoaded);
+          final events = calendarLoaded.calendarList.fold<Map<DateTime, List<Calendar>>>({}, (prev, calendar) {
+
+              final addedList = prev.containsKey(calendar.dateTime)
+                  ? prev[calendar.dateTime]
+                  : <Calendar>[];
+              addedList.add(calendar);
+              prev[calendar.dateTime] = addedList;
+              return prev;
+          });
+          final selectedEvents = calendarLoaded.calendarList
+                .where((calendar) => isEqualToDateTimeYMD(calendar.dateTime, _selectedDateTime))
+              .toList();
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -113,7 +72,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       print("format: ${format.toString()}");
                     },
                     calendarController: _calendarController,
-                    events: _events,
+                    events: events,
                     headerVisible: true,
                     initialCalendarFormat: CalendarFormat.month,
                     formatAnimation: FormatAnimation.slide,
@@ -154,7 +113,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       _onDaySelected(date, events);
                     },
                   ),
-                  _buildEventList(calendarLoaded.calendarList),
+                  _buildEventList(selectedEvents),
                 ],
               ),
               Positioned(

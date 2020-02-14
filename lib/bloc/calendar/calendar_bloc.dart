@@ -36,6 +36,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       yield* _mapFetchCalendarToState(event);
     } else if(event is AddCalendar) {
       yield* _mapAddCalendarToState(event);
+    } else if(event is UpdateCalendar) {
+      yield* _mapUpdateCalendarToState(event);
+    } else if(event is DeleteCalendar) {
+      yield* _mapDeleteCalendarToState(event);
     }
   }
 
@@ -45,7 +49,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       final List<Calendar> calendarList = await _calendarRepository.getCalendarList(event.year, event.month);
       yield CalendarLoaded(event.year, event.month, calendarList);
     } catch(e) {
-      
+      yield CalendarError(e.toString());
     }
   }
 
@@ -74,6 +78,41 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     return super.close();
   }
 
+  Stream<CalendarState> _mapDeleteCalendarToState(DeleteCalendar event) async* {
+    if(state is CalendarLoaded) {
+      final updatedCalendarList = (state as CalendarLoaded).calendarList;
+      final currentYear = (state as CalendarLoaded).year;
+      final currentMonth = (state as CalendarLoaded).month;
+      try {
+        yield CalendarLoading();
+        final int deletedCalendarId = await _calendarRepository.deleteCalendar(event.calendar);
+        updatedCalendarList.removeWhere((calendar) => calendar.id == deletedCalendarId);
+        yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+      } catch(e) {
+        yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+      }
+    }
+  }
 
+  Stream<CalendarState> _mapUpdateCalendarToState(UpdateCalendar event) async* {
+    if(state is CalendarLoaded) {
+      final calendarList = (state as CalendarLoaded).calendarList;
+      final currentYear = (state as CalendarLoaded).year;
+      final currentMonth = (state as CalendarLoaded).month;
+      try {
+        yield CalendarLoading();
+        final updatedCalendar = await _calendarRepository.updateCalendar(calendarList.firstWhere((calendar) => calendar.id == event.calendar.id)
+            .copyWith(
+          title: event.title,
+          place: event.place,
+          dateTime: event.dateTime,
+        ), event.accountIds);
+        final updatedCalendarList = calendarList.map((calendar) => calendar.id == updatedCalendar.id ? updatedCalendar : calendar).toList();
+        yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+      } catch(e) {
+        yield CalendarLoaded(currentYear, currentMonth, calendarList);
+      }
+    }
+  }
 
 }

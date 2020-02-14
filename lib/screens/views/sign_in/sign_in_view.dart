@@ -15,51 +15,53 @@ class SignInView extends StatelessWidget {
         return BlocProvider<LoginBloc>(
           create: (context) => LoginBloc(
               authenticationBloc: BlocProvider.of<AuthenticationBloc>(context)),
-          child: Scaffold(
-            backgroundColor: Color(0xFFFF6D00),
-            body: ModalProgressHUD(
-              inAsyncCall: state is AuthenticationLoading,
-              progressIndicator: CircularProgressIndicator(
-                backgroundColor: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(
-                      height: deviceSize.height * 0.15,
-                    ),
-                    Center(
-                        child: Image(
-                            image: AssetImage(
-                                'images/logo_symbol/logoSymbolYy.png'))),
-                    SizedBox(height: 30.0),
-                    Center(
-                        child: Image(
-                            image: AssetImage(
-                                'images/logo_symbol/logoTypeface_white.png'))),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          "귤메이트",
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300),
-                        )),
-                    SizedBox(
-                      height: deviceSize.height * 0.15,
-                    ),
-                    SocialLoginButton(provider: OAuthProvider.GOOGLE),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    SocialLoginButton(provider: OAuthProvider.FACEBOOK),
-                  ],
+          child: BlocBuilder<LoginBloc, LoginState>(
+            builder: (context, loginState) => Scaffold(
+              backgroundColor: Color(0xFFFF6D00),
+              body: ModalProgressHUD(
+                inAsyncCall: state is AuthenticationLoading || loginState is LoginLoading,
+                progressIndicator: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      SizedBox(
+                        height: deviceSize.height * 0.15,
+                      ),
+                      Center(
+                          child: Image(
+                              image: AssetImage(
+                                  'images/logo_symbol/logoSymbolYy.png'))),
+                      SizedBox(height: 30.0),
+                      Center(
+                          child: Image(
+                              image: AssetImage(
+                                  'images/logo_symbol/logoTypeface_white.png'))),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            "귤메이트",
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300),
+                          )),
+                      SizedBox(
+                        height: deviceSize.height * 0.15,
+                      ),
+                      SocialLoginButton(provider: OAuthProvider.GOOGLE),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      SocialLoginButton(provider: OAuthProvider.FACEBOOK),
+                    ],
+                  ),
                 ),
               ),
             ),

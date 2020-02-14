@@ -4,10 +4,20 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/const/color.dart';
-import 'package:gulmate/model/account.dart';
+import 'package:gulmate/model/calendar.dart';
+import 'package:gulmate/screens/home/calendar/widgets/family_member_widget.dart';
 import 'package:gulmate/utils/format_datetime_utils.dart';
 
 class CalendarAddEditBottomSheet extends StatefulWidget {
+  final bool isEditing;
+  final Calendar calendar;
+
+
+  CalendarAddEditBottomSheet({
+    this.isEditing = false,
+    this.calendar
+  }) : assert(isEditing ? calendar != null : true);
+
   @override
   _CalendarAddEditBottomSheetState createState() =>
       _CalendarAddEditBottomSheetState();
@@ -16,19 +26,22 @@ class CalendarAddEditBottomSheet extends StatefulWidget {
 class _CalendarAddEditBottomSheetState
     extends State<CalendarAddEditBottomSheet> {
   final _formKey = GlobalKey<FormState>();
-
   String _title;
   DateTime _dateTime;
   String _place;
-  List<int> accountIds = [];
+  List<int> accountIds;
   TextEditingController _dateTimeController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _dateTime = DateTime.now();
+    _dateTime = widget.isEditing ? widget.calendar.dateTime : DateTime.now();
+    accountIds = widget.isEditing ? widget.calendar.accountList.map((account) => account.id).toList() : <int>[];
     _dateTimeController = TextEditingController();
+    if(widget.isEditing) {
+      _dateTimeController.text = formatFromDateTimeToUntilWeek(widget.calendar.dateTime);
+    }
   }
 
 //  List<Account> accountList;
@@ -61,7 +74,7 @@ class _CalendarAddEditBottomSheetState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "일정 등록하기",
+                  widget.isEditing ? "일정 수정하기" : "일정 등록하기",
                   style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w300,
@@ -87,6 +100,7 @@ class _CalendarAddEditBottomSheetState
                             return null;
                           },
                           onSaved: (value) => _title = value,
+                          initialValue: widget.isEditing ? widget.calendar.title : "",
                           decoration: InputDecoration(
                               hintText: "예) 가족 외식",
                               hintStyle: TextStyle(
@@ -147,6 +161,7 @@ class _CalendarAddEditBottomSheetState
                             }
                             return null;
                           },
+                          initialValue: widget.isEditing ? widget.calendar.place : "",
                           onSaved: (value) => _place = value,
                           decoration: InputDecoration(
                               hintText: "지도 검색 후 주소 자동입력",
@@ -191,7 +206,16 @@ class _CalendarAddEditBottomSheetState
                             children: (familyState as FamilyLoaded)
                                 .family
                                 .accountList
-                                .map((account) => _buildFamilyMember(account))
+                                .map((account) => FamilyMemberWidget(
+                                checked: accountIds.contains(account.id),
+                                account: account,
+                                onTap: () {
+                                  setState(() {
+                                    accountIds.contains(account.id)
+                                    ? accountIds.remove(account.id)
+                                    : accountIds.add(account.id);
+                                  });
+                                }))
                                 .toList(),
                           ),
                         ),
@@ -211,7 +235,7 @@ class _CalendarAddEditBottomSheetState
                           if(_formKey.currentState.validate() && _dateTimeController.text.isNotEmpty) {
                             _formKey.currentState.save();
                             BlocProvider.of<CalendarBloc>(context)
-                                .add(AddCalendar(_title, _place, _dateTime, accountIds));
+                                .add(widget.isEditing ? UpdateCalendar(_title, _place, _dateTime, accountIds, widget.calendar) : AddCalendar(_title, _place, _dateTime, accountIds));
                           }
 //                          Navigator.of(context).pop();
 //                          if(_formKey.currentState.validate()) {
@@ -244,49 +268,6 @@ class _CalendarAddEditBottomSheetState
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Padding _buildFamilyMember(Account account) {
-    final children = <Widget>[
-      SizedBox(
-          width: 60,
-          height: 60,
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(account.photoUrl),
-          )),
-    ];
-    if (accountIds.contains(account.id))
-      children.add(Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(153, 153, 153, 0.3),
-        ),
-        child: Icon(Icons.check),
-      ));
-    return Padding(
-      padding: const EdgeInsets.only(right: 16.0),
-      child: Column(
-        children: <Widget>[
-          InkWell(
-            onTap: () {
-              // TODO: 클릭시 멤버 추가
-              setState(() {
-                if (accountIds.contains(account.id)) {
-                  accountIds.remove(account.id);
-                } else {
-                  accountIds.add(account.id);
-                }
-              });
-            },
-            child: Stack(
-              children: children,
-            ),
-          ),
-          SizedBox(height: 10),
-          Text(account.name),
-        ],
       ),
     );
   }

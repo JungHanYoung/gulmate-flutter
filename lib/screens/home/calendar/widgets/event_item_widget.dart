@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/model/calendar.dart';
+import 'package:gulmate/screens/home/calendar/calendar_detail_bottom_sheet.dart';
 import 'package:gulmate/utils/format_datetime_utils.dart';
 
 class EventItemWidget extends StatelessWidget {
@@ -13,7 +14,8 @@ class EventItemWidget extends StatelessWidget {
     return InkWell(
         onTap: () {
           // TODO: 특정 날짜의 이벤트 터치시 해당 날짜 이벤트 상세페이지 팝업
-
+          Scaffold.of(context)
+              .showBottomSheet((context) => CalendarDetailBottomSheet(calendar));
         },
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
