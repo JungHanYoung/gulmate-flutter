@@ -96,7 +96,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     ),
                     builders: CalendarBuilders(
                         todayDayBuilder: (context, date, _) =>
-                            Center(child: Text("${date.day}")),
+                            Container(
+                              margin: const EdgeInsets.all(10.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: PRIMARY_COLOR),
+                                shape: BoxShape.circle,
+                              ),
+                                child: Center(child: Text("${date.day}"))
+                            ),
                         markersBuilder: (context, date, events, holidays) {
                           final children = <Widget>[];
 

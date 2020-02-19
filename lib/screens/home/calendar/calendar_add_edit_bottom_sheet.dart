@@ -71,199 +71,191 @@ class _CalendarAddEditBottomSheetState
             ),
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Text(
-                  widget.isEditing ? "일정 수정하기" : "일정 등록하기",
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w300,
-                      color: Color.fromRGBO(34, 34, 34, 1)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                Expanded(
+                    child: ListView(
                       children: <Widget>[
                         Text(
-                          "일정 제목",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        TextFormField(
-                          validator: (text) {
-                            if (text.isEmpty) {
-                              return "No title is empty";
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => _title = value,
-                          initialValue: widget.isEditing ? widget.calendar.title : "",
-                          decoration: InputDecoration(
-                              hintText: "예) 가족 외식",
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(204, 204, 204, 1)),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 13.5),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: PRIMARY_COLOR))),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "날짜",
+                          widget.isEditing ? "일정 수정하기" : "일정 등록하기",
                           style: TextStyle(
-                            fontSize: 14.0,
-                          ),
+                              fontSize: 24,
+                              fontWeight: FontWeight.w300,
+                              color: Color.fromRGBO(34, 34, 34, 1)),
                         ),
-                        TextField(
-                          controller: _dateTimeController,
-                          showCursor: false,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                              hintText: "탭하여 날짜를 선택하여 주세요",
-                              hintStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w300,
-                                  color: Color.fromRGBO(204, 204, 204, 1)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: DEFAULT_BACKGROUND_COLOR))),
-                          onTap: () {
-                            DatePicker.showDateTimePicker(
-                              context,
-                              minTime: DateTime.now(),
-                              onConfirm: (dateTime) {
-                                setState(() {
-                                  _dateTime = dateTime;
-                                });
-                                _dateTimeController.text =
-                                    formatFromDateTimeToUntilWeek(dateTime);
-                              },
-                              locale: LocaleType.ko,
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text("장소", style: TextStyle(fontSize: 14)),
-                        TextFormField(
-                          validator: (text) {
-                            if (text.isEmpty) {
-                              return "No place is empty";
-                            }
-                            return null;
-                          },
-                          initialValue: widget.isEditing ? widget.calendar.place : "",
-                          onSaved: (value) => _place = value,
-                          decoration: InputDecoration(
-                              hintText: "지도 검색 후 주소 자동입력",
-                              hintStyle: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w300,
-                                  color: Color.fromRGBO(204, 204, 204, 1)),
-                              suffix: InkWell(
-                                onTap: () {},
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 4, horizontal: 12),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color:
-                                              Color.fromRGBO(221, 221, 221, 1)),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    child: Text(
-                                      "지도 검색",
-                                      style: TextStyle(
-                                          color: PRIMARY_COLOR,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold),
-                                    )),
+                        SizedBox(height: 30.0),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                "일정 제목",
+                                style: TextStyle(fontSize: 14),
                               ),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: DEFAULT_BACKGROUND_COLOR))),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        Text("함께하는 사람", style: TextStyle(fontSize: 14)),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: (familyState as FamilyLoaded)
-                                .family
-                                .accountList
-                                .map((account) => FamilyMemberWidget(
-                                checked: accountIds.contains(account.id),
-                                account: account,
+                              TextFormField(
+                                validator: (text) {
+                                  if (text.isEmpty) {
+                                    return "No title is empty";
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) => _title = value,
+                                initialValue: widget.isEditing ? widget.calendar.title : "",
+                                decoration: InputDecoration(
+                                    hintText: "예) 가족 외식",
+                                    hintStyle: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 16,
+                                        color: Color.fromRGBO(204, 204, 204, 1)),
+                                    contentPadding:
+                                    const EdgeInsets.symmetric(vertical: 13.5),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide:
+                                        BorderSide(color: PRIMARY_COLOR))),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "날짜",
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              TextField(
+                                controller: _dateTimeController,
+                                showCursor: false,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                    hintText: "탭하여 날짜를 선택하여 주세요",
+                                    hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w300,
+                                        color: Color.fromRGBO(204, 204, 204, 1)),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: DEFAULT_BACKGROUND_COLOR))),
                                 onTap: () {
-                                  setState(() {
-                                    accountIds.contains(account.id)
-                                    ? accountIds.remove(account.id)
-                                    : accountIds.add(account.id);
-                                  });
-                                }))
-                                .toList(),
+                                  DatePicker.showDateTimePicker(
+                                    context,
+                                    minTime: DateTime.now(),
+                                    onConfirm: (dateTime) {
+                                      setState(() {
+                                        _dateTime = dateTime;
+                                      });
+                                      _dateTimeController.text =
+                                          formatFromDateTimeToUntilWeek(dateTime);
+                                    },
+                                    locale: LocaleType.ko,
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text("장소", style: TextStyle(fontSize: 14)),
+                              TextFormField(
+                                validator: (text) {
+                                  if (text.isEmpty) {
+                                    return "No place is empty";
+                                  }
+                                  return null;
+                                },
+                                initialValue: widget.isEditing ? widget.calendar.place : "",
+                                onSaved: (value) => _place = value,
+                                decoration: InputDecoration(
+                                    hintText: "지도 검색 후 주소 자동입력",
+                                    hintStyle: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w300,
+                                        color: Color.fromRGBO(204, 204, 204, 1)),
+                                    suffix: InkWell(
+                                      onTap: () {},
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 4, horizontal: 12),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            border: Border.all(
+                                                color:
+                                                Color.fromRGBO(221, 221, 221, 1)),
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          child: Text(
+                                            "지도 검색",
+                                            style: TextStyle(
+                                                color: PRIMARY_COLOR,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
+                                          )),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: DEFAULT_BACKGROUND_COLOR))),
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+                              Text("함께하는 사람", style: TextStyle(fontSize: 14)),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: (familyState as FamilyLoaded)
+                                      .family
+                                      .accountList
+                                      .map((account) => FamilyMemberWidget(
+                                      checked: accountIds.contains(account.id),
+                                      account: account,
+                                      onTap: () {
+                                        setState(() {
+                                          accountIds.contains(account.id)
+                                              ? accountIds.remove(account.id)
+                                              : accountIds.add(account.id);
+                                        });
+                                      }))
+                                      .toList(),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                  ),
                 ),
-                Expanded(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: RaisedButton(
-                        onPressed: () {
-                          if(_formKey.currentState.validate() && _dateTimeController.text.isNotEmpty) {
-                            _formKey.currentState.save();
-                            BlocProvider.of<CalendarBloc>(context)
-                                .add(widget.isEditing ? UpdateCalendar(_title, _place, _dateTime, accountIds, widget.calendar) : AddCalendar(_title, _place, _dateTime, accountIds));
-                          }
-//                          Navigator.of(context).pop();
-//                          if(_formKey.currentState.validate()) {
-//                            _formKey.currentState.save();
-//                            BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(_title, _place, _isCheckedDeadline ? _deadline : null));
-////                              Navigator.of(context).pop();
-//////                            Navigator.of(context).pop(Purchase(title: _title, place: _place, deadline: _isCheckedDeadline ? _deadline : null));
-//                          }
-                        },
-                        child: BlocProvider.of<CalendarBloc>(context).state is CalendarLoading
-                        ? SizedBox(
-                          width: 16,
-                          height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2.0, backgroundColor: Colors.white, ))
-                        : Text(
-                          "등록 완료",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        color: PRIMARY_COLOR,
-                        elevation: 0.0,
-                      ),
-                    ),
-                  ],
-                )),
+
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  onPressed: () {
+                    if(_formKey.currentState.validate() && _dateTimeController.text.isNotEmpty) {
+                      _formKey.currentState.save();
+                      BlocProvider.of<CalendarBloc>(context)
+                          .add(widget.isEditing ? UpdateCalendar(_title, _place, _dateTime, accountIds, widget.calendar) : AddCalendar(_title, _place, _dateTime, accountIds));
+                    }
+                  },
+                  child: BlocProvider.of<CalendarBloc>(context).state is CalendarLoading
+                  ? SizedBox(
+                    width: 16,
+                    height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2.0, backgroundColor: Colors.white, ))
+                  : Text(
+                    "등록 완료",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  color: PRIMARY_COLOR,
+                  elevation: 0.0,
+                ),
               ],
             ),
           ),

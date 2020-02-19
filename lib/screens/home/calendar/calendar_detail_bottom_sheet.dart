@@ -40,92 +40,103 @@ class CalendarDetailBottomSheet extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+              boxShadow: [
+                BoxShadow(
+                    color: Color.fromRGBO(249, 249, 249, 1),
+                    blurRadius: 10,
+                    spreadRadius: 10,
+                    offset: Offset(1, 1)),
+              ],
               color: Colors.white,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: PRIMARY_COLOR, width: 2))
-                      ),
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(calendar.title, style: TextStyle(fontSize: 24,),),
-                    ),
-                    _buildButton("편집", () {
+                Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  border: Border(bottom: BorderSide(color: PRIMARY_COLOR, width: 2))
+                              ),
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(calendar.title, style: TextStyle(fontSize: 24,),),
+                            ),
+                            _buildButton("편집", () {
 //                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalendarDetailBottomSheet(calendar)));
-                      Scaffold.of(context).showBottomSheet((context) => CalendarAddEditBottomSheet(isEditing: true, calendar: calendar,));
+                              Scaffold.of(context).showBottomSheet((context) => CalendarAddEditBottomSheet(isEditing: true, calendar: calendar,));
 //                      Navigator.of(context).pop();
-                    }),
-                  ],
+                            }),
+                          ],
+                        ),
+                        SizedBox(height: 30),
+                        Text("시간", style: _labelStyle,),
+                        SizedBox(height: 10),
+                        Text(formatFromDateTimeToUntilWeek(calendar.dateTime), style: _valueStyle,),
+                        SizedBox(height: 30),
+                        Text("장소", style: _labelStyle,),
+                        SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(calendar.place, style: _valueStyle,),
+                            _buildButton("지도 보기", () {})
+                          ],
+                        ),
+                        SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("함께하는 사람", style: _labelStyle,),
+                            Text("총 ${calendar.accountList.length}명", style: TextStyle(color: PRIMARY_COLOR, fontSize: 14),)
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        SingleChildScrollView(
+                          child: Row(
+                            children: calendar.accountList.map((account) =>
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 16.0),
+                                  child: FamilyMemberWidget(account: account, isMe: account.id == (auth as AuthenticationAuthenticatedWithFamily).currentAccount.id,),
+                                ),
+                            ).toList(),
+                          ),
+                        ),
+                      ],
+                    )
                 ),
-                SizedBox(height: 30),
-                Text("시간", style: _labelStyle,),
-                SizedBox(height: 10),
-                Text(formatFromDateTimeToUntilWeek(calendar.dateTime), style: _valueStyle,),
-                SizedBox(height: 30),
-                Text("장소", style: _labelStyle,),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(calendar.place, style: _valueStyle,),
-                    _buildButton("지도 보기", () {})
-                  ],
-                ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("함께하는 사람", style: _labelStyle,),
-                    Text("총 ${calendar.accountList.length}명", style: TextStyle(color: PRIMARY_COLOR, fontSize: 14),)
-                  ],
-                ),
-                SizedBox(height: 20),
-                SingleChildScrollView(
-                  child: Row(
-                    children: calendar.accountList.map((account) =>
-                        FamilyMemberWidget(account: account, isMe: account.id == (auth as AuthenticationAuthenticatedWithFamily).currentAccount.id,),
-                    ).toList(),
+                OutlineButton(
+                  borderSide: BorderSide(color: DANGER_COLOR),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)
                   ),
-                ),
-                Expanded(child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    OutlineButton(
-                      borderSide: BorderSide(color: DANGER_COLOR),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)
-                      ),
-                      onPressed: () async {
-                        final result = await showCupertinoDialog<bool>(context: context, builder: (context) =>
-                            CupertinoAlertDialog(
-                              title: Text("일정 삭제"),
-                              content: Text("일정을 삭제하시겠습니까?"),
-                              actions: <Widget>[
-                                FlatButton(onPressed: () {
-                                  Navigator.of(context).pop(true);
-                                }, child: Text("삭제", style: TextStyle(color: DANGER_COLOR),)),
-                                FlatButton(onPressed: () {
-                                  Navigator.of(context).pop(false);
-                                }, child: Text("취소")),
-                              ],
-                            ));
-                        if(result) {
-                          BlocProvider.of<CalendarBloc>(context).add(DeleteCalendar(calendar));
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      child: Text("일정 삭제하기", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: DANGER_COLOR),),)
-                  ],
-                ))
+                  onPressed: () async {
+                    final result = await showCupertinoDialog<bool>(context: context, builder: (context) =>
+                        CupertinoAlertDialog(
+                          title: Text("일정 삭제"),
+                          content: Text("일정을 삭제하시겠습니까?"),
+                          actions: <Widget>[
+                            FlatButton(onPressed: () {
+                              Navigator.of(context).pop(true);
+                            }, child: Text("삭제", style: TextStyle(color: DANGER_COLOR),)),
+                            FlatButton(onPressed: () {
+                              Navigator.of(context).pop(false);
+                            }, child: Text("취소")),
+                          ],
+                        ));
+                    if(result) {
+                      BlocProvider.of<CalendarBloc>(context).add(DeleteCalendar(calendar));
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  child: Text("일정 삭제하기", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: DANGER_COLOR),),)
               ],
             ),
           ),
