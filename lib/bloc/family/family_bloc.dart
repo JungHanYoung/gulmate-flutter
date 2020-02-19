@@ -43,6 +43,8 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       yield* _mapLoadFamilyToState(event);
     } else if (event is CreateFamily) {
       yield* _mapCreateFamilyToState(event);
+    } else if (event is JoinFamily) {
+      yield* _mapJoinFamilyToState(event);
     }
   }
 
@@ -73,7 +75,18 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
       checkInviteViewBloc
           .add(UpdateCheckInviteView(CheckInviteViewState.welcome));
       yield FamilyLoaded(family);
-    } catch (_) {
+    } catch (e) {
+      yield FamilyNotLoaded();
+    }
+  }
+
+  Stream<FamilyState> _mapJoinFamilyToState(JoinFamily event) async* {
+    try {
+      yield FamilyLoading();
+      final Family family = await _familyRepository.joinFamily(event.inviteKey);
+      authenticationBloc.add(WithFamily(family));
+      yield FamilyLoaded(family);
+    } catch(e) {
       yield FamilyNotLoaded();
     }
   }

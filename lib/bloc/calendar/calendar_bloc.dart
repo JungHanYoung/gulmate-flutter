@@ -40,6 +40,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       yield* _mapUpdateCalendarToState(event);
     } else if(event is DeleteCalendar) {
       yield* _mapDeleteCalendarToState(event);
+    } else if(event is UpdateCalendarMonth) {
+      yield* _mapUpdateCalendarMonthToState(event);
     }
   }
 
@@ -111,6 +113,17 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
       } catch(e) {
         yield CalendarLoaded(currentYear, currentMonth, calendarList);
+      }
+    }
+  }
+
+  Stream<CalendarState> _mapUpdateCalendarMonthToState(UpdateCalendarMonth event) async* {
+    if(state is CalendarLoaded) {
+      try {
+        final List<Calendar> calendarList = await _calendarRepository.getCalendarList(event.year, event.month);
+        yield CalendarLoaded(event.year, event.month, calendarList);
+      } catch(e) {
+        yield CalendarError(e.toString());
       }
     }
   }

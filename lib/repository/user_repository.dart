@@ -31,7 +31,7 @@ class UserRepository {
 
   Future<Account> verifyToken() async {
     if(_token != null) {
-      var response = await Dio().get("http://localhost:8080/api/v1/me", options: Options(
+      var response = await dio.get("/api/v1/me", options: Options(
           headers: {
             "Authorization": "Bearer $_token",
           }
@@ -70,7 +70,7 @@ class UserRepository {
   Future<String> onGoogleSignIn() async {
     GoogleSignInAccount account = await _googleSignIn.signIn();
     var googleSignInAuthentication = await account.authentication;
-    var response = await Dio().post<String>("http://localhost:8080/api/v1/authenticate", data: {
+    var response = await dio.post<String>("/api/v1/authenticate", data: {
       "accessToken": googleSignInAuthentication.accessToken,
       "provider": "GOOGLE",
     });
@@ -88,7 +88,7 @@ class UserRepository {
       case FacebookLoginStatus.loggedIn:
         final token = result.accessToken.token;
         print("Facebook Access Token : " + token);
-        var response = await Dio().post<String>("http://localhost:8080/api/v1/authenticate", data: {
+        var response = await dio.post<String>("/api/v1/authenticate", data: {
           "accessToken": token,
           "provider": "FACEBOOK",
         });

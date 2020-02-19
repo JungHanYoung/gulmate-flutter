@@ -17,10 +17,24 @@ class CreateFamily extends FamilyEvent {
   const CreateFamily(this.familyName, this.familyType);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [familyName, familyType];
 
   @override
   String toString() {
     return 'createFamily{familyName: $familyName, familyType: $familyType}';
+  }
+}
+
+class JoinFamily extends FamilyEvent {
+  final String inviteKey;
+
+  const JoinFamily(this.inviteKey);
+
+  @override
+  List<Object> get props => [inviteKey];
+
+  @override
+  String toString() {
+    return 'JoinFamily{inviteKey: $inviteKey}';
   }
 }

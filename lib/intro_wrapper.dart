@@ -8,11 +8,6 @@ import 'package:gulmate/screens/splash_screen.dart';
 import 'bloc/intro/intro.dart';
 
 class IntroWrapper extends StatelessWidget {
-  final Widget child;
-
-  IntroWrapper({
-    @required this.child
-  }) : assert(child != null);
 
   @override
   Widget build(BuildContext context) {

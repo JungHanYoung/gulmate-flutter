@@ -14,6 +14,7 @@ class JoinFamilyLayout extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       body: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top: size.height * 0.15),

@@ -60,6 +60,21 @@ class UpdateCalendar extends CalendarEvent {
   }
 }
 
+class UpdateCalendarMonth extends CalendarEvent {
+  final int year;
+  final int month;
+
+  const UpdateCalendarMonth(this.year, this.month);
+
+  @override
+  List<Object> get props => [year, month];
+
+  @override
+  String toString() {
+    return 'UpdateCalendarMonth{year: $year, month: $month}';
+  }
+}
+
 class DeleteCalendar extends CalendarEvent {
   final Calendar calendar;
 
