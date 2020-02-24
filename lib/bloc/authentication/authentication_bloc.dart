@@ -30,19 +30,31 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         yield AuthenticationUnauthenticated();
       }
     } else if(event is ReadySignIn) {
-      yield AuthenticationUnauthenticated();
+      if(_userRepository.token != null) {
+        add(LoggedIn(token: _userRepository.token));
+      } else {
+        yield AuthenticationUnauthenticated();
+      }
     }
     else if(event is LoggedIn) {
-      yield AuthenticationLoading();
-      Account account = await _userRepository.verifyToken();
-      await _userRepository.persistToken(event.token);
-      yield AuthenticationAuthenticatedWithoutFamily(account: account);
+      yield* _mapLoggedInToState(event);
     } else if(event is LoggedOut) {
       yield AuthenticationLoading();
       await _userRepository.deleteToken();
       yield AuthenticationUnauthenticated();
     } else if(event is WithFamily) {
       yield AuthenticationAuthenticatedWithFamily(account: (state as AuthenticationAuthenticatedWithoutFamily).currentAccount, family: event.family);
+    }
+  }
+
+  Stream<AuthenticationState> _mapLoggedInToState(LoggedIn event) async* {
+    yield AuthenticationLoading();
+    try {
+      Account account = await _userRepository.verifyToken();
+      await _userRepository.persistToken(event.token);
+      yield AuthenticationAuthenticatedWithoutFamily(account: account);
+    } catch(e) {
+      yield AuthenticationUnauthenticated();
     }
   }
 

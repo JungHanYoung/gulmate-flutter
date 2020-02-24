@@ -10,10 +10,9 @@ import 'package:gulmate/bloc/view/check_invite/check_invite_view_bloc.dart';
 import 'package:gulmate/bloc/view/check_invite/check_invite_view_event.dart';
 import 'package:gulmate/model/family.dart';
 import 'package:gulmate/repository/family_repository.dart';
-import 'package:gulmate/repository/user_repository.dart';
+
 
 class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
-  UserRepository _userRepository;
   FamilyRepository _familyRepository;
   final AuthenticationBloc authenticationBloc;
   final CheckInviteViewBloc checkInviteViewBloc;
@@ -24,7 +23,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     @required this.checkInviteViewBloc,
   })  : assert(authenticationBloc != null),
         assert(checkInviteViewBloc != null) {
-    _userRepository = GetIt.instance.get<UserRepository>();
     _familyRepository = GetIt.instance.get<FamilyRepository>();
     authSubscription = authenticationBloc.listen((state) {
       if (state is AuthenticationAuthenticatedWithoutFamily) {
@@ -52,7 +50,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     try {
       yield FamilyLoading();
       final Family family =
-          await _familyRepository.getMyFamily(_userRepository.token);
+          await _familyRepository.getMyFamily();
       authenticationBloc.add(WithFamily(family));
       yield FamilyLoaded(family);
     } catch (_) {
@@ -70,7 +68,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
     try {
       yield FamilyLoading();
       final Family family = await _familyRepository.createFamily(
-          event.familyName, event.familyType, _userRepository.token);
+          event.familyName, event.familyType);
 //      authenticationBloc.add(WithFamily(family));
       checkInviteViewBloc
           .add(UpdateCheckInviteView(CheckInviteViewState.welcome));

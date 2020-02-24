@@ -6,11 +6,13 @@ import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/utils/format_datetime_utils.dart';
 
+
 class PurchaseAddEditBottomSheet extends StatefulWidget {
   @override
   _PurchaseAddEditBottomSheetState createState() =>
       _PurchaseAddEditBottomSheetState();
 }
+
 
 class _PurchaseAddEditBottomSheetState
     extends State<PurchaseAddEditBottomSheet> {
@@ -221,12 +223,5 @@ class _PurchaseAddEditBottomSheetState
         ),
       ),
     );
-//      FractionallySizedBox(
-//      heightFactor: 0.8,
-//      child: DraggableScrollableSheet(
-//          builder: (context, scrollController) {
-//        return ;
-//      }),
-//    );
   }
 }

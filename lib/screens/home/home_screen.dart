@@ -7,6 +7,7 @@ import 'package:gulmate/bloc/tab/app_tab.dart';
 import 'package:gulmate/repository/calendar_repository.dart';
 import 'package:gulmate/repository/purchase_repository.dart';
 import 'package:gulmate/screens/home/calendar/calendar_screen.dart';
+import 'package:gulmate/screens/home/chat/chat_screen.dart';
 import 'package:gulmate/screens/home/purchase/purchase_screen.dart';
 import 'package:gulmate/screens/home/widgets/bottom_tab_selector.dart';
 import 'package:gulmate/widgets/placeholder_widget.dart';
@@ -54,7 +55,7 @@ class HomeScreen extends StatelessWidget {
       case AppTab.purchase:
         return PurchaseScreen();
       case AppTab.chatting:
-        return PlaceholderWidget(Colors.greenAccent);
+        return ChatScreen();
       case AppTab.settings:
         return PlaceholderWidget(Colors.cyan);
       default:
