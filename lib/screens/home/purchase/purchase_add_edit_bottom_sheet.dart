@@ -38,18 +38,21 @@ class _PurchaseAddEditBottomSheetState
           Navigator.of(context).pop();
         }
       },
-      child: FractionallySizedBox(
-        heightFactor: 0.8,
-        child: Container(
+      child: DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.5,
+          maxChildSize: 0.8,
+          expand: false,
+          builder: (context, scrollController) => Container(
           decoration: const BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-            boxShadow: [
-              BoxShadow(
-                  color: Color.fromRGBO(249, 249, 249, 1),
-                  blurRadius: 10,
-                  spreadRadius: 10,
-                  offset: Offset(1, 1)),
-            ],
+//            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+//            boxShadow: [
+//              BoxShadow(
+//                  color: Color.fromRGBO(249, 249, 249, 1),
+//                  blurRadius: 10,
+//                  spreadRadius: 10,
+//                  offset: Offset(1, 1)),
+//            ],
             color: Colors.white,
           ),
           padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
@@ -60,6 +63,7 @@ class _PurchaseAddEditBottomSheetState
                   child: Form(
                     key: _formKey,
                     child: ListView(
+                      controller: scrollController,
                       children: <Widget>[
                         Text(
                           "장 볼 것 등록하기",

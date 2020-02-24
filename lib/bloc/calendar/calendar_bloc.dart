@@ -17,7 +17,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     @required this.appTabBloc,
 }) {
     _appTabSubscription = appTabBloc.listen((state) {
-      if(state == AppTab.calendar) {
+      if(state == AppTab.calendar && !(this.state is CalendarLoaded)) {
         final now = DateTime.now();
         add(FetchCalendar(now.year, now.month));
       }

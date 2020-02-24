@@ -55,18 +55,21 @@ class _CalendarAddEditBottomSheetState
         }
       },
       child: BlocBuilder<FamilyBloc, FamilyState>(
-        builder: (context, familyState) => FractionallySizedBox(
-          heightFactor: 0.9,
-          child: Container(
+        builder: (context, familyState) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.6,
+          maxChildSize: 0.8,
+          minChildSize: 0.5,
+          builder: (context, scrollController) => Container(
             decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(249, 249, 249, 1),
-                    blurRadius: 10,
-                    spreadRadius: 10,
-                    offset: Offset(1, 1)),
-              ],
+//              borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+//              boxShadow: [
+//                BoxShadow(
+//                    color: Color.fromRGBO(249, 249, 249, 1),
+//                    blurRadius: 10,
+//                    spreadRadius: 10,
+//                    offset: Offset(1, 1)),
+//              ],
               color: Colors.white,
             ),
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
@@ -76,6 +79,7 @@ class _CalendarAddEditBottomSheetState
               children: <Widget>[
                 Expanded(
                     child: ListView(
+                      controller: scrollController,
                       children: <Widget>[
                         Text(
                           widget.isEditing ? "일정 수정하기" : "일정 등록하기",
@@ -260,7 +264,14 @@ class _CalendarAddEditBottomSheetState
             ),
           ),
         ),
-      ),
+        ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _dateTimeController.dispose();
+    super.dispose();
   }
 }
