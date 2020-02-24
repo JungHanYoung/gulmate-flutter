@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/bloc/tab/app_tab.dart';
@@ -31,6 +32,12 @@ class HomeScreen extends StatelessWidget {
         BlocProvider<CalendarBloc>(
           create: (context) => CalendarBloc(calendarRepository,
               appTabBloc: BlocProvider.of<AppTabBloc>(context)),
+        ),
+        BlocProvider<ChatBloc>(
+          create: (context) => ChatBloc(
+              appTabBloc: BlocProvider.of<AppTabBloc>(context),
+              authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
+          ),
         ),
       ],
       child: BlocBuilder<AppTabBloc, AppTab>(

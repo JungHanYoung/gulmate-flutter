@@ -1,5 +1,6 @@
 export 'authentication/authentication.dart';
 export 'calendar/calendar.dart';
+export 'chat/chat.dart';
 export 'family/family.dart';
 export 'intro/intro.dart';
 export 'login/login.dart';
