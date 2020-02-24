@@ -1,5 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gulmate/bloc/intro/intro_event.dart';
+import 'package:gulmate/repository/repository.dart';
+
+import '../blocs.dart';
 
 enum IntroState {
   splash,
@@ -8,6 +12,15 @@ enum IntroState {
 }
 
 class IntroBloc extends Bloc<IntroEvent, IntroState> {
+  final AuthenticationBloc authenticationBloc;
+  UserRepository _userRepository;
+
+
+  IntroBloc(this.authenticationBloc) {
+    assert(authenticationBloc != null);
+    _userRepository = GetIt.instance.get<UserRepository>();
+  }
+
   @override
   // TODO: implement initialState
   IntroState get initialState => IntroState.splash;
@@ -16,8 +29,11 @@ class IntroBloc extends Bloc<IntroEvent, IntroState> {
   Stream<IntroState> mapEventToState(IntroEvent event) async* {
     // TODO: implement mapEventToState
     if(event is IntroUpdateEvent) {
-      yield event.intro;
+      if(_userRepository.token != null) {
+        authenticationBloc.add(LoggedIn(token: _userRepository.token));
+      } else {
+        yield event.intro;
+      }
     }
   }
-
 }

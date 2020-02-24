@@ -1,9 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:get_it/get_it.dart';
 import 'bloc/blocs.dart';
+import 'repository/repository.dart';
 
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   final Widget child;
 
   AuthWrapper({
@@ -11,7 +13,21 @@ class AuthWrapper extends StatelessWidget {
   }) : assert(child != null);
 
   @override
+  _AuthWrapperState createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    GetIt.instance.get<UserRepository>().getToken();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return MultiBlocProvider(providers: [
       BlocProvider<AuthenticationBloc>(
           create: (context) =>
@@ -29,9 +45,10 @@ class AuthWrapper extends StatelessWidget {
         ),
       ),
       BlocProvider<IntroBloc>(
-        create: (context) => IntroBloc(),
+        create: (context) => IntroBloc(
+          BlocProvider.of<AuthenticationBloc>(context)
+        ),
       )
-    ], child: child,);
+    ], child: widget.child,);
   }
-
 }

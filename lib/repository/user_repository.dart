@@ -11,7 +11,17 @@ class UserRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: const <String>["email"]);
   final FacebookLogin _facebookSignIn = FacebookLogin();
 
-  UserRepository(this.dio);
+  UserRepository(this.dio)
+      : assert(dio != null) {
+    dio.interceptors.add(InterceptorsWrapper(
+      onError: (error) async {
+        final statusCode = error.response.statusCode;
+        if(statusCode == 403) {
+
+        }
+      }
+    ));
+  }
 
   String get token => _token;
 
@@ -78,6 +88,9 @@ class UserRepository {
       throw Exception('Google Sign In Error');
     }
     _token = response.data;
+    SharedPreferences.getInstance().then((pref) {
+      pref.setString("token", _token);
+    });
     return response.data;
   }
 
@@ -96,7 +109,10 @@ class UserRepository {
           throw Exception('Error: verify facebook access token on Server');
         }
         _token = response.data;
-        return response.data;
+        SharedPreferences.getInstance().then((pref) {
+          pref.setString("token", _token);
+        });
+        return _token;
         break;
       case FacebookLoginStatus.cancelledByUser:
         throw Exception("canceled facebook login");

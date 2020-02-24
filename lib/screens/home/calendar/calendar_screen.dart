@@ -113,13 +113,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 child: CustomPaint(
                                   painter: EventNoti(),
                                 ),
-                                bottom: 8,
+                                bottom: 6,
                                 right: size.width / 7 / 2 + 4,
                               ),
                             );
                           }
                           return children;
                         },
+                      selectedDayBuilder: (context, date, events) =>
+                          Container(
+                            margin: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: PRIMARY_COLOR,
+                            ),
+                            child: Center(
+                              child: Text("${date.day}", style: TextStyle(color: Colors.white),),
+                            ),
+                          )
                     ),
                     onDaySelected: (date, events) {
                       _onDaySelected(date, events);

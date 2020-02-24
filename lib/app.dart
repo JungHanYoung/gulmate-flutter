@@ -14,7 +14,6 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: '귤메이트',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
         accentColor: Color(0xFFFF6D00),
         fontFamily: "Spoqa",
         textSelectionColor: PRIMARY_COLOR,

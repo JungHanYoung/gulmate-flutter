@@ -2,33 +2,21 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gulmate/model/purchase.dart';
 import 'package:gulmate/repository/family_repository.dart';
-import 'package:gulmate/repository/user_repository.dart';
+
 
 class PurchaseRepository {
   final Dio dio;
-  UserRepository userRepository;
   FamilyRepository familyRepository;
 
   PurchaseRepository(this.dio) : assert(dio != null) {
-    userRepository = GetIt.instance.get<UserRepository>();
     familyRepository = GetIt.instance.get<FamilyRepository>();
   }
 
   Future<List<Purchase>> getPurchaseList() async {
     final family = familyRepository.family;
-    final response = await dio.get("/api/v1/family/${family.id}/purchase",
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${userRepository.token}',
-          },
-        ));
+    final response = await dio.get("/api/v1/family/${family.id}/purchase");
     final rawData = response.data;
-//    final content = rawData['content'];
-//    final pageInfo = rawData['pageable'];
-//    print("content: " + content);
-//    print("pageInfo: " + pageInfo);
     if (response.statusCode == 200 && rawData is List) {
-//      print('pageSize: ${pageInfo['pageSize']}');
       return rawData.map((json) => Purchase.fromJson(json)).toList();
     }
     throw Exception("Error: Get purchase list");
@@ -42,12 +30,7 @@ class PurchaseRepository {
           'title': title,
           'place': place,
           'deadline': deadline != null ? deadline.toIso8601String() : null,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${userRepository.token}',
-          },
-        ));
+        });
     final saved = response.data;
     if (response.statusCode == 200 && saved != null) {
       return Purchase.fromJson(saved);
@@ -58,12 +41,7 @@ class PurchaseRepository {
   Future<void> deletePurchase(Purchase purchase) async {
     final familyId = familyRepository.family.id;
     final purchaseId = purchase.id;
-    final response = await dio.delete("/api/v1/$familyId/purchase/$purchaseId",
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${userRepository.token}',
-          },
-        ));
+    final response = await dio.delete("/api/v1/$familyId/purchase/$purchaseId");
     if (response.statusCode == 200) {
       return;
     }
@@ -81,12 +59,7 @@ class PurchaseRepository {
           'deadline': purchase.deadline != null
               ? purchase.deadline.toIso8601String()
               : null,
-        },
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer ${userRepository.token}',
-          },
-        ));
+        });
     if (response.statusCode == 200 && response.data is int) {
       return response.data;
     }
@@ -100,12 +73,7 @@ class PurchaseRepository {
         await dio.put("/api/v1/$familyId/purchase/$purchaseId/complete",
             data: {
               'complete': purchase.complete,
-            },
-            options: Options(
-              headers: {
-                'Authorization': 'Bearer ${userRepository.token}',
-              },
-            ));
+            });
     if (response.statusCode == 200 && response.data != null) {
       final json = response.data;
       return purchase.copyWith(
