@@ -13,17 +13,16 @@ class CalendarLoading extends CalendarState {}
 
 class CalendarLoaded extends CalendarState {
   final int year;
-  final int month;
   final List<Calendar> calendarList;
 
-  const CalendarLoaded(this.year, this.month, this.calendarList);
+  const CalendarLoaded(this.year, this.calendarList);
 
   @override
-  List<Object> get props => [year, month, calendarList];
+  List<Object> get props => [year, calendarList];
 
   @override
   String toString() {
-    return 'CalendarLoaded{year: $year, month: $month, calendarList: $calendarList}';
+    return 'CalendarLoaded{year: $year, calendarList: $calendarList}';
   }
 
 }

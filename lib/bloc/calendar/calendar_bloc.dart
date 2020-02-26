@@ -19,7 +19,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     _appTabSubscription = appTabBloc.listen((state) {
       if(state == AppTab.calendar && !(this.state is CalendarLoaded)) {
         final now = DateTime.now();
-        add(FetchCalendar(now.year, now.month));
+        add(FetchCalendar(now.year));
       }
     });
     _calendarRepository = calendarRepository;
@@ -40,16 +40,14 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       yield* _mapUpdateCalendarToState(event);
     } else if(event is DeleteCalendar) {
       yield* _mapDeleteCalendarToState(event);
-    } else if(event is UpdateCalendarMonth) {
-      yield* _mapUpdateCalendarMonthToState(event);
     }
   }
 
   Stream<CalendarState> _mapFetchCalendarToState(FetchCalendar event) async* {
     try {
       yield CalendarLoading();
-      final List<Calendar> calendarList = await _calendarRepository.getCalendarList(event.year, event.month);
-      yield CalendarLoaded(event.year, event.month, calendarList);
+      final List<Calendar> calendarList = await _calendarRepository.getCalendarList(event.year);
+      yield CalendarLoaded(event.year, calendarList);
     } catch(e) {
       yield CalendarError(e.toString());
     }
@@ -60,13 +58,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       try {
         final updatedCalendarList = (state as CalendarLoaded).calendarList;
         final currentYear = (state as CalendarLoaded).year;
-        final currentMonth = (state as CalendarLoaded).month;
         yield CalendarLoading();
         final savedCalendar = await _calendarRepository.createCalendar(event.title, event.place, event.dateTime, event.accountIds);
-        if(savedCalendar.dateTime.year == currentYear && savedCalendar.dateTime.month == currentMonth) {
+        if(savedCalendar.dateTime.year == currentYear) {
           updatedCalendarList.add(savedCalendar);
-          yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
         }
+        yield CalendarLoaded(currentYear, updatedCalendarList);
       } catch(e) {
         print(e);
       }
@@ -84,14 +81,13 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     if(state is CalendarLoaded) {
       final updatedCalendarList = (state as CalendarLoaded).calendarList;
       final currentYear = (state as CalendarLoaded).year;
-      final currentMonth = (state as CalendarLoaded).month;
       try {
         yield CalendarLoading();
         final int deletedCalendarId = await _calendarRepository.deleteCalendar(event.calendar);
         updatedCalendarList.removeWhere((calendar) => calendar.id == deletedCalendarId);
-        yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+        yield CalendarLoaded(currentYear, updatedCalendarList);
       } catch(e) {
-        yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+        yield CalendarLoaded(currentYear, updatedCalendarList);
       }
     }
   }
@@ -100,7 +96,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     if(state is CalendarLoaded) {
       final calendarList = (state as CalendarLoaded).calendarList;
       final currentYear = (state as CalendarLoaded).year;
-      final currentMonth = (state as CalendarLoaded).month;
       try {
         yield CalendarLoading();
         final updatedCalendar = await _calendarRepository.updateCalendar(calendarList.firstWhere((calendar) => calendar.id == event.calendar.id)
@@ -110,20 +105,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
           dateTime: event.dateTime,
         ), event.accountIds);
         final updatedCalendarList = calendarList.map((calendar) => calendar.id == updatedCalendar.id ? updatedCalendar : calendar).toList();
-        yield CalendarLoaded(currentYear, currentMonth, updatedCalendarList);
+        yield CalendarLoaded(currentYear, updatedCalendarList);
       } catch(e) {
-        yield CalendarLoaded(currentYear, currentMonth, calendarList);
-      }
-    }
-  }
-
-  Stream<CalendarState> _mapUpdateCalendarMonthToState(UpdateCalendarMonth event) async* {
-    if(state is CalendarLoaded) {
-      try {
-        final List<Calendar> calendarList = await _calendarRepository.getCalendarList(event.year, event.month);
-        yield CalendarLoaded(event.year, event.month, calendarList);
-      } catch(e) {
-        yield CalendarError(e.toString());
+        yield CalendarLoaded(currentYear, calendarList);
       }
     }
   }

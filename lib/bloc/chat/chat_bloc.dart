@@ -59,7 +59,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final messageList = await _chatRepository.fetchMessageList();
       _stompClient = StompClient(
           config: StompConfig(
-            url: "ws://localhost:8080/ws",
+            url: "ws://192.168.0.111:8080/ws",
             stompConnectHeaders: {
               'Authorization': 'Bearer ${_userRepository.token}'
             },

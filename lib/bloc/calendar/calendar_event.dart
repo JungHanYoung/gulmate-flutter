@@ -11,16 +11,15 @@ abstract class CalendarEvent extends Equatable {
 
 class FetchCalendar extends CalendarEvent {
   final int year;
-  final int month;
 
-  const FetchCalendar(this.year, this.month);
+  const FetchCalendar(this.year);
 
   @override
-  List<Object> get props => [year, month];
+  List<Object> get props => [year];
 
   @override
   String toString() {
-    return 'FetchCalendar{year: $year, month: $month}';
+    return 'FetchCalendar{year: $year}';
   }
 }
 
@@ -57,21 +56,6 @@ class UpdateCalendar extends CalendarEvent {
   @override
   String toString() {
     return 'UpdateCalendar{title: $title, place: $place, dateTime: $dateTime, accountIds: $accountIds, calendar: $calendar}';
-  }
-}
-
-class UpdateCalendarMonth extends CalendarEvent {
-  final int year;
-  final int month;
-
-  const UpdateCalendarMonth(this.year, this.month);
-
-  @override
-  List<Object> get props => [year, month];
-
-  @override
-  String toString() {
-    return 'UpdateCalendarMonth{year: $year, month: $month}';
   }
 }
 

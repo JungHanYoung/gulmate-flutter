@@ -66,15 +66,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     height: 94,
                   ),
                   TableCalendar(
-                    onVisibleDaysChanged: (prev, next, format) {
-//                      if(format == CalendarFormat.month) {
-//                        BlocProvider.of<CalendarBloc>(context).add(UpdateCalendarMonth(next.year, next.month));
-//                      }
-                      print("prev: ${prev.year}년 ${prev.month}월");
-                      print("next: ${next.year}년 ${next.month}월");
-                      print("format: ${format.toString()}");
-                    },
-//                    initialSelectedDay: DateTime.now().subtract(Duration(days: 120)),
                     startDay: DateTime.now().subtract(Duration(days: 120)),
                     calendarController: _calendarController,
                     events: events,

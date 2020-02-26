@@ -14,7 +14,7 @@ import 'repository/repository.dart';
 void main() {
 
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  Dio baseDio = Dio(BaseOptions(baseUrl: "http://localhost:8080"));
+  Dio baseDio = Dio(BaseOptions(baseUrl: "http://192.168.0.111:8080"));
   baseDio.interceptors.add(InterceptorsWrapper(
     onRequest: (RequestOptions options) {
       final userRepository = GetIt.instance.get<UserRepository>();

@@ -93,15 +93,15 @@ class DashboardScreen extends StatelessWidget {
               BouncingScrollPhysics(),
               child: Row(
                 children: <Widget>[
-                  _buildAlbumCard(
-                      title: "Image 1",
-                      photoUrl: "https://picsum.photos/250?image=1"),
-                  _buildAlbumCard(
-                      title: "Image 2",
-                      photoUrl: "https://picsum.photos/250?image=2"),
-                  _buildAlbumCard(
-                      title: "Image 3",
-                      photoUrl: "https://picsum.photos/250?image=3"),
+//                  _buildAlbumCard(
+//                      title: "Image 1",
+//                      photoUrl: "https://picsum.photos/250"),
+//                  _buildAlbumCard(
+//                      title: "Image 2",
+//                      photoUrl: "https://picsum.photos/250"),
+//                  _buildAlbumCard(
+//                      title: "Image 3",
+//                      photoUrl: "https://picsum.photos/250"),
                 ],
               ),
             ),

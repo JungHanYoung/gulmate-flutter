@@ -13,9 +13,9 @@ class CalendarRepository {
     _familyRepository = GetIt.instance.get<FamilyRepository>();
   }
 
-  Future<List<Calendar>> getCalendarList(int year, int month) async {
+  Future<List<Calendar>> getCalendarList(int year) async {
     final familyId = _familyRepository.family.id;
-    final response = await dio.get("/api/v1/$familyId/calendar?year=$year&month=$month");
+    final response = await dio.get("/api/v1/$familyId/calendar?year=$year");
     if(response.statusCode == 200 && response.data is List) {
       return (response.data as List).map((json) => Calendar.fromJson(json)).toList();
     }

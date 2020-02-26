@@ -111,7 +111,7 @@ class _PinTextFieldState extends State<PinTextField> {
       margin: EdgeInsets.only(right: 10.0),
       child: TextField(
         controller: _textControllers[i],
-        keyboardType: TextInputType.number,
+        keyboardType: TextInputType.text,
         textAlign: TextAlign.center,
         maxLength: 1,
         style: TextStyle(
