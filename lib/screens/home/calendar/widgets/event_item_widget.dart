@@ -13,7 +13,6 @@ class EventItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          // TODO: 특정 날짜의 이벤트 터치시 해당 날짜 이벤트 상세페이지 팝업
           Scaffold.of(context)
               .showBottomSheet((context) => CalendarDetailBottomSheet(calendar));
         },

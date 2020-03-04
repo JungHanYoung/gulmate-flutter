@@ -10,7 +10,7 @@ abstract class ConfigReader {
     _config = jsonDecode(configString) as Map<String, dynamic>;
   }
 
-  static String getApiUrl() {
-    return _config['api_url'] as String;
+  static String getApiDomain() {
+    return _config['api_domain'] as String;
   }
 }

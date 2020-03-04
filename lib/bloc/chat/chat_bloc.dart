@@ -3,13 +3,11 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart' hide Message;
 import 'package:get_it/get_it.dart';
 import 'package:gulmate/bloc/blocs.dart';
-import 'package:gulmate/bloc/chat/chat_event.dart';
-import 'package:gulmate/bloc/chat/chat_state.dart';
-import 'package:gulmate/model/message.dart';
-import 'package:gulmate/repository/chat_repository.dart';
-import 'package:gulmate/repository/family_repository.dart';
+import 'package:gulmate/helper/notification_helper.dart';
+import 'package:gulmate/model/model.dart';
 import 'package:gulmate/repository/repository.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
@@ -31,15 +29,37 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _chatRepository = GetIt.instance.get<ChatRepository>();
     _familyRepository = GetIt.instance.get<FamilyRepository>();
     _userRepository = GetIt.instance.get<UserRepository>();
+    _familyRepository.family.id;
+    _stompClient = StompClient(
+        config: StompConfig(
+          url: "ws://192.168.0.111:8080/ws",
+          stompConnectHeaders: {
+            'Authorization': 'Bearer ${_userRepository.token}',
+          },
+          onConnect: (client, frame) {
+            final destination = "/sub/family/${_familyRepository.family.id}";
+            client.subscribe(destination: destination, callback: (frame) {
+              add(ReceiveChatMessage(jsonDecode(frame.body)));
+            });
+          }
+        )
+    );
+    _stompClient.activate();
+
     _appTabSubscription = appTabBloc.listen((state) {
       if(state == AppTab.chatting) {
         add(FetchChatMessage());
       }
     });
+    authenticationBloc.listen((state) {
+      if(state is AuthenticationUnauthenticated) {
+        _stompClient.deactivate();
+        _stompClient = null;
+      }
+    });
   }
 
   @override
-  // TODO: implement initialState
   ChatState get initialState => ChatLoading();
 
   @override
@@ -57,29 +77,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     try {
       yield ChatLoading();
       final messageList = await _chatRepository.fetchMessageList();
-      _stompClient = StompClient(
-          config: StompConfig(
-            url: "ws://192.168.0.111:8080/ws",
-            stompConnectHeaders: {
-              'Authorization': 'Bearer ${_userRepository.token}'
-            },
-            onConnect: (client, frame) {
-              print('stomp client connected: ${client.connected}');
-              final destination = "/sub/family/${_familyRepository.family.id}";
-              client.subscribe(destination: destination, callback: (frame) {
-                print("subscribe: ${frame.body}");
-                add(ReceiveChatMessage(jsonDecode(frame.body)));
-              });
-            },
-            onStompError: (error) {
-              print(error.toString());
-            },
-            onWebSocketDone: () {
-              print("on websocket done");
-            }
-          ),
-      );
-      _stompClient.activate();
       yield ChatLoaded(messageList);
     } catch(e) {
       print(e);
@@ -108,11 +105,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Stream<ChatState> _mapReceiveChatMessageToState(ReceiveChatMessage event) async* {
     final authState = (authenticationBloc.state as AuthenticationAuthenticatedWithFamily);
     final messageCreator = authState.currentFamily.accountList.firstWhere((account) => account.id == event.accountId);
+    if(authState.currentAccount.id != event.accountId) {
+      _showNotification(event.message, messageCreator);
+    }
     if(state is ChatLoaded) {
       final messageList = (state as ChatLoaded).messageList;
       yield ChatLoading();
       messageList.add(Message(message: event.message, creator: messageCreator));
       yield ChatLoaded(messageList);
     }
+  }
+
+  void _showNotification(String message, Account messageCreator) {
+    var androidDetails = AndroidNotificationDetails("chat message id", "chat message name", "chat message description");
+    var iosDetails = IOSNotificationDetails();
+    NotificationHelper.notification.show(0, "${messageCreator.name}", "$message", NotificationDetails(androidDetails, iosDetails));
   }
 }

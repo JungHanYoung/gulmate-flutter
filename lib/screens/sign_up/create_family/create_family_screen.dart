@@ -16,14 +16,12 @@ class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _familyNameController = TextEditingController();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _familyNameController.dispose();
     super.dispose();
   }

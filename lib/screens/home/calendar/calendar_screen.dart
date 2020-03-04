@@ -178,7 +178,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
 class EventNoti extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // TODO: implement paint
     final paint = Paint()
       ..strokeWidth = 1
       ..color = Color.fromRGBO(255, 109, 0, 1);
@@ -188,7 +187,6 @@ class EventNoti extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
     return false;
   }
 }

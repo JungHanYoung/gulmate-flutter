@@ -1,24 +1,27 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
 
 import 'package:bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
-import 'package:gulmate/bloc/purchase/purchase_event.dart';
-import 'package:gulmate/bloc/purchase/purchase_state.dart';
-import 'package:gulmate/bloc/tab/app_tab.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gulmate/model/purchase.dart';
 import 'package:gulmate/repository/purchase_repository.dart';
 
+import '../blocs.dart';
+
 class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
-  final PurchaseRepository purchaseRepository;
+  PurchaseRepository _purchaseRepository;
   final AppTabBloc appTabBloc;
+  final AuthenticationBloc authBloc;
   StreamSubscription _appTabSubscription;
 
-  PurchaseBloc(
-    this.purchaseRepository, {
+  PurchaseBloc({
     @required this.appTabBloc,
+    @required this.authBloc,
   }) {
+    _purchaseRepository = GetIt.instance.get<PurchaseRepository>();
     _appTabSubscription = appTabBloc.listen((state) {
-      if (state == AppTab.purchase) {
+      if (state == AppTab.purchase && !(state is PurchaseLoaded)) {
         add(FetchPurchaseList());
       }
     });
@@ -27,12 +30,20 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   @override
   PurchaseState get initialState => PurchaseLoading();
 
+
+  @override
+  void onError(Object error, StackTrace stacktrace) {
+    if(error is DioError) {
+      print(error.response.statusCode);
+    }
+  }
+
   @override
   Stream<PurchaseState> mapEventToState(PurchaseEvent event) async* {
     if (event is FetchPurchaseList) {
       yield* _mapFetchPurchaseListToState();
     } else if (event is RefreshPurchaseList) {
-      yield* _mapRefreshPurchaseListToState();
+      yield* _mapRefreshPurchaseListToState(event);
     } else if (event is AddPurchase) {
       yield* _mapAddPurchaseToState(event);
     } else if (event is UpdatePurchase) {
@@ -45,21 +56,20 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   }
 
   Stream<PurchaseState> _mapFetchPurchaseListToState() async* {
-    // TODO: 장보기 목록 가져오기
     yield PurchaseLoading();
     try {
-      final purchaseList = await purchaseRepository.getPurchaseList();
+      final purchaseList = await _purchaseRepository.getPurchaseList();
       yield PurchaseLoaded(purchaseList);
     } catch (e) {
       yield PurchaseError(e.toString());
     }
   }
 
-  Stream<PurchaseState> _mapRefreshPurchaseListToState() async* {
-    // TODO: 장보기 목록 새로고침
+  Stream<PurchaseState> _mapRefreshPurchaseListToState(RefreshPurchaseList event) async* {
     if(state is PurchaseLoaded) {
       try {
-        final purchaseList = await purchaseRepository.getPurchaseList();
+        final purchaseList = await _purchaseRepository.getPurchaseList();
+        event.completer.complete();
         yield PurchaseLoaded(purchaseList);
       } catch(e) {
         yield PurchaseLoaded((state as PurchaseLoaded).purchaseList);
@@ -71,7 +81,7 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
     if(state is PurchaseLoaded) {
       try {
         final state = this.state;
-        final purchase = await purchaseRepository.createPurchase(
+        final purchase = await _purchaseRepository.createPurchase(
           event.title,
           event.place,
           event.deadline,
@@ -79,6 +89,10 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
         final List<Purchase> updatedPurchaseList = List.from((state as PurchaseLoaded).purchaseList)
           ..insert(0, purchase);
         yield PurchaseLoaded(updatedPurchaseList);
+      } on DioError catch(e) {
+        if(e.response.statusCode == 403) {
+
+        }
       } catch(e) {
         print(e);
         yield PurchaseLoaded((state as PurchaseLoaded).purchaseList);
@@ -87,10 +101,9 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   }
 
   Stream<PurchaseState> _mapUpdatePurchaseToState(UpdatePurchase event) async* {
-    // TODO: 장보기 수정
     if(state is PurchaseLoaded) {
       try {
-        final updatedId = await purchaseRepository.updatePurchase(event.purchase);
+        final updatedId = await _purchaseRepository.updatePurchase(event.purchase);
         final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded).purchaseList.map((purchase) {
           return updatedId != purchase.id ? purchase : event.purchase.copyWith(
             creator: purchase.creator,
@@ -106,7 +119,7 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
 
   Stream<PurchaseState> _mapDeletePurchaseToState(DeletePurchase event) async* {
     if(state is PurchaseLoaded) {
-      await purchaseRepository.deletePurchase(event.purchase);
+      await _purchaseRepository.deletePurchase(event.purchase);
       final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded)
       .purchaseList
       .where((item) => item.id != event.purchase.id)
@@ -124,7 +137,7 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   Stream<PurchaseState> _mapCheckPurchaseToState(CheckUpdatePurchase event) async* {
     if(state is PurchaseLoaded) {
       try {
-        final updatedPurchase = await purchaseRepository.checkPurchase(event.purchase);
+        final updatedPurchase = await _purchaseRepository.checkPurchase(event.purchase);
         final List<Purchase> updatedPurchaseList = (state as PurchaseLoaded).purchaseList.map((purchase) {
           return updatedPurchase.id != purchase.id ? purchase : updatedPurchase;
         }).toList();

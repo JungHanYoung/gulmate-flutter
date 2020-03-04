@@ -3,9 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:gulmate/app.dart';
-import 'package:gulmate/auth_wrapper.dart';
-import 'package:gulmate/environment.dart';
+import 'package:gulmate/app_widget.dart';
+import 'package:gulmate/wrapper/auth_wrapper.dart';
 import 'package:gulmate/repository/repository.dart';
 
 import 'bloc/simple_bloc_delegate.dart';

@@ -25,7 +25,6 @@ class CalendarDetailBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return BlocListener<CalendarBloc, CalendarState>(
       listener: (context, state) {
         if (state is CalendarLoaded) {

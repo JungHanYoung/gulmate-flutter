@@ -42,6 +42,8 @@ class _Button extends StatelessWidget {
   final TextStyle activeStyle;
   final TextStyle defaultStyle;
 
+  static const _buttonPadding = const EdgeInsets.symmetric(vertical: 10, horizontal: 12);
+
   _Button(
       {Key key,
       @required this.activeFilter,
@@ -52,43 +54,40 @@ class _Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(right: 24.0),
-          child: InkWell(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          InkWell(
             onTap: () => onSelected(VisibilityFilter.all),
-            child: Text(
-              "전체",
-              style: activeFilter == VisibilityFilter.all
-                  ? activeStyle
-                  : defaultStyle,
-            ),
+            child: _buildButtonContent("전체", VisibilityFilter.all),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 24.0),
-          child: InkWell(
+          InkWell(
             onTap: () => onSelected(VisibilityFilter.active),
-            child: Text(
-              "구매 예정",
-              style: activeFilter == VisibilityFilter.active
-                  ? activeStyle
-                  : defaultStyle,
-            ),
+            child: _buildButtonContent("구매 예정", VisibilityFilter.active),
           ),
-        ),
-        InkWell(
-          onTap: () => onSelected(VisibilityFilter.completed),
+          InkWell(
+            onTap: () => onSelected(VisibilityFilter.completed),
+            child: _buildButtonContent("구매 완료", VisibilityFilter.completed),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildButtonContent(String text, VisibilityFilter filter) {
+    return Container(
+          padding: _buttonPadding,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+          ),
           child: Text(
-            "구매 완료",
-            style: activeFilter == VisibilityFilter.completed
+            text,
+            style: activeFilter == filter
                 ? activeStyle
                 : defaultStyle,
           ),
-        ),
-      ],
-    );
+        );
   }
 }

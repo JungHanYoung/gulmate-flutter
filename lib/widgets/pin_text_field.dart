@@ -35,7 +35,6 @@ class _PinTextFieldState extends State<PinTextField> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pins = List<String>(widget.fields);
     _focusNodes = List<FocusNode>(widget.fields);
@@ -54,7 +53,6 @@ class _PinTextFieldState extends State<PinTextField> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _textControllers.forEach((controller) => controller.dispose());
     super.dispose();
   }

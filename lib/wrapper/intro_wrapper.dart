@@ -5,7 +5,7 @@ import 'package:gulmate/screens/introduction_screen/my_introduction_screen.dart'
 import 'package:gulmate/screens/sign_up/sign_in.dart';
 import 'package:gulmate/screens/splash_screen.dart';
 
-import 'bloc/intro/intro.dart';
+import '../bloc/intro/intro.dart';
 
 class IntroWrapper extends StatelessWidget {
 

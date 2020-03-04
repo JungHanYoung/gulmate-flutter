@@ -4,18 +4,9 @@ import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/screens/sign_up/layout/join_family_layout.dart';
 import 'package:gulmate/widgets/pin_text_field.dart';
 
-class JoinWithInviteKeyView extends StatefulWidget {
-  @override
-  _JoinWithInviteKeyViewState createState() => _JoinWithInviteKeyViewState();
-}
 
-class _JoinWithInviteKeyViewState extends State<JoinWithInviteKeyView> {
+class JoinWithInviteKeyView extends StatelessWidget {
 
-  bool _isSubmitting = false;
-
-  void submitInviteKey(String inviteKey) {
-    BlocProvider.of<FamilyBloc>(context).add(JoinFamily(inviteKey));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +43,7 @@ class _JoinWithInviteKeyViewState extends State<JoinWithInviteKeyView> {
                     SizedBox(height: 70.0),
                     PinTextField(
                       fields: 6,
-                      onSubmit: (pin) {
-
-                        setState(() {
-                          _isSubmitting = true;
-                        });
-                        submitInviteKey(pin);
-                        Future.delayed(Duration(seconds: 1)).then((value) {
-                          setState(() {
-                            _isSubmitting = false;
-                          });
-                        });
-                      },
+                      onSubmit: (pin) => BlocProvider.of<FamilyBloc>(context).add(JoinFamily(pin)),
                     ),
                     SizedBox(height: size.height * 0.3,),
                   ],

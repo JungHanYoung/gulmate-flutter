@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:gulmate/model/purchase.dart';
 
@@ -12,7 +14,12 @@ abstract class PurchaseEvent extends Equatable {
 
 class FetchPurchaseList extends PurchaseEvent {}
 
-class RefreshPurchaseList extends PurchaseEvent {}
+class RefreshPurchaseList extends PurchaseEvent {
+  final Completer<void> completer;
+
+  const RefreshPurchaseList(this.completer);
+
+}
 
 class AddPurchase extends PurchaseEvent {
   final String title;

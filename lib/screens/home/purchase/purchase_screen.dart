@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/screens/home/purchase/purchase_add_edit_bottom_sheet.dart';
-import 'package:gulmate/screens/home/purchase/widgets/purchase_list_view.dart';
+import 'package:gulmate/screens/home/purchase/widgets/purchase_item.dart';
 
+import 'widgets/delete_purchase_snack_bar.dart';
 import 'widgets/filter_button.dart';
 
 class PurchaseScreen extends StatefulWidget {
@@ -15,130 +16,109 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
-  Completer<void> _refreshCompleter;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _refreshCompleter = Completer<void>();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PurchaseBloc, PurchaseState>(
-      builder: (context, state) {
-        if (state is PurchaseLoading) {
-          return _buildLoadingWidget();
-        } else if (state is PurchaseError) {
-          return _buildErrorWidget();
-        } else {
-          return BlocBuilder<FilteredPurchaseBloc, FilteredPurchaseState>(
-            builder: (context, state) => SafeArea(
-                child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0, top: 50),
-                        child: Text(
-                          "장보기",
-                          style: TextStyle(fontSize: 30, color: PRIMARY_COLOR),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: FilterButton(),
-                      ),
-                      Expanded(
-                        child: (state is FilteredPurchaseLoaded &&
-                                state.filteredPurchases.isEmpty)
-                            ? Center(
-                                child: Text(
-                                  "등록된 장보기 데이터가 없습니다.",
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(153, 153, 153, 1)),
-                                ),
-                              )
-                            : PurchaseListView(
-                                (state as FilteredPurchaseLoaded).filteredPurchases,
-                                onRefresh: () {
-                                BlocProvider.of<PurchaseBloc>(context)
-                                    .add(RefreshPurchaseList());
-                                return _refreshCompleter.future;
-                              }),
-                      ),
-                    ],
+    return BlocBuilder<PurchaseBloc, PurchaseState>(builder: (context, state) {
+      if (state is PurchaseLoading) {
+        return _buildLoadingWidget();
+      } else if (state is PurchaseError) {
+        return _buildErrorWidget();
+      } else {
+        return Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0, top: 94),
+                    child: Text(
+                      "장보기",
+                      style: TextStyle(fontSize: 30, color: PRIMARY_COLOR),
+                    ),
                   ),
-                ),
-                _buildAddFloatingButton(),
-              ],
-            )),
-          );
-        }
-      },
-    );
+                  FilterButton(),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        Completer<void> completer = Completer<void>();
+                        BlocProvider.of<PurchaseBloc>(context)
+                            .add(RefreshPurchaseList(completer));
+                        return completer.future;
+                      },
+                      child: BlocBuilder<FilteredPurchaseBloc,
+                          FilteredPurchaseState>(builder: (context, state) {
+                        final purchaseList =
+                            (state as FilteredPurchaseLoaded).filteredPurchases;
+                        return ListView.builder(
+                          padding: const EdgeInsets.all(0),
+                          itemBuilder: (context, index) {
+                            final purchaseItem = purchaseList[index];
+                            return PurchaseItem(
+                              purchase: purchaseItem,
+                              onCheckboxChanged: (value) {
+                                BlocProvider.of<PurchaseBloc>(context).add(
+                                    CheckUpdatePurchase(purchaseItem.copyWith(
+                                        complete: value)));
+                              },
+                              onDelete: () {
+                                BlocProvider.of<PurchaseBloc>(context)
+                                    .add(DeletePurchase(purchaseItem));
+                                Scaffold.of(context)
+                                    .showSnackBar(DeletePurchaseSnackBar(
+                                  purchase: purchaseItem,
+                                ));
+                              },
+                            );
+                          },
+                          itemCount: purchaseList.length,
+                        );
+                      }),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+                bottom: 16,
+                right: 16,
+                child: InkWell(
+                  onTap: () async {
+                    Scaffold.of(context).showBottomSheet(
+                        (context) => PurchaseAddEditBottomSheet());
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: DEFAULT_BACKGROUND_COLOR,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromRGBO(249, 249, 249, 0.5),
+                              blurRadius: 10,
+                              spreadRadius: 10),
+                        ]),
+                    width: 60,
+                    height: 60,
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                ))
+          ],
+        );
+      }
+    });
   }
 
   Widget _buildLoadingWidget() {
     return Center(
       child: CircularProgressIndicator(),
     );
-  }
-
-  Widget _buildAddFloatingButton() {
-    return Positioned(
-        bottom: 16,
-        right: 16,
-        child: InkWell(
-          onTap: () async {
-//            Scaffold.of(context).showBottomSheet((context) => PurchaseAddEditBottomSheet(), backgroundColor: Colors.grey[500]);
-//            showModalBottomSheet(context: context, builder: (context) => PurchaseAddEditBottomSheet());
-              Scaffold.of(context).showBottomSheet((context) => PurchaseAddEditBottomSheet());
-//            Scaffold.of(context).showBottomSheet((context) => PurchaseAddEditBottomSheet());
-//            var showBottomSheet2 = showBottomSheet(context: context, builder: (context) {
-//              return PurchaseAddEditBottomSheet();
-//            });
-//            final addedPurchase =
-//                await Navigator.of(context).push(MaterialPageRoute(
-//                    builder: (context) => PurchaseAddEditScreen(
-//                          prevContext: context,
-//                          isEditing: false,
-//                          onSave:
-//                              (String title, String place, DateTime deadline) {
-//                            BlocProvider.of<PurchaseBloc>(context)
-//                                .add(AddPurchase(title, place, deadline));
-//                          },
-//                        )));
-//            if (addedPurchase is Purchase && addedPurchase != null) {
-//              BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(
-//                  addedPurchase.title,
-//                  addedPurchase.place,
-//                  addedPurchase.deadline));
-//            }
-          },
-          child: Container(
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: DEFAULT_BACKGROUND_COLOR,
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(249, 249, 249, 0.5),
-                      blurRadius: 10,
-                      spreadRadius: 10),
-                ]),
-            width: 60,
-            height: 60,
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 30,
-            ),
-          ),
-        ));
   }
 
   Widget _buildErrorWidget() => Center(

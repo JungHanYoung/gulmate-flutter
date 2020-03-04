@@ -15,12 +15,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   @override
-  // TODO: implement initialState
   AuthenticationState get initialState => AuthenticationUninitialized();
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
-    // TODO: implement mapEventToState
     if(event is AppStarted) {
       final String token = await _userRepository.getToken();
       if(token != null) {

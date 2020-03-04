@@ -21,7 +21,6 @@ class FilteredPurchaseBloc extends Bloc<FilteredPurchaseEvent, FilteredPurchaseS
   }
 
   @override
-  // TODO: implement initialState
   FilteredPurchaseState get initialState
     => purchaseBloc.state is PurchaseLoaded
     ?  FilteredPurchaseLoaded((purchaseBloc.state as PurchaseLoaded).purchaseList, VisibilityFilter.all)

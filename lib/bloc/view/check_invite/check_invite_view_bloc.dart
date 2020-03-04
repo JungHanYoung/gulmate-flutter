@@ -12,7 +12,6 @@ enum CheckInviteViewState {
 class CheckInviteViewBloc extends Bloc<CheckInviteViewEvent, CheckInviteViewState> {
 
   @override
-  // TODO: implement initialState
   CheckInviteViewState get initialState => CheckInviteViewState.selectBetween;
 
   @override

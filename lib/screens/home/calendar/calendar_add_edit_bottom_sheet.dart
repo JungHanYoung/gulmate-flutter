@@ -34,7 +34,6 @@ class _CalendarAddEditBottomSheetState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _dateTime = widget.isEditing ? widget.calendar.dateTime : DateTime.now();
     accountIds = widget.isEditing ? widget.calendar.accountList.map((account) => account.id).toList() : <int>[];
@@ -266,7 +265,6 @@ class _CalendarAddEditBottomSheetState
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _dateTimeController.dispose();
     super.dispose();
   }

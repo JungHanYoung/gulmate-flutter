@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/family/family_bloc.dart';
 import 'package:gulmate/bloc/family/family_state.dart';
+import 'package:gulmate/const/color.dart';
 import 'package:gulmate/screens/home/profile/profile_screen.dart';
 
 
@@ -84,15 +85,15 @@ class DashboardScreen extends StatelessWidget {
                 'authorName': '엄마',
               },
             ], title: "쇼핑 목록"),
-            _buildSubTitle(title: "갤러리", moreBtnTitle: "모두 보기"),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics:
+//            _buildSubTitle(title: "갤러리", moreBtnTitle: "모두 보기"),
+//            SingleChildScrollView(
+//              scrollDirection: Axis.horizontal,
+//              physics:
 //              PageScrollPhysics(),
 //                ClampingScrollPhysics(),
-              BouncingScrollPhysics(),
-              child: Row(
-                children: <Widget>[
+//              BouncingScrollPhysics(),
+//              child: Row(
+//                children: <Widget>[
 //                  _buildAlbumCard(
 //                      title: "Image 1",
 //                      photoUrl: "https://picsum.photos/250"),
@@ -102,9 +103,9 @@ class DashboardScreen extends StatelessWidget {
 //                  _buildAlbumCard(
 //                      title: "Image 3",
 //                      photoUrl: "https://picsum.photos/250"),
-                ],
-              ),
-            ),
+//                ],
+//              ),
+//            ),
             SizedBox(height: 50),
           ],
         ),
@@ -156,19 +157,19 @@ class DashboardScreen extends StatelessWidget {
           child: SizedBox(
             width: 24,
             height: 24,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: RaisedButton(
-                padding: const EdgeInsets.all(6),
-                onPressed: () {
-                  // TODO: 프로필 수정 스크린 이동 (push)
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ProfileScreen()));
-                },
-                child: Icon(
-                  Icons.edit,
-                  size: 11,
-                ),
+            child: RaisedButton(
+              shape: CircleBorder(),
+              padding: const EdgeInsets.all(6),
+              color: PRIMARY_COLOR,
+              elevation: 0.0,
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ProfileScreen()));
+              },
+              child: Icon(
+                Icons.edit,
+                size: 11,
+                color: Colors.white,
               ),
             ),
           ),
@@ -200,7 +201,7 @@ class DashboardScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
       ),
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
         children: <Widget>[
@@ -269,7 +270,7 @@ class DashboardScreen extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),
+              style: TextStyle(color: Color.fromRGBO(153, 153, 153, 1), fontSize: 16),
             ),
             _buildMoreButton(text: moreBtnTitle, onTap: () {}),
           ],
@@ -283,8 +284,8 @@ class DashboardScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(itemName),
-            Text(authorName),
+            Text(itemName, style: TextStyle(fontSize: 16),),
+            Text(authorName, style: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),),
           ],
         ),
       );

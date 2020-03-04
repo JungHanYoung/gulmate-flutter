@@ -31,7 +31,6 @@ class _PurchaseAddEditScreenState extends State<PurchaseAddEditScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _deadline = DateTime.now();
   }

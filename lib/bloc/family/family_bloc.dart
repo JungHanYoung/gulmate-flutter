@@ -32,7 +32,6 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   }
 
   @override
-  // TODO: implement initialState
   FamilyState get initialState => FamilyLoading();
 
   @override

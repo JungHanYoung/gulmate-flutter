@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gulmate/bloc/tab/app_tab.dart';
+import 'package:gulmate/const/color.dart';
 
 class BottomTabSelector extends StatelessWidget {
 
@@ -17,10 +18,10 @@ class BottomTabSelector extends StatelessWidget {
     return BottomNavigationBar(
       items: AppTab.values.map((tab) => BottomNavigationBarItem(
           icon: Icon(_buildIconData(tab)),
-          title: Text(_getStringByAppTab(tab)),
+          title: Text(_getStringByAppTab(tab), style: TextStyle(fontSize: 12),),
         ),).toList(),
       backgroundColor: Colors.white,
-      selectedItemColor: Color(0xFFFF6D00),
+      selectedItemColor: PRIMARY_COLOR,
       unselectedItemColor: Color.fromRGBO(204, 204, 204, 1),
       onTap: (index) => onTabSelected(AppTab.values[index]),
       currentIndex: AppTab.values.indexOf(activeTab),

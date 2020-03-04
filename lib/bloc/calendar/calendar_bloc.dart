@@ -2,27 +2,31 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:gulmate/bloc/calendar/calendar_event.dart';
 import 'package:gulmate/bloc/calendar/calendar_state.dart';
-import 'package:gulmate/bloc/tab/app_tab.dart';
 import 'package:gulmate/model/calendar.dart';
 import 'package:gulmate/repository/calendar_repository.dart';
+
+import '../blocs.dart';
 
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   CalendarRepository _calendarRepository;
   final AppTabBloc appTabBloc;
+  final AuthenticationBloc authBloc;
   StreamSubscription _appTabSubscription;
 
-  CalendarBloc(CalendarRepository calendarRepository, {
+  CalendarBloc({
     @required this.appTabBloc,
-}) {
+    @required this.authBloc,
+  }) {
     _appTabSubscription = appTabBloc.listen((state) {
-      if(state == AppTab.calendar && !(this.state is CalendarLoaded)) {
+      if(state == AppTab.calendar) {
         final now = DateTime.now();
         add(FetchCalendar(now.year));
       }
     });
-    _calendarRepository = calendarRepository;
+    _calendarRepository = GetIt.instance.get<CalendarRepository>();
 
   }
 
@@ -31,7 +35,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   @override
   Stream<CalendarState> mapEventToState(CalendarEvent event) async* {
-    // TODO: implement mapEventToState
     if(event is FetchCalendar) {
       yield* _mapFetchCalendarToState(event);
     } else if(event is AddCalendar) {
@@ -66,6 +69,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         yield CalendarLoaded(currentYear, updatedCalendarList);
       } catch(e) {
         print(e);
+        yield CalendarError(e.toString());
       }
 
     }

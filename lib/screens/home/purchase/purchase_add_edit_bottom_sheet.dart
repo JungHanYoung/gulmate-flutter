@@ -24,7 +24,6 @@ class _PurchaseAddEditBottomSheetState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _deadline = DateTime.now();
     _deadlineController = TextEditingController();

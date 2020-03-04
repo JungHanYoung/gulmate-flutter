@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'bloc/blocs.dart';
-import 'repository/repository.dart';
+import '../bloc/blocs.dart';
+import '../repository/repository.dart';
 
 class AuthWrapper extends StatefulWidget {
   final Widget child;
@@ -19,7 +19,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     GetIt.instance.get<UserRepository>().getToken();
   }
@@ -33,7 +32,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
               AuthenticationBloc()),
       BlocProvider<AppTabBloc>(
         create: (context) => AppTabBloc(),
-      ),
+    ),
       BlocProvider<CheckInviteViewBloc>(
         create: (context) => CheckInviteViewBloc(),
       ),

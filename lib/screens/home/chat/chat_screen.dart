@@ -6,24 +6,6 @@ import 'package:gulmate/model/message.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
-const dummy = [
-  {
-    "message": "다들 오늘 몇시에 와?",
-    "isMe": false,
-  },
-  {
-    "message": "나는 잘 모르겠어 조별과제 때문에 늦게 들어갈 것 같아",
-    "isMe": false,
-  },
-  {
-    "message": "나도 잘 모르겠네 내일 시험이라서 시험공부 해야대",
-    "isMe": true,
-  },
-  {
-    "message": "나 혼자 저녁 먹어야겠네",
-    "isMe": false,
-  },
-];
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -143,7 +125,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: TextField(
-                    showCursor: false,
                     style: TextStyle(fontSize: 16),
                     maxLines: 3,
                     minLines: 1,
