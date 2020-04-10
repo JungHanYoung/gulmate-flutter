@@ -7,3 +7,4 @@ export 'login/login.dart';
 export 'purchase/purchase.dart';
 export 'tab/app_tab.dart';
 export 'view/view.dart';
+export 'dashboard/dashboard.dart';

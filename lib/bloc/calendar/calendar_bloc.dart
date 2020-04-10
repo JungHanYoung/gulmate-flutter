@@ -25,6 +25,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         final now = DateTime.now();
         add(FetchCalendar(now.year));
       }
+      if(state == AppTab.home) {
+        add(FetchRecentCalendar());
+      }
     });
     _calendarRepository = GetIt.instance.get<CalendarRepository>();
 
@@ -43,6 +46,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       yield* _mapUpdateCalendarToState(event);
     } else if(event is DeleteCalendar) {
       yield* _mapDeleteCalendarToState(event);
+    } else if(event is FetchRecentCalendar) {
+      yield* _mapFetchRecentCalendar(event);
     }
   }
 
@@ -114,6 +119,15 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         yield CalendarLoaded(currentYear, calendarList);
       }
     }
+  }
+
+  Stream<CalendarState> _mapFetchRecentCalendar(FetchRecentCalendar event) async* {
+
+    try {
+      await _calendarRepository.getRecentCalendarList(size: 3);
+    } catch(e) {
+    }
+
   }
 
 }

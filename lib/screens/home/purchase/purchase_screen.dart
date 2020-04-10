@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/screens/home/purchase/purchase_add_edit_bottom_sheet.dart';
+import 'package:gulmate/screens/home/purchase/purchase_add_editing_screen.dart';
 import 'package:gulmate/screens/home/purchase/widgets/purchase_item.dart';
 
 import 'widgets/delete_purchase_snack_bar.dart';
@@ -16,8 +17,6 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PurchaseBloc, PurchaseState>(builder: (context, state) {
@@ -53,29 +52,33 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                           FilteredPurchaseState>(builder: (context, state) {
                         final purchaseList =
                             (state as FilteredPurchaseLoaded).filteredPurchases;
-                        return ListView.builder(
-                          padding: const EdgeInsets.all(0),
-                          itemBuilder: (context, index) {
-                            final purchaseItem = purchaseList[index];
-                            return PurchaseItem(
-                              purchase: purchaseItem,
-                              onCheckboxChanged: (value) {
-                                BlocProvider.of<PurchaseBloc>(context).add(
-                                    CheckUpdatePurchase(purchaseItem.copyWith(
-                                        complete: value)));
-                              },
-                              onDelete: () {
-                                BlocProvider.of<PurchaseBloc>(context)
-                                    .add(DeletePurchase(purchaseItem));
-                                Scaffold.of(context)
-                                    .showSnackBar(DeletePurchaseSnackBar(
-                                  purchase: purchaseItem,
-                                ));
-                              },
-                            );
-                          },
-                          itemCount: purchaseList.length,
-                        );
+                        return purchaseList.length == 0
+                            ? Center(
+                                child: Text("장보기 데이터가 없습니다."),
+                              )
+                            : ListView.builder(
+                                padding: const EdgeInsets.all(0),
+                                itemBuilder: (context, index) {
+                                  final purchaseItem = purchaseList[index];
+                                  return PurchaseItem(
+                                    purchase: purchaseItem,
+                                    onCheckboxChanged: (value) {
+                                      BlocProvider.of<PurchaseBloc>(context)
+                                          .add(CheckUpdatePurchase(purchaseItem
+                                              .copyWith(complete: value)));
+                                    },
+                                    onDelete: () {
+                                      BlocProvider.of<PurchaseBloc>(context)
+                                          .add(DeletePurchase(purchaseItem));
+                                      Scaffold.of(context)
+                                          .showSnackBar(DeletePurchaseSnackBar(
+                                        purchase: purchaseItem,
+                                      ));
+                                    },
+                                  );
+                                },
+                                itemCount: purchaseList.length,
+                              );
                       }),
                     ),
                   ),
@@ -87,8 +90,18 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                 right: 16,
                 child: InkWell(
                   onTap: () async {
-                    Scaffold.of(context).showBottomSheet(
-                        (context) => PurchaseAddEditBottomSheet());
+                    final map = await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PurchaseAddEditingScreen(
+//                            isEditing: false,
+//                            onSave: (title, place, deadline) =>
+//                                BlocProvider.of<PurchaseBloc>(context).add(
+//                                    AddPurchase(title, place, deadline))))
+                    )));
+                    if(map != null) {
+                      BlocProvider.of<PurchaseBloc>(context).add(AddPurchase(map['title'], map['place'], map['dateTime']));
+                    }
+//                    Scaffold.of(context).showBottomSheet(
+//                        (context) => PurchaseAddEditBottomSheet());
                   },
                   child: Container(
                     decoration: BoxDecoration(

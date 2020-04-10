@@ -4,6 +4,7 @@ import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/model/calendar.dart';
 import 'package:gulmate/screens/home/calendar/calendar_add_edit_bottom_sheet.dart';
+import 'package:gulmate/screens/home/calendar/calendar_add_edit_screen.dart';
 import 'package:gulmate/screens/home/calendar/table_calendar.dart';
 import 'package:gulmate/screens/home/calendar/widgets/event_item_widget.dart';
 import 'package:gulmate/utils/datetime_utils.dart';
@@ -135,7 +136,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   right: 16,
                   child: InkWell(
                     onTap: () async {
-                      Scaffold.of(context).showBottomSheet((context) => CalendarAddEditBottomSheet());
+                      final map = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalendarAddEditScreen()));
+                      if(map != null) {
+                        BlocProvider.of<CalendarBloc>(context).add(AddCalendar(map['title'], map['place'], map['dateTime'], map['accountIds']));
+                      }
+//                      Scaffold.of(context).showBottomSheet((context) => CalendarAddEditBottomSheet());
                     },
                     child: Container(
                       decoration: BoxDecoration(

@@ -1,12 +1,10 @@
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:gulmate/model/account.dart';
 
-import 'family_type.dart';
 
 class Family {
   final int _id;
   String familyName;
-  FamilyType familyType;
+  String familyPhotoUrl;
   String inviteKey;
   List<Account> accountList;
   String createdDate;
@@ -16,7 +14,7 @@ class Family {
 
   Family(this._id, {
     this.familyName,
-    this.familyType,
+    this.familyPhotoUrl,
     this.inviteKey,
     this.accountList,
     this.createdDate,
@@ -27,7 +25,7 @@ class Family {
     return Family(
       json['id'],
       familyName: json['familyName'],
-      familyType: EnumToString.fromString(FamilyType.values, json['familyType']),
+      familyPhotoUrl: json['familyPhotoUrl'],
       inviteKey: json['inviteKey'],
       accountList: (json['accountList'] as List).map((json) => Account.fromJson(json)).toList(),
       createdDate: json['createdDate'],
@@ -35,9 +33,25 @@ class Family {
     );
   }
 
+  Family copyWith({
+    String familyName,
+    String familyPhotoUrl,
+    List<Account> accountList
+  }) {
+    return Family(
+      this._id,
+      familyName: familyName ?? this.familyName,
+      familyPhotoUrl: familyPhotoUrl ?? this.familyPhotoUrl,
+      inviteKey: this.inviteKey,
+      accountList: accountList ?? this.accountList,
+      createdDate: this.createdDate,
+      modifiedDate: this.modifiedDate,
+    );
+  }
+
   @override
   String toString() {
-    return 'Family{familyName: $familyName, familyType: $familyType, accountIds: ${accountList.map((account) => account.id).toList()}';
+    return 'Family{familyName: $familyName, accountIds: ${accountList.map((account) => account.id).toList()}';
   }
 
 

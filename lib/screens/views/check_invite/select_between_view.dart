@@ -15,7 +15,13 @@ class SelectBetweenView extends StatelessWidget {
         if (familyState is FamilyLoading) {
           return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  CircularProgressIndicator(),
+                  Text("귤메이트 정보를 불러오는 중")
+                ],
+              ),
             ),
           );
         } else {
@@ -58,40 +64,38 @@ class SelectBetweenView extends StatelessWidget {
                   SizedBox(
                     height: size.height * 0.15,
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: FlatButton(
-                      color: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 17.0),
-                      child: Text(
-                        "네, 초대 받았습니다.",
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.bold),
-                      ),
-                      textColor: Color(0xFFFF6D00),
-                      onPressed: () {
-                        BlocProvider.of<CheckInviteViewBloc>(context).add(UpdateCheckInviteView(CheckInviteViewState.joinWithInviteKey));
-                      },
+                  RaisedButton(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)
                     ),
+                    padding: const EdgeInsets.symmetric(vertical: 17.0),
+                    child: Text(
+                      "네, 초대 받았습니다.",
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                    ),
+                    textColor: Color(0xFFFF6D00),
+                    onPressed: () {
+                      BlocProvider.of<CheckInviteViewBloc>(context).add(UpdateCheckInviteView(CheckInviteViewState.joinWithInviteKey));
+                    },
                   ),
                   SizedBox(
                     height: 10.0,
                   ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: FlatButton(
-                      padding: const EdgeInsets.symmetric(vertical: 17.0),
-                      child: Text(
-                        "아니오, 처음입니다.",
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.bold),
-                      ),
-                      color: Colors.white,
-                      textColor: Color(0xFFFFA200),
-                      onPressed: () {
-                        BlocProvider.of<CheckInviteViewBloc>(context).add(UpdateCheckInviteView(CheckInviteViewState.createFamily));
-                      },
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                    padding: const EdgeInsets.symmetric(vertical: 17.0),
+                    child: Text(
+                      "아니오, 처음입니다.",
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold),
                     ),
+                    color: Colors.white,
+                    textColor: Color(0xFFFFA200),
+                    onPressed: () {
+                      BlocProvider.of<CheckInviteViewBloc>(context).add(UpdateCheckInviteView(CheckInviteViewState.createFamily));
+                    },
                   ),
                 ],
               ),

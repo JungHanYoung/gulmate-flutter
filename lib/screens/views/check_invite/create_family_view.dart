@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/family/family.dart';
-import 'package:gulmate/model/family_type.dart';
 
 class CreateFamilyView extends StatefulWidget {
   @override
@@ -9,7 +8,6 @@ class CreateFamilyView extends StatefulWidget {
 }
 
 class _CreateFamilyViewState extends State<CreateFamilyView> {
-  FamilyType _selectedFamilyType;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _familyNameController = TextEditingController();
 
@@ -27,7 +25,7 @@ class _CreateFamilyViewState extends State<CreateFamilyView> {
 
   void handleCreateFamily() async {
     if (_formKey.currentState.validate()) {
-      BlocProvider.of<FamilyBloc>(context).add(CreateFamily(_familyNameController.text, _selectedFamilyType));
+      BlocProvider.of<FamilyBloc>(context).add(CreateFamily(_familyNameController.text));
 //      try {
 //        await Provider.of<FamilyService>(context, listen: false)
 //            .createFamily(_familyNameController.text, _selectedFamilyType);
@@ -135,51 +133,47 @@ class _CreateFamilyViewState extends State<CreateFamilyView> {
                                   cursorColor: Color(0xFFFF6D00),
                                 ),
                                 SizedBox(height: 24),
-                                Text("가족 구성원 수", style: TextStyle(fontSize: 14)),
-                                DropdownButtonFormField<FamilyType>(
-                                  value: _selectedFamilyType,
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    hoverColor: Colors.white,
-                                    focusColor: Colors.white,
-                                  ),
-                                  elevation: 2,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return "가족 타입을 선택해주세요.";
-                                    }
-                                    return null;
-                                  },
-                                  items: [
-                                    DropdownMenuItem(
-                                      child: Text("1"),
-                                      value: FamilyType.ONLY,
-                                    ),
-                                    DropdownMenuItem(
-                                        child: Text("2인 이상"), value: FamilyType.MORE_THAN_ONE),
-                                  ],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _selectedFamilyType = value;
-                                    });
-                                  },
-                                  hint: Text("선택해주세요"),
-                                ),
+//                                Text("가족 구성원 수", style: TextStyle(fontSize: 14)),
+//                                DropdownButtonFormField<FamilyType>(
+//                                  value: _selectedFamilyType,
+//                                  decoration: InputDecoration(
+//                                    fillColor: Colors.white,
+//                                    hoverColor: Colors.white,
+//                                    focusColor: Colors.white,
+//                                  ),
+//                                  elevation: 2,
+//                                  validator: (value) {
+//                                    if (value == null) {
+//                                      return "가족 타입을 선택해주세요.";
+//                                    }
+//                                    return null;
+//                                  },
+//                                  items: [
+//                                    DropdownMenuItem(
+//                                      child: Text("1"),
+//                                      value: FamilyType.ONLY,
+//                                    ),
+//                                    DropdownMenuItem(
+//                                        child: Text("2인 이상"), value: FamilyType.MORE_THAN_ONE),
+//                                  ],
+//                                  onChanged: (value) {
+//                                    setState(() {
+//                                      _selectedFamilyType = value;
+//                                    });
+//                                  },
+//                                  hint: Text("선택해주세요"),
+//                                ),
                               ],
                             ),
                           )),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: RaisedButton(
-                          onPressed: () {
-                            handleCreateFamily();
-                          },
-                          color: Color(0xFFFF6D00),
-                          padding: EdgeInsets.symmetric(vertical: 18.0),
-                          child: Text(
-                            "다음 단계",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                      RaisedButton(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0),),
+                        onPressed: handleCreateFamily,
+                        color: Color(0xFFFF6D00),
+                        padding: EdgeInsets.symmetric(vertical: 18.0),
+                        child: Text(
+                          "다음 단계",
+                          style: TextStyle(color: Colors.white),
                         ),
                       )
                     ],

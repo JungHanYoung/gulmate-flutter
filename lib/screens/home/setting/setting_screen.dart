@@ -236,19 +236,6 @@ class _SettingScreenState extends State<SettingScreen> {
                                         );
                                       },
                                     ),
-//                                    child: MaterialPicker(pickerColor: Colors.green, onColorChanged: (color) {
-//                                      print(color);
-//                                    }),
-//                                    child: GridView.count(
-//                                      crossAxisCount: 4,
-//                                      children: _personalColors
-//                                          .map((color) => Center(
-//                                                child: CircleAvatar(
-//                                                  backgroundColor: color,
-//                                                ),
-//                                              ))
-//                                          .toList(),
-//                                    ),
                                   )
                                 ],
                               ),

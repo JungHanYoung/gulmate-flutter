@@ -9,6 +9,7 @@ import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/helper/notification_helper.dart';
 import 'package:gulmate/model/model.dart';
 import 'package:gulmate/repository/repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 
@@ -21,7 +22,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final AuthenticationBloc authenticationBloc;
   StreamSubscription _appTabSubscription;
   StompClient _stompClient;
-
+  int _cmi;
 
   ChatBloc({
     @required this.appTabBloc,
@@ -39,7 +40,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           onConnect: (client, frame) {
             final destination = "/sub/family/${_familyRepository.family.id}";
             client.subscribe(destination: destination, callback: (frame) {
-              add(ReceiveChatMessage(jsonDecode(frame.body)));
+              add(ReceiveChatMessage.fromJson(jsonDecode(frame.body)));
             });
           }
         )
@@ -56,6 +57,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _stompClient.deactivate();
         _stompClient = null;
       }
+    });
+    SharedPreferences.getInstance()
+    .then((pref) {
+      _cmi = pref.getInt("chatMessageId");
     });
   }
 
@@ -113,6 +118,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield ChatLoading();
       messageList.add(Message(message: event.message, creator: messageCreator));
       yield ChatLoaded(messageList);
+      _cmi = event.messageId;
+      SharedPreferences.getInstance().then((pref) {
+        pref.setInt("chatMessageId", _cmi);
+      });
     }
   }
 
