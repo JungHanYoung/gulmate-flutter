@@ -83,8 +83,11 @@ class _SettingScreenState extends State<SettingScreen> {
                         print("다른 가족 초대하기 누름");
                         showModalBottomSheet(
                             context: context,
-                            builder: (context) => InviteKeyBottomSheet(inviteKey: (state as AuthenticationAuthenticatedWithFamily).currentFamily.inviteKey)
-                        );
+                            builder: (context) => InviteKeyBottomSheet(
+                                inviteKey: (state
+                                        as AuthenticationAuthenticatedWithFamily)
+                                    .currentFamily
+                                    .inviteKey));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 12.0, top: 8),
@@ -218,8 +221,8 @@ class _SettingScreenState extends State<SettingScreen> {
                                       onColorChanged: (color) {
                                         print(color);
                                       },
-                                      itemBuilder: (color, isCurrentColor, changeColor) {
-
+                                      itemBuilder:
+                                          (color, isCurrentColor, changeColor) {
                                         return Container(
                                           margin: const EdgeInsets.all(5),
                                           padding: const EdgeInsets.all(1),
@@ -228,27 +231,14 @@ class _SettingScreenState extends State<SettingScreen> {
                                             color: color,
                                           ),
                                           child: InkWell(
-                                            onTap: () {
-
-                                            },
-                                            child: false ? CircleAvatar() : SizedBox.shrink(),
+                                            onTap: changeColor,
+                                            child: true
+                                                ? CircleAvatar()
+                                                : SizedBox.shrink(),
                                           ),
                                         );
                                       },
                                     ),
-//                                    child: MaterialPicker(pickerColor: Colors.green, onColorChanged: (color) {
-//                                      print(color);
-//                                    }),
-//                                    child: GridView.count(
-//                                      crossAxisCount: 4,
-//                                      children: _personalColors
-//                                          .map((color) => Center(
-//                                                child: CircleAvatar(
-//                                                  backgroundColor: color,
-//                                                ),
-//                                              ))
-//                                          .toList(),
-//                                    ),
                                   )
                                 ],
                               ),
@@ -360,8 +350,21 @@ class _SettingScreenState extends State<SettingScreen> {
                     )
                   ]),
             ),
+            Container(
+              margin: const EdgeInsets.only(top: 10),
+              child: FlatButton(
+                color: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  onPressed: () {
+                    BlocProvider.of<AuthenticationBloc>(context).add(LoggedOut());
+                  },
+                  child: Text(
+                    "로그아웃",
+                    style: TextStyle(color: Colors.red),
+                  )),
+            ),
             SizedBox(
-              height: 30,
+              height: 50,
             ),
           ],
         ),

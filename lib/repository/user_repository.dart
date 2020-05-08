@@ -17,7 +17,7 @@ class UserRepository {
       onError: (error) async {
         final statusCode = error.response.statusCode;
         if(statusCode == 403) {
-
+          print(error.response.toString());
         }
       }
     ));

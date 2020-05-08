@@ -19,8 +19,7 @@ class Signin extends StatelessWidget {
             body: state is AuthenticationLoading ?
             Center(
               child: CircularProgressIndicator(backgroundColor: Colors.white,),
-            )
-        :Padding(
+            ) : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

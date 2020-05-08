@@ -16,37 +16,42 @@ class PurchaseListView extends StatefulWidget {
   @override
   _PurchaseListViewState createState() => _PurchaseListViewState();
 }
-// TODO: ListView Refresh -> 인디케이터 보여진 후 새 목록 refresh, 인디케이터 잔존 에러 해결해야함.
+
 class _PurchaseListViewState extends State<PurchaseListView> {
-
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () {
         Completer<void> completer = Completer<void>();
-        BlocProvider.of<PurchaseBloc>(context).add(RefreshPurchaseList(completer));
+        BlocProvider.of<PurchaseBloc>(context)
+            .add(RefreshPurchaseList(completer));
         return completer.future;
       },
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          final purchaseItem = widget.purchaseList[index];
-          return PurchaseItem(
-            purchase: purchaseItem,
-            onCheckboxChanged: (value) {
-              BlocProvider.of<PurchaseBloc>(context).add(CheckUpdatePurchase(
-                  purchaseItem.copyWith(complete: value)));
-            },
-            onDelete: () {
-              BlocProvider.of<PurchaseBloc>(context)
-                  .add(DeletePurchase(purchaseItem));
-              Scaffold.of(context).showSnackBar(DeletePurchaseSnackBar(
-                purchase: purchaseItem,
-              ));
-            },
-          );
-        },
-        itemCount: widget.purchaseList.length,
+      child: ListView(
+        children: widget.purchaseList.length == 0
+            ? <Widget>[
+                Center(
+                  child: Text("장보기 데이터가 없습니다."),
+                )
+              ]
+            : widget.purchaseList
+                .map((purchase) => PurchaseItem(
+                      purchase: purchase,
+                      onCheckboxChanged: (value) {
+                        BlocProvider.of<PurchaseBloc>(context).add(
+                            CheckUpdatePurchase(
+                                purchase.copyWith(complete: value)));
+                      },
+                      onDelete: () {
+                        BlocProvider.of<PurchaseBloc>(context)
+                            .add(DeletePurchase(purchase));
+                        Scaffold.of(context)
+                            .showSnackBar(DeletePurchaseSnackBar(
+                          purchase: purchase,
+                        ));
+                      },
+                    ))
+                .toList(),
       ),
     );
   }

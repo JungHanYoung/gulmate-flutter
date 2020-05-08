@@ -129,7 +129,7 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   }
 
   @override
-  Future<Function> close() {
+  Future<void> close() {
     _appTabSubscription.cancel();
     return super.close();
   }

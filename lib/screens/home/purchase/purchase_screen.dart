@@ -6,6 +6,7 @@ import 'package:gulmate/bloc/purchase/purchase.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/screens/home/purchase/purchase_add_edit_bottom_sheet.dart';
 import 'package:gulmate/screens/home/purchase/widgets/purchase_item.dart';
+import 'package:gulmate/screens/home/purchase/widgets/purchase_list_view.dart';
 
 import 'widgets/delete_purchase_snack_bar.dart';
 import 'widgets/filter_button.dart';
@@ -16,8 +17,6 @@ class PurchaseScreen extends StatefulWidget {
 }
 
 class _PurchaseScreenState extends State<PurchaseScreen> {
-
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PurchaseBloc, PurchaseState>(builder: (context, state) {
@@ -42,42 +41,11 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                   ),
                   FilterButton(),
                   Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        Completer<void> completer = Completer<void>();
-                        BlocProvider.of<PurchaseBloc>(context)
-                            .add(RefreshPurchaseList(completer));
-                        return completer.future;
-                      },
-                      child: BlocBuilder<FilteredPurchaseBloc,
-                          FilteredPurchaseState>(builder: (context, state) {
-                        final purchaseList =
-                            (state as FilteredPurchaseLoaded).filteredPurchases;
-                        return ListView.builder(
-                          padding: const EdgeInsets.all(0),
-                          itemBuilder: (context, index) {
-                            final purchaseItem = purchaseList[index];
-                            return PurchaseItem(
-                              purchase: purchaseItem,
-                              onCheckboxChanged: (value) {
-                                BlocProvider.of<PurchaseBloc>(context).add(
-                                    CheckUpdatePurchase(purchaseItem.copyWith(
-                                        complete: value)));
-                              },
-                              onDelete: () {
-                                BlocProvider.of<PurchaseBloc>(context)
-                                    .add(DeletePurchase(purchaseItem));
-                                Scaffold.of(context)
-                                    .showSnackBar(DeletePurchaseSnackBar(
-                                  purchase: purchaseItem,
-                                ));
-                              },
-                            );
-                          },
-                          itemCount: purchaseList.length,
-                        );
-                      }),
-                    ),
+                    child: BlocBuilder<FilteredPurchaseBloc,
+                            FilteredPurchaseState>(
+                        builder: (context, state) => PurchaseListView(
+                            (state as FilteredPurchaseLoaded)
+                                .filteredPurchases)),
                   ),
                 ],
               ),

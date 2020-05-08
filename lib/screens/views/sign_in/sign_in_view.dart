@@ -18,9 +18,11 @@ class SignInView extends StatelessWidget {
             builder: (context, loginState) => Scaffold(
               backgroundColor: Color(0xFFFF6D00),
               body: state is AuthenticationLoading || loginState is LoginLoading
-                  ? CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                    )
+                  ? Center(
+                    child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                      ),
+                  )
                   : Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: Column(
