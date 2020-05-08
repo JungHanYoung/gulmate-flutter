@@ -1,117 +1,154 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
+import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/bloc/family/family_bloc.dart';
-import 'package:gulmate/bloc/family/family_state.dart';
 import 'package:gulmate/const/color.dart';
-import 'package:gulmate/screens/home/profile/profile_screen.dart';
-
+import 'package:gulmate/model/calendar.dart';
+import 'package:gulmate/model/model.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final familyState = BlocProvider.of<FamilyBloc>(context).state;
-
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, authState) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25),
-        child: ListView(
-          children: <Widget>[
-            SizedBox(height: 46),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context, authState) =>
+          BlocBuilder<DashboardBloc, DashboardState>(
+        builder: (context, state) => state is DashboardLoaded
+            ? LayoutBuilder(
+              builder: (context, constraints) => Stack(
                   children: <Widget>[
-                    Container(
-                      child: Text(
-                        (authState as AuthenticationAuthenticatedWithFamily)
-                            .currentAccount.name,
-                        style: TextStyle(fontSize: 30, color: Color(0xFFFF6D00)),
-                      ),
+                    ListView(
+                      padding:
+                          EdgeInsets.only(top: constraints.maxWidth / 2 + 40, left: 25, right: 25),
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  child: Text(
+                                    (authState
+                                            as AuthenticationAuthenticatedWithFamily)
+                                        .currentAccount
+                                        .name,
+                                    style: TextStyle(
+                                        fontSize: 30, color: Color(0xFFFF6D00)),
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    (familyState as FamilyLoaded)
+                                        .family
+                                        .familyName,
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(153, 153, 153, 1),
+                                        fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 34),
+                        state.chatLength > 0 ? _buildSubTitle(context, title: "읽지 않은 대화", moreBtnTitle: "${state.chatLength}개") : SizedBox.shrink(),
+                        SizedBox(height: 12,),
+                        _buildSubTitle(context,
+                            title: "다가오는 일정",
+                            moreBtnTitle: "${DateTime.now().month}월"),
+                        state.recentCalendarList.length == 0 ? Text("등록된 일정이 없습니다.") : Column(
+                          children: state.recentCalendarList
+                              .map((calendar) => _buildCalendarItem(
+                                  "${calendar.dateTime.day}",
+                                  calendar.title,
+                                  _formatDateTimeToString(calendar)))
+                              .toList(),
+                        ),
+                        _buildShoppingList(context, state.todayPurchaseList,
+                            title: "오늘 장볼 것", onTap: () {
+                          BlocProvider.of<AppTabBloc>(context)
+                              .add(UpdateTab(AppTab.purchase));
+                        }),
+                        SizedBox(height: 50),
+                      ],
                     ),
-                    Container(
-                      child: Text(
-                        (familyState as FamilyLoaded)
-                            .family.familyName,
-                        style: TextStyle(
-                            color: Color.fromRGBO(153, 153, 153, 1),
-                            fontSize: 16),
-                      ),
+                    Stack(
+                      children: <Widget>[
+                        Stack(
+                          children: <Widget>[
+                            Opacity(
+                              child: Container(
+                                width: constraints.maxWidth,
+                                height: constraints.maxWidth / 2,
+                                child: CachedNetworkImage(
+                                  imageUrl: (authState
+                                  as AuthenticationAuthenticatedWithFamily)
+                                      .currentFamily
+                                      .familyPhotoUrl ??
+                                      "http://localhost:8080/images/hello.jpg",
+                                  placeholder: (context, url) =>
+                                      Center(child: CircularProgressIndicator()),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              opacity: 0.8,
+                            ),
+                            Positioned(
+                              bottom: 20,
+                              right: 25,
+                              child: SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: RaisedButton(
+                                  shape: CircleBorder(),
+                                  padding: const EdgeInsets.all(6),
+                                  color: PRIMARY_COLOR,
+                                  elevation: 0.0,
+                                  onPressed: () =>
+                                      BlocProvider.of<FamilyBloc>(context)
+                                          .add(UploadFamilyPhoto()),
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 11,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Positioned(
+                      top: constraints.maxWidth / 2 - 40,
+                      left: 40,
+                      child: _buildAvatar(
+                          context,
+                          (authState as AuthenticationAuthenticatedWithFamily)
+                              .currentAccount
+                              .photoUrl),
                     ),
                   ],
                 ),
-                _buildAvatar(context, (authState as AuthenticationAuthenticatedWithFamily).currentAccount.photoUrl),
-              ],
-            ),
-            SizedBox(height: 34),
-            _buildSubTitle(title: "다가오는 일정", moreBtnTitle: "1월"),
-//          Padding(
-//            padding: const EdgeInsets.only(top: 34),
-//            child: Row(
-//              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//              children: <Widget>[
-//                Text("다가오는 일정",
-//                    style: TextStyle(
-//                        color: Color.fromRGBO(153, 153, 153, 1), fontSize: 16)),
-//                _buildMoreButton(text: "1월", onTap: () {}),
-//              ],
-//            ),
-//          ),
-            Column(
-              children: <Widget>[
-                _buildCalendarItem("10", "가족 외식", "오후 07:00"),
-                _buildCalendarItem("16", "서영이 논술 시험", "오전 11:30"),
-                _buildCalendarItem("18", "엄마 건강검진", "오전 09:20"),
-              ],
-            ),
-            _buildShoppingList([
-              {
-                'itemName': '샴푸',
-                'authorName': '시영이',
-              },
-              {
-                'itemName': '두부 한 모',
-                'authorName': '엄마',
-              },
-              {
-                'itemName': '치약',
-                'authorName': '아빠',
-              },
-              {
-                'itemName': '양파 다섯 개',
-                'authorName': '엄마',
-              },
-            ], title: "쇼핑 목록"),
-//            _buildSubTitle(title: "갤러리", moreBtnTitle: "모두 보기"),
-//            SingleChildScrollView(
-//              scrollDirection: Axis.horizontal,
-//              physics:
-//              PageScrollPhysics(),
-//                ClampingScrollPhysics(),
-//              BouncingScrollPhysics(),
-//              child: Row(
-//                children: <Widget>[
-//                  _buildAlbumCard(
-//                      title: "Image 1",
-//                      photoUrl: "https://picsum.photos/250"),
-//                  _buildAlbumCard(
-//                      title: "Image 2",
-//                      photoUrl: "https://picsum.photos/250"),
-//                  _buildAlbumCard(
-//                      title: "Image 3",
-//                      photoUrl: "https://picsum.photos/250"),
-//                ],
-//              ),
-//            ),
-            SizedBox(height: 50),
-          ],
-        ),
+            )
+            : state is DashboardError
+                ? Center(
+                    child: Text("${state.errorMessage}"),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(),
+                  ),
       ),
     );
   }
+
+  String _formatDateTimeToString(Calendar calendar) =>
+      "${calendar.dateTime.hour >= 12 ? "오후" : "오전"} ${calendar.dateTime.hour < 10 ? "0${calendar.dateTime.hour}" : calendar.dateTime.hour < 12 ? "${calendar.dateTime.hour}" : calendar.dateTime.hour - 12 < 10 ? "0${calendar.dateTime.hour - 12}" : "${calendar.dateTime.hour - 12}"}";
 
   Widget _buildAlbumCard({@required String title, @required String photoUrl}) =>
       Padding(
@@ -146,35 +183,37 @@ class DashboardScreen extends StatelessWidget {
         ),
       );
 
-  Widget _buildAvatar(BuildContext context, String photoUrl) => Stack(children: <Widget>[
-        CircleAvatar(
-          radius: 40,
-          backgroundImage: NetworkImage(photoUrl),
-        ),
-        Positioned(
-          bottom: 6,
-          right: 0,
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: RaisedButton(
-              shape: CircleBorder(),
-              padding: const EdgeInsets.all(6),
-              color: PRIMARY_COLOR,
-              elevation: 0.0,
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ProfileScreen()));
-              },
-              child: Icon(
-                Icons.edit,
-                size: 11,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        )
-      ]);
+  Widget _buildAvatar(BuildContext context, String photoUrl) => CircleAvatar(
+        radius: 40,
+        backgroundImage: NetworkImage(photoUrl),
+      );
+
+//      Stack(children: <Widget>[
+//        ,
+//        Positioned(
+//          bottom: 6,
+//          right: 0,
+//          child: SizedBox(
+//            width: 24,
+//            height: 24,
+//            child: RaisedButton(
+//              shape: CircleBorder(),
+//              padding: const EdgeInsets.all(6),
+//              color: PRIMARY_COLOR,
+//              elevation: 0.0,
+//              onPressed: () {
+//                Navigator.of(context).push(
+//                    MaterialPageRoute(builder: (context) => ProfileScreen()));
+//              },
+//              child: Icon(
+//                Icons.edit,
+//                size: 11,
+//                color: Colors.white,
+//              ),
+//            ),
+//          ),
+//        )
+//      ]);
 
   Widget _buildMoreButton({@required String text, @required void onTap()}) =>
       InkWell(
@@ -239,26 +278,29 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildShoppingList(List<Map<String, String>> shoppingList,
-      {@required String title}) {
+  Widget _buildShoppingList(BuildContext context, List<Purchase> shoppingList,
+      {@required String title, Function onTap}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 30),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildSubTitle(title: title),
-          _buildBasicCard(
+          _buildSubTitle(context, title: title, onTap: onTap),
+          shoppingList.length == 0 ? Text("장 보아야 할 것이 없습니다.") : _buildBasicCard(
               child: Column(
                   children: shoppingList
                       .map((item) => _buildShoppingItem(
-                          itemName: item['itemName'],
-                          authorName: item['authorName']))
+                          itemName: item.title,
+                          authorName:
+                              item.complete ? item.checker : item.creator))
                       .toList()))
         ],
       ),
     );
   }
 
-  Widget _buildSubTitle({
+  Widget _buildSubTitle(
+    BuildContext context, {
     @required String title,
     String moreBtnTitle = "더 보기",
     Function onTap,
@@ -270,9 +312,10 @@ class DashboardScreen extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: TextStyle(color: Color.fromRGBO(153, 153, 153, 1), fontSize: 16),
+              style: TextStyle(
+                  color: Color.fromRGBO(153, 153, 153, 1), fontSize: 16),
             ),
-            _buildMoreButton(text: moreBtnTitle, onTap: () {}),
+            _buildMoreButton(text: moreBtnTitle, onTap: onTap),
           ],
         ),
       );
@@ -284,8 +327,14 @@ class DashboardScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text(itemName, style: TextStyle(fontSize: 16),),
-            Text(authorName, style: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),),
+            Text(
+              itemName,
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              authorName,
+              style: TextStyle(color: Color.fromRGBO(153, 153, 153, 1)),
+            ),
           ],
         ),
       );

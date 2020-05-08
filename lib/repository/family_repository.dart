@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:gulmate/model/family.dart';
-import 'package:gulmate/model/family_type.dart';
-import 'package:gulmate/utils/enum_value_to_string.dart';
 
 class FamilyRepository {
   final Dio dio;
@@ -15,7 +13,7 @@ class FamilyRepository {
 
   Future<Family> getMyFamily() async {
     try {
-      final response = await dio.get('/api/v1/family/me');
+      final response = await dio.get('/family/me');
       _family = Family.fromJSON(response.data);
       return _family;
 
@@ -27,12 +25,11 @@ class FamilyRepository {
     }
   }
 
-  Future<Family> createFamily(String familyName, FamilyType familyType) async {
+  Future<Family> createFamily(String familyName) async {
     try {
-      final response = await dio.post("/api/v1/family",
+      final response = await dio.post("/family",
           data: {
             'familyName': familyName,
-            'familyType': enumValueToString(familyType),
           });
       _family = Family.fromJSON(response.data);
       return _family;
@@ -45,7 +42,7 @@ class FamilyRepository {
   }
 
   Future<Family> joinFamily(String inviteKey) async {
-    final response = await dio.post("/api/v1/family/join", data: {
+    final response = await dio.post("/family/join", data: {
       'inviteKey': inviteKey,
     });
     if(response.statusCode == 200) {
@@ -53,6 +50,32 @@ class FamilyRepository {
       return _family;
     }
     throw Exception();
+  }
+
+  Future<void> withdrawFamily() async {
+    final response = await dio.put("/family/withdraw");
+    if(response.statusCode == 200) {
+      _family = null;
+      return;
+    }
+    throw Exception();
+  }
+
+  Future<void> modifyMemberInfo(String nickname) async {
+    final response = await dio.put("/family/${_family.id}", data: {
+      'nickname': nickname
+    });
+    if(response.statusCode != 200) {
+      throw Exception();
+    }
+  }
+
+  Future<String> uploadFamilyPhoto(FormData formData) async {
+    final response = await dio.post<String>("/family/${_family.id}/upload", data: formData, options: Options(contentType: "multipart/form-data"));
+    if(response.statusCode != 200) {
+      throw Exception();
+    }
+    return response.data;
   }
 
 }

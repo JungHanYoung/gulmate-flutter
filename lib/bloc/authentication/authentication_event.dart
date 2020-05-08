@@ -46,4 +46,14 @@ class WithFamily extends AuthenticationEvent {
   }
 }
 
+class WithoutFamily extends AuthenticationEvent {
 
+  const WithoutFamily();
+
+  @override
+  String toString() {
+    return 'WithoutFamily{}';
+  }
+
+
+}

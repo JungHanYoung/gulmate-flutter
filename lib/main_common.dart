@@ -43,17 +43,4 @@ Future<void> mainCommon(String env) async {
   GetIt.instance.registerSingleton(ChatRepository(baseDio));
   runApp(AuthWrapper(child: App()));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

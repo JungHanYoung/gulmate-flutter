@@ -23,7 +23,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final String token = await _userRepository.getToken();
       if(token != null) {
         Account account = await _userRepository.verifyToken();
-        yield AuthenticationAuthenticatedWithoutFamily(account: account);
+        yield AuthenticationAuthenticatedWithoutFamily(account);
       } else {
         yield AuthenticationUnauthenticated();
       }
@@ -41,7 +41,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       await _userRepository.deleteToken();
       yield AuthenticationUnauthenticated();
     } else if(event is WithFamily) {
-      yield AuthenticationAuthenticatedWithFamily(account: (state as AuthenticationAuthenticatedWithoutFamily).currentAccount, family: event.family);
+      yield AuthenticationAuthenticatedWithFamily(account: (state as AuthenticationAuthenticated).currentAccount, family: event.family);
+    } else if(event is WithoutFamily) {
+      yield AuthenticationAuthenticatedWithoutFamily((state as AuthenticationAuthenticated).currentAccount);
     }
   }
 
@@ -50,7 +52,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     try {
       Account account = await _userRepository.verifyToken();
       await _userRepository.persistToken(event.token);
-      yield AuthenticationAuthenticatedWithoutFamily(account: account);
+      yield AuthenticationAuthenticatedWithoutFamily(account);
     } catch(e) {
       yield AuthenticationUnauthenticated();
     }

@@ -26,16 +26,18 @@ class SendChatMessage extends ChatEvent {
 }
 
 class ReceiveChatMessage extends ChatEvent {
-  String message;
-  int accountId;
+  final int messageId;
+  final String message;
+  final int accountId;
 
-  ReceiveChatMessage(Map<String, dynamic> json) {
-    this.message = json['message'];
-    this.accountId = json['accountId'];
+  ReceiveChatMessage(this.message, this.messageId, this.accountId);
+
+  factory ReceiveChatMessage.fromJson(Map<String, dynamic> json) {
+    return ReceiveChatMessage(json['message'], json['id'], json['accountId']);
   }
 
   @override
-  List<Object> get props => [message, accountId];
+  List<Object> get props => [message, accountId, messageId];
 
   @override
   String toString() {

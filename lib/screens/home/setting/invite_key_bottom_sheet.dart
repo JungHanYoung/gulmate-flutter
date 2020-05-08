@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share/share.dart';
 
 class InviteKeyBottomSheet extends StatefulWidget {
   final String inviteKey;
@@ -90,7 +91,9 @@ class _InviteKeyBottomSheetState extends State<InviteKeyBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Share.share(widget.inviteKey, subject: "Gulmate 키 공유");
+                    },
                     elevation: 0.0,
                     color: Colors.black,
                     shape: RoundedRectangleBorder(

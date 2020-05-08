@@ -82,3 +82,19 @@ class DeletePurchase extends PurchaseEvent {
     return 'DeletePurchase{purchase: $purchase}';
   }
 }
+
+class FetchTodayPurchaseList extends PurchaseEvent {
+
+  const FetchTodayPurchaseList();
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+
+  @override
+  String toString() {
+    return 'FetchTodayPurchaseList{}';
+  }
+
+
+}

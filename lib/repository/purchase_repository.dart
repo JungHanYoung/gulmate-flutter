@@ -14,7 +14,7 @@ class PurchaseRepository {
 
   Future<List<Purchase>> getPurchaseList() async {
     final family = familyRepository.family;
-    final response = await dio.get("/api/v1/family/${family.id}/purchase");
+    final response = await dio.get("/family/${family.id}/purchase");
     final rawData = response.data;
     if (response.statusCode == 200 && rawData is List) {
       return rawData.map((json) => Purchase.fromJson(json)).toList();
@@ -25,7 +25,7 @@ class PurchaseRepository {
   Future<Purchase> createPurchase(
       String title, String place, DateTime deadline) async {
     final familyId = familyRepository.family.id;
-    final response = await dio.post("/api/v1/$familyId/purchase",
+    final response = await dio.post("/$familyId/purchase",
         data: {
           'title': title,
           'place': place,
@@ -41,7 +41,7 @@ class PurchaseRepository {
   Future<void> deletePurchase(Purchase purchase) async {
     final familyId = familyRepository.family.id;
     final purchaseId = purchase.id;
-    final response = await dio.delete("/api/v1/$familyId/purchase/$purchaseId");
+    final response = await dio.delete("/$familyId/purchase/$purchaseId");
     if (response.statusCode == 200) {
       return;
     }
@@ -51,7 +51,7 @@ class PurchaseRepository {
   Future<int> updatePurchase(Purchase purchase) async {
     final familyId = familyRepository.family.id;
     final purchaseId = purchase.id;
-    final response = await dio.put("/api/v1/$familyId/purchase/$purchaseId",
+    final response = await dio.put("/$familyId/purchase/$purchaseId",
         data: {
           'title': purchase.title,
           'place': purchase.place,
@@ -70,7 +70,7 @@ class PurchaseRepository {
     final familyId = familyRepository.family.id;
     final purchaseId = purchase.id;
     final response =
-        await dio.put("/api/v1/$familyId/purchase/$purchaseId/complete",
+        await dio.put("/$familyId/purchase/$purchaseId/complete",
             data: {
               'complete': purchase.complete,
             });
@@ -82,5 +82,14 @@ class PurchaseRepository {
       );
     }
     throw Exception("Error: occur update purchase");
+  }
+
+  Future<List<Purchase>> getTodayPurchaseList() async {
+    final familyId = familyRepository.family.id;
+    final response = await dio.get("/$familyId/purchase/today");
+    if(response.statusCode == 200 && response.data is List) {
+      return (response.data as List).map((json) => Purchase.fromJson(json)).toList();
+    }
+    throw Exception("Error: occur fetch today purchase list");
   }
 }

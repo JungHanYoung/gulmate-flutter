@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:gulmate/model/family_type.dart';
 
 abstract class FamilyEvent extends Equatable {
   const FamilyEvent();
@@ -12,16 +11,15 @@ class LoadFamily extends FamilyEvent {}
 
 class CreateFamily extends FamilyEvent {
   final String familyName;
-  final FamilyType familyType;
 
-  const CreateFamily(this.familyName, this.familyType);
+  const CreateFamily(this.familyName);
 
   @override
-  List<Object> get props => [familyName, familyType];
+  List<Object> get props => [familyName];
 
   @override
   String toString() {
-    return 'createFamily{familyName: $familyName, familyType: $familyType}';
+    return 'createFamily{familyName: $familyName}';
   }
 }
 
@@ -38,3 +36,41 @@ class JoinFamily extends FamilyEvent {
     return 'JoinFamily{inviteKey: $inviteKey}';
   }
 }
+
+class WithdrawFamily extends FamilyEvent {
+
+  const WithdrawFamily();
+
+  @override
+  String toString() {
+    return 'WithdrawFamily{}';
+  }
+}
+
+class UpdateMemberInfo extends FamilyEvent {
+  final String nickname;
+
+  const UpdateMemberInfo(this.nickname);
+
+  @override
+  List<Object> get props => [nickname];
+
+  @override
+  String toString() {
+    return 'UpdateMemberInfo{nickname: $nickname}';
+  }
+}
+
+class UploadFamilyPhoto extends FamilyEvent {
+
+  const UploadFamilyPhoto();
+
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() {
+    return 'UploadFamilyPhoto{}';
+  }
+}
+

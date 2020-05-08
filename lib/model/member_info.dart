@@ -1,0 +1,7 @@
+class MemberInfo {
+
+  String nickname;
+
+
+
+}

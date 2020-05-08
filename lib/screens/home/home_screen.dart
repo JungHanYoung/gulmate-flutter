@@ -7,7 +7,7 @@ import 'package:gulmate/bloc/tab/app_tab.dart';
 import 'package:gulmate/screens/home/calendar/calendar_screen.dart';
 import 'package:gulmate/screens/home/chat/chat_screen.dart';
 import 'package:gulmate/screens/home/purchase/purchase_screen.dart';
-import 'package:gulmate/screens/home/setting/setting_screen.dart';
+import 'package:gulmate/screens/home/settings_new/settings_screen.dart';
 import 'package:gulmate/screens/home/widgets/bottom_tab_selector.dart';
 
 import 'dashboard/dashboard_screen.dart';
@@ -17,24 +17,28 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider<DashboardBloc>(
+          create: (BuildContext context) =>
+              DashboardBloc(BlocProvider.of<AppTabBloc>(context)),
+        ),
         BlocProvider<PurchaseBloc>(
             create: (context) => PurchaseBloc(
-                appTabBloc: BlocProvider.of<AppTabBloc>(context),
-                authBloc: BlocProvider.of<AuthenticationBloc>(context),
-            )),
+                  appTabBloc: BlocProvider.of<AppTabBloc>(context),
+                  authBloc: BlocProvider.of<AuthenticationBloc>(context),
+                )),
         BlocProvider<FilteredPurchaseBloc>(
           create: (context) =>
               FilteredPurchaseBloc(BlocProvider.of<PurchaseBloc>(context)),
         ),
         BlocProvider<CalendarBloc>(
-          create: (context) => CalendarBloc(
-              appTabBloc: BlocProvider.of<AppTabBloc>(context),
-              authBloc: BlocProvider.of<AuthenticationBloc>(context),
-          )),
+            create: (context) => CalendarBloc(
+                  appTabBloc: BlocProvider.of<AppTabBloc>(context),
+                  authBloc: BlocProvider.of<AuthenticationBloc>(context),
+                )),
         BlocProvider<ChatBloc>(
           create: (context) => ChatBloc(
-              appTabBloc: BlocProvider.of<AppTabBloc>(context),
-              authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
+            appTabBloc: BlocProvider.of<AppTabBloc>(context),
+            authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
           ),
         ),
       ],
@@ -62,7 +66,7 @@ class HomeScreen extends StatelessWidget {
       case AppTab.chatting:
         return ChatScreen();
       case AppTab.settings:
-        return SettingScreen();
+        return SettingsScreen();
       default:
         return DashboardScreen();
     }

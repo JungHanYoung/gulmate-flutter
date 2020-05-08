@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:gulmate/bloc/tab/app_tab_state.dart';
+
+import 'app_tab_bloc.dart';
 
 abstract class AppTabEvent extends Equatable {
   const AppTabEvent();

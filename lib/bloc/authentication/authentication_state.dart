@@ -15,30 +15,31 @@ class AuthenticationUninitialized extends AuthenticationState {}
 
 class AuthenticationUnauthenticated extends AuthenticationState {}
 
-class AuthenticationAuthenticatedWithoutFamily extends AuthenticationState {
-  final Account _currentAccount;
+abstract class AuthenticationAuthenticated extends AuthenticationState {
+  final Account currentAccount;
 
-  Account get currentAccount => _currentAccount;
+  AuthenticationAuthenticated(this.currentAccount);
 
-  AuthenticationAuthenticatedWithoutFamily({
-    @required Account account,
-  }) : assert(account != null),
-  _currentAccount = account;
 }
 
-class AuthenticationAuthenticatedWithFamily extends AuthenticationState {
-  final Account _currentAccount;
+class AuthenticationAuthenticatedWithoutFamily extends AuthenticationAuthenticated {
+
+  AuthenticationAuthenticatedWithoutFamily(Account currentAccount) : super(currentAccount);
+}
+
+class AuthenticationAuthenticatedWithFamily extends AuthenticationAuthenticated {
   final Family _currentFamily;
 
-  Account get currentAccount => _currentAccount;
   Family get currentFamily => _currentFamily;
 
   AuthenticationAuthenticatedWithFamily({
     @required Account account,
     @required Family family,
   }) : assert(account != null),
-        _currentAccount = account,
-        _currentFamily = family;
+        _currentFamily = family, super(account);
+
+  @override
+  List<Object> get props => [super.currentAccount, _currentFamily];
 }
 
 class AuthenticationLoading extends AuthenticationState {}

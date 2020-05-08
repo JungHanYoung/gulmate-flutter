@@ -72,3 +72,16 @@ class DeleteCalendar extends CalendarEvent {
     return 'DeleteCalendar{calendar: $calendar}';
   }
 }
+
+class FetchRecentCalendar extends CalendarEvent {
+
+  const FetchRecentCalendar();
+
+  @override
+  List<Object> get props => [];
+
+  @override
+  String toString() {
+    return 'FetchRecentCalendar{}';
+  }
+}
