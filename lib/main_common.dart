@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:gulmate/app_widget.dart';
 import 'package:gulmate/helper/notification_helper.dart';
@@ -16,16 +18,16 @@ import 'repository/repository.dart';
 
 Future<void> mainCommon(String env) async {
   WidgetsFlutterBinding.ensureInitialized();
-  bool isSSL = env == Environment.prod;
 
   await ConfigReader.initialize();
-  await NotificationHelper.initialize();
-
-  String uri = '${isSSL ? 'https://' : 'http://'}${ConfigReader.getApiDomain()}';
-
+//  await NotificationHelper.initialize();
+  String uri = 'https://gulmate.site';
   if(env == Environment.dev) {
+    uri = Platform.isIOS ? 'http://localhost:8080' : 'http://10.0.2.2:8080';
     BlocSupervisor.delegate = SimpleBlocDelegate();
   }
+  uri += "/api/v1";
+
   Dio baseDio = Dio(BaseOptions(baseUrl: uri));
   baseDio.interceptors.add(InterceptorsWrapper(
     onRequest: (RequestOptions options) {

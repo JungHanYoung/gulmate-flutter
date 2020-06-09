@@ -14,11 +14,12 @@ class UserRepository {
   UserRepository(this.dio)
       : assert(dio != null) {
     dio.interceptors.add(InterceptorsWrapper(
-      onError: (error) async {
-        final statusCode = error.response.statusCode;
-        if(statusCode == 403) {
-          print(error.response.toString());
-        }
+      onError: (DioError error) async {
+        print(error.request.data);
+//        final statusCode = error.response.statusCode;
+//        if(statusCode == 403) {
+//          print(error.response.toString());
+//        }
       }
     ));
   }

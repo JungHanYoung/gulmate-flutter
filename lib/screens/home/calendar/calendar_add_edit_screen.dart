@@ -127,8 +127,8 @@ class _CalendarAddEditScreenState extends State<CalendarAddEditScreen> {
                               )
                             )
                           ),
-                          onTap: () {
-                            DatePicker.showDateTimePicker(context, minTime: DateTime.now(), onConfirm: (dateTime) {
+                          onTap: () async {
+                            _dateTime = await DatePicker.showDateTimePicker(context, minTime: DateTime.now(), onConfirm: (dateTime) {
                               _dateTimeController.text = formatFromDateTimeToUntilWeek(dateTime);
 
 
@@ -213,14 +213,15 @@ class _CalendarAddEditScreenState extends State<CalendarAddEditScreen> {
                   fontWeight: FontWeight.bold
                 ),),
                 onPressed: () {
-                  if(widget.isEditing) {
-
+                  if(_formKey.currentState.validate()) {
+                    _formKey.currentState.save();
+                    Navigator.of(context).pop({
+                      'title': _title,
+                      'place': _place,
+                      'dateTime': _dateTime,
+                      'accountIds': accountIds,
+                    });
                   }
-                  Navigator.of(context).pop({
-                    'title': _title,
-                    'place': _place,
-                    'dateTime': _dateTime,
-                  });
                 },
               )
             ],

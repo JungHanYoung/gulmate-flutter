@@ -33,7 +33,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _familyRepository.family.id;
     _stompClient = StompClient(
         config: StompConfig(
-          url: "ws://192.168.0.111:8080/ws",
+          url: "ws://10.0.2.2:8080/ws",
           stompConnectHeaders: {
             'Authorization': 'Bearer ${_userRepository.token}',
           },
