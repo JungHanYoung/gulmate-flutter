@@ -1,8 +1,15 @@
-# gulmate
+# 귤메이트 앱 <img alt="Swift" src="https://img.shields.io/badge/flutter-1.17.2-blue.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-ios-lightgrey.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-android-green.svg">
 
-A new Flutter project.
+## 팀원 정보
 
-## Getting Started
+**기획, 서버, 클라이언트**: 정한영
+
+## 앱 정보
+
+- 일정 공유
+- TODO 공유
+- 실시간 채팅
+- 배경사진 업로드
 
 This project is a starting point for a Flutter application.
 
