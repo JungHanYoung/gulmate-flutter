@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/intro/intro.dart';
+import 'package:gulmate/const/resources.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   AnimationController _controller;
 
-  final Image iconImage = Image.asset("images/logo_symbol/logoSymbolYy.png");
+  final Image iconImage = Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL);
   final double animatedEnd = 2000.0;
 
   @override
@@ -71,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Image.asset("images/logo_symbol/logoTypeface_white.png"),
+                Image.asset(GulmateResources.GULMATE_LOGO_TYPEFACE_WHITE),
                 Text("귤메이트", style: TextStyle(fontSize: 20.0, color: Colors.white)),
               ],
             ),

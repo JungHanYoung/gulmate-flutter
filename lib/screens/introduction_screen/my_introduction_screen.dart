@@ -2,6 +2,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/intro/intro.dart';
+import 'package:gulmate/const/resources.dart';
 
 const pages = [
   {
@@ -26,37 +27,41 @@ class MyIntroductionScreen extends StatefulWidget {
 
 class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
   PageController _pageController;
-  double _currentPage = 0.0;
-  bool _isLastPage = false;
+  double _currentPage;
 
   @override
   void initState() {
     super.initState();
     _currentPage = 0;
-    _pageController = PageController(initialPage: _currentPage.toInt());
+    _pageController = PageController(initialPage: 0)
+    ..addListener(() {
+      setState(() {
+        _currentPage = _pageController.page;
+      });
+    });
 
   }
 
-  bool _onScroll(ScrollNotification notification) {
-    final PageMetrics metrics = notification.metrics;
-//    print(metrics.extentAfter);
-    final extentAfter = metrics.extentAfter;
-    final deviceWidth = MediaQuery.of(context).size.width;
-//    print(extentAfter < deviceWidth);
-    if(extentAfter < deviceWidth && !_isLastPage) {
-      print("page is last page $_currentPage");
-      setState(() {
-        _isLastPage = true;
-      });
-    } else if(extentAfter >= deviceWidth && _isLastPage) {
-      print("No page is last page $_currentPage");
-      setState(() {
-        _isLastPage = false;
-      });
-    }
-    setState(() {
-      _currentPage = metrics.page;
-    });
+//  bool _onScroll(ScrollNotification notification) {
+//    final PageMetrics metrics = notification.metrics;
+////    print(metrics.extentAfter);
+//    final extentAfter = metrics.extentAfter;
+//    final deviceWidth = MediaQuery.of(context).size.width;
+////    print(extentAfter < deviceWidth);
+//    if(extentAfter < deviceWidth && !_isLastPage) {
+//      print("page is last page $_currentPage");
+//      setState(() {
+//        _isLastPage = true;
+//      });
+//    } else if(extentAfter >= deviceWidth && _isLastPage) {
+//      print("No page is last page $_currentPage");
+//      setState(() {
+//        _isLastPage = false;
+//      });
+//    }
+//    setState(() {
+//      _currentPage = metrics.page;
+//    });
 //    print(metrics.atEdge);
 //    if(metrics.page == pages.length) {
 //      setState(() {
@@ -69,14 +74,23 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
 //        _isLastPage = false;
 //      });
 //    }
-    return false;
+//    return false;
+//  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void _onNextButton() {
-    setState(() {
-      _currentPage = _currentPage + 1;
-    });
-    _pageController.animateToPage(_currentPage.toInt(), duration: const Duration(milliseconds: 300), curve: Curves.bounceInOut);
+//    setState(() {
+//      _currentPage = _currentPage + 1;
+//    });
+    _pageController.animateToPage(
+        _pageController.page.toInt(),
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.bounceInOut);
   }
 
   @override
@@ -84,109 +98,88 @@ class _MyIntroductionScreenState extends State<MyIntroductionScreen> {
     final deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: Container(
-        color: Colors.black,
-        child: SafeArea(
-          child: Container(
-            color: Colors.white,
-            child: Stack(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: Column(
               children: <Widget>[
-                NotificationListener<ScrollNotification>(
-                  onNotification: _onScroll,
+                Container(
+                  alignment: Alignment.topCenter,
+                  padding: const EdgeInsets.only(top: 100),
+                  child: Image(image: AssetImage(GulmateResources.GULMATE_LOGO_SYMBOL),),
+                ),
+                Expanded(
                   child: PageView(
-                    controller: _pageController,
-                    children: pages
-                        .map((p) => Center(
-                              child: _buildPage(p["title"], p["description"], deviceSize.height * 4/5 ),
-                            ))
-                        .toList(),
-                    scrollDirection: Axis.horizontal,
+                      controller: _pageController,
+                      children: pages.map((p) => Center(
+                      child: _buildPage(p["title"], p["description"], deviceSize.height * 4/5 ),
+                    ),).toList()
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: deviceSize.height / 10),
-                  child: Container(
-                    child: Image(image: AssetImage('images/logo_symbol/logoSymbolYy.png'),),
-                    alignment: Alignment.topCenter,
-                  ),
-                ),
-                Positioned(
-                  bottom: 130.0,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: DotsIndicator(
-                      dotsCount: pages.length,
-                      position: _currentPage.toDouble(),
-                      decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  left: 0,
-                  right: 0,
-                  child: FlatButton(
-                    child: _isLastPage
-                        ? Text(
-                            "로그인",
-                            style: TextStyle(fontSize: 16.0),
-                          )
-                        : Text("다음", style: TextStyle(fontSize: 16.0)),
-                    onPressed: pages.length - 1 == _currentPage.toInt()
-                        ? () {
-                            BlocProvider.of<IntroBloc>(context).add(IntroUpdateEvent(IntroState.signIn));
-//                            Navigator.pushReplacement(context,
-//                                MaterialPageRoute(builder: (context) => Signin()));
-                          }
-                        : _onNextButton,
-                    textColor: Colors.white,
-                    color: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  ),
-                ),
+
               ],
             ),
           ),
-        ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: DotsIndicator(
+                dotsCount: pages.length,
+                position:  _currentPage,
+                decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
+              ),
+            ),
+          ),
+          FlatButton(
+            child: _currentPage == pages.length - 1
+                ? Text(
+              "로그인",
+              style: TextStyle(fontSize: 16.0),
+            )
+                : Text("다음", style: TextStyle(fontSize: 16.0)),
+            onPressed: pages.length - 1 == _currentPage.toInt()
+                ? () {
+              BlocProvider.of<IntroBloc>(context).add(IntroUpdateEvent(IntroState.signIn));
+//                            Navigator.pushReplacement(context,
+//                                MaterialPageRoute(builder: (context) => Signin()));
+            }
+                : _onNextButton,
+            textColor: Colors.white,
+            color: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+          )
+        ],
       ),
     );
   }
 
   Widget _buildPage(String title, String description, double topPadding) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 74.0),
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 320.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Center(
-                  child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              )),
-              SizedBox(
-                height: 40.0,
-              ),
-              Center(
-                  child: Text(
-                description,
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-                textAlign: TextAlign.center,
-              )),
-            ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Center(
+            child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
           ),
+          textAlign: TextAlign.center,
+        )),
+        SizedBox(
+          height: 40.0,
         ),
-      ),
+        Center(
+            child: Text(
+          description,
+          style: TextStyle(
+            fontSize: 18.0,
+          ),
+          textAlign: TextAlign.center,
+        )),
+      ],
     );
   }
 }

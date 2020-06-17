@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/family/family.dart';
+import 'package:gulmate/const/resources.dart';
 
 class CreateFamilyView extends StatefulWidget {
   @override
@@ -70,12 +71,12 @@ class _CreateFamilyViewState extends State<CreateFamilyView> {
                       left: 25,
                       top: 216,
                       child:
-                      Image.asset("images/logo_symbol/logoTypeface_accent.png"),
+                      Image.asset(GulmateResources.GULMATE_LOGO_TYPEFACE_ACCENT),
                     ),
                     Positioned(
                       right: -22,
                       top: 105,
-                      child: Image.asset("images/logo_symbol/logoSymbolYy.png"),
+                      child: Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL),
                     )
                   ],
                 ),

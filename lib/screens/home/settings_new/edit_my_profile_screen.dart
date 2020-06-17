@@ -150,7 +150,7 @@ class EditMyProfileScreen extends StatelessWidget {
             color: PRIMARY_COLOR,
             elevation: 0.0,
             onPressed: () async {
-              final image = await ImagePicker.pickImage(source: ImageSource.gallery);
+              final image = ImagePicker().getImage(source: ImageSource.gallery);
               print(image);
             },
             child: Icon(

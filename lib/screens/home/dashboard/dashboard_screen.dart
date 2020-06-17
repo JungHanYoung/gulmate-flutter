@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/bloc/family/family_bloc.dart';
 import 'package:gulmate/const/color.dart';
+import 'package:gulmate/const/resources.dart';
 import 'package:gulmate/model/calendar.dart';
 import 'package:gulmate/model/model.dart';
 
@@ -85,16 +87,16 @@ class DashboardScreen extends StatelessWidget {
                               child: Container(
                                 width: constraints.maxWidth,
                                 height: constraints.maxWidth / 2,
-                                child: CachedNetworkImage(
+                                child: (authState as AuthenticationAuthenticatedWithFamily)
+    .currentFamily
+    .familyPhotoUrl != null ? CachedNetworkImage(
                                   imageUrl: (authState
                                   as AuthenticationAuthenticatedWithFamily)
                                       .currentFamily
-                                      .familyPhotoUrl ??
-                                      "http://localhost:8080/images/hello.jpg",
-                                  placeholder: (context, url) =>
-                                      Center(child: CircularProgressIndicator()),
+                                      .familyPhotoUrl,
+                                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
                                   fit: BoxFit.contain,
-                                ),
+                                ) : Image.asset(GulmateResources.PLACEHOLDER_600x400, fit: BoxFit.cover,)
                               ),
                               opacity: 0.8,
                             ),
@@ -148,7 +150,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   String _formatDateTimeToString(Calendar calendar) =>
-      "${calendar.dateTime.hour >= 12 ? "오후" : "오전"} ${calendar.dateTime.hour < 10 ? "0${calendar.dateTime.hour}" : calendar.dateTime.hour < 12 ? "${calendar.dateTime.hour}" : calendar.dateTime.hour - 12 < 10 ? "0${calendar.dateTime.hour - 12}" : "${calendar.dateTime.hour - 12}"}";
+      "${calendar.dateTime.hour >= 12 ? "오후" : "오전"} ${calendar.dateTime.hour < 10 ? "0${calendar.dateTime.hour}" : calendar.dateTime.hour < 12 ? "${calendar.dateTime.hour}" : calendar.dateTime.hour - 12 < 10 ? "0${calendar.dateTime.hour - 12}" : "${calendar.dateTime.hour - 12}"}:${calendar.dateTime.minute < 10 ? "0${calendar.dateTime.minute}":calendar.dateTime.minute}";
 
   Widget _buildAlbumCard({@required String title, @required String photoUrl}) =>
       Padding(

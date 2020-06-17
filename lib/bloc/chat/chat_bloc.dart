@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' hide Message;
 import 'package:get_it/get_it.dart';
+import 'package:gulmate/EnvironmentConfig.dart';
 import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/helper/notification_helper.dart';
 import 'package:gulmate/model/model.dart';
@@ -31,9 +32,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _familyRepository = GetIt.instance.get<FamilyRepository>();
     _userRepository = GetIt.instance.get<UserRepository>();
     _familyRepository.family.id;
+
     _stompClient = StompClient(
         config: StompConfig(
-          url: "ws://10.0.2.2:8080/ws",
+          url: "ws://${EnvironmentConfig.API_DOMAIN}/ws",
           stompConnectHeaders: {
             'Authorization': 'Bearer ${_userRepository.token}',
           },
@@ -48,6 +50,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _stompClient.activate();
 
     _appTabSubscription = appTabBloc.listen((state) {
+
       if(state == AppTab.chatting) {
         add(FetchChatMessage());
       }
@@ -56,6 +59,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       if(state is AuthenticationUnauthenticated) {
         _stompClient.deactivate();
         _stompClient = null;
+      } else if(state is AuthenticationAuthenticatedWithFamily) {
+        if(_stompClient == null) {
+          _stompClient = StompClient(config: StompConfig(
+              url: "${EnvironmentConfig.IS_PROD ? "wss" : "ws"}://${EnvironmentConfig.API_DOMAIN}/ws",
+              stompConnectHeaders: {
+                'Authorization': 'Bearer ${_userRepository.token}',
+              },
+              onConnect: (client, frame) {
+                final destination = "/sub/family/${_familyRepository.family.id}";
+                client.subscribe(destination: destination, callback: (frame) {
+                  add(ReceiveChatMessage.fromJson(jsonDecode(frame.body)));
+                });
+              }
+          ));
+        }
       }
     });
     SharedPreferences.getInstance()

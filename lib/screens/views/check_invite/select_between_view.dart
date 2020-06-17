@@ -4,6 +4,7 @@ import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/family/family.dart';
 import 'package:gulmate/bloc/view/check_invite/check_invite_view.dart';
 import 'package:gulmate/const/color.dart';
+import 'package:gulmate/const/resources.dart';
 
 class SelectBetweenView extends StatelessWidget {
   @override
@@ -42,14 +43,14 @@ class SelectBetweenView extends StatelessWidget {
                   Center(
                       child: Image(
                           image: AssetImage(
-                              'images/logo_symbol/logoSymbolYy.png'))),
+                              GulmateResources.GULMATE_LOGO_SYMBOL))),
                   SizedBox(
                     height: 30.0,
                   ),
                   Center(
                       child: Image(
                           image: AssetImage(
-                              'images/logo_symbol/logoTypeface_white.png'))),
+                              GulmateResources.GULMATE_LOGO_TYPEFACE_WHITE))),
                   SizedBox(height: 20.0),
                   Center(
                       child: Text(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/family/family.dart';
 import 'package:gulmate/const/color.dart';
+import 'package:gulmate/const/resources.dart';
 
 
 class WelcomeView extends StatelessWidget {
@@ -17,19 +18,19 @@ class WelcomeView extends StatelessWidget {
             Positioned(
                 top: size.height * 0.35,
                 right: size.width * 0.05,
-                child: Image.asset("images/logo_symbol/logoSymbolYy.png")),
+                child: Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL)),
             Positioned(
                 top: size.height * 0.52,
                 left: -size.width * 0.16,
-                child: Image.asset("images/logo_symbol/logoSymbolYy.png")),
+                child: Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL)),
             Positioned(
                 top: size.height * 0.7,
                 right: -size.width * 0.1,
-                child: Image.asset("images/logo_symbol/logoSymbolYy.png")),
+                child: Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL)),
             Positioned(
                 top: size.height * 0.85,
                 left: size.width * 0.03,
-                child: Image.asset("images/logo_symbol/logoSymbolYy.png")),
+                child: Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
               child: Column(

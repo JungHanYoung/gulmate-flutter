@@ -4,6 +4,7 @@ import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/family/family_bloc.dart';
 import 'package:gulmate/bloc/family/family_state.dart';
 import 'package:gulmate/const/color.dart';
+import 'package:gulmate/const/resources.dart';
 import 'package:gulmate/screens/sign_up/create_family/create_family_screen.dart';
 import 'package:gulmate/screens/sign_up/join_family/join_family_screen.dart';
 
@@ -40,14 +41,14 @@ class CheckInvitedPage extends StatelessWidget {
                   Center(
                       child: Image(
                           image: AssetImage(
-                              'images/logo_symbol/logoSymbolYy.png'))),
+                              GulmateResources.GULMATE_LOGO_SYMBOL))),
                   SizedBox(
                     height: 30.0,
                   ),
                   Center(
                       child: Image(
                           image: AssetImage(
-                              'images/logo_symbol/logoTypeface_white.png'))),
+                              GulmateResources.GULMATE_LOGO_TYPEFACE_WHITE))),
                   SizedBox(height: 20.0),
                   Center(
                       child: Text(

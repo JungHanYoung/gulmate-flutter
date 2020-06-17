@@ -30,14 +30,6 @@ class PurchaseBloc extends Bloc<PurchaseEvent, PurchaseState> {
   @override
   PurchaseState get initialState => PurchaseLoading();
 
-
-  @override
-  void onError(Object error, StackTrace stacktrace) {
-    if(error is DioError) {
-      print(error.response.statusCode);
-    }
-  }
-
   @override
   Stream<PurchaseState> mapEventToState(PurchaseEvent event) async* {
     if (event is FetchPurchaseList) {

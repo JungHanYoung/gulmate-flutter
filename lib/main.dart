@@ -1,32 +1,33 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gulmate/EnvironmentConfig.dart';
 import 'package:gulmate/app_widget.dart';
-import 'package:gulmate/helper/notification_helper.dart';
 import 'package:gulmate/wrapper/auth_wrapper.dart';
-import 'package:gulmate/helper/environment.dart';
 
 import 'bloc/simple_bloc_delegate.dart';
-import 'helper/config_reader.dart';
 import 'repository/repository.dart';
 
 
-Future<void> mainCommon(String env) async {
+enum Environment {
+  DEV, PROD
+}
+
+void main() {
+
   WidgetsFlutterBinding.ensureInitialized();
 
-  await ConfigReader.initialize();
+  String uri = "${EnvironmentConfig.IS_PROD ? "https" : "http"}://${EnvironmentConfig.API_DOMAIN}";
+  String version = EnvironmentConfig.API_VERSION;
 //  await NotificationHelper.initialize();
-  String uri = 'https://gulmate.site';
-  if(env == Environment.dev) {
-    uri = Platform.isIOS ? 'http://localhost:8080' : 'http://10.0.2.2:8080';
+  uri += "/api/$version";
+
+  // Bloc transition tracking
+  if(!EnvironmentConfig.IS_PROD) {
     BlocSupervisor.delegate = SimpleBlocDelegate();
   }
-  uri += "/api/v1";
 
   Dio baseDio = Dio(BaseOptions(baseUrl: uri));
   baseDio.interceptors.add(InterceptorsWrapper(
@@ -38,6 +39,7 @@ Future<void> mainCommon(String env) async {
       return options;
     },
   ));
+
   GetIt.instance.registerSingleton(UserRepository(baseDio));
   GetIt.instance.registerSingleton(FamilyRepository(baseDio));
   GetIt.instance.registerSingleton(PurchaseRepository(baseDio));

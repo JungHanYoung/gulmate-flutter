@@ -12,7 +12,7 @@ import 'wrapper/intro_wrapper.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
       statusBarBrightness: Brightness.light,
       systemNavigationBarColor: Colors.black,
     ));
@@ -24,6 +24,7 @@ class App extends StatelessWidget {
         textSelectionColor: PRIMARY_COLOR,
       ),
       debugShowCheckedModeBanner: false,
+      debugShowMaterialGrid: false,
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) => _buildScreenByAuth(state),
       ),

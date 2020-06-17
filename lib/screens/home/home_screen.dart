@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/blocs.dart';
 import 'package:gulmate/bloc/calendar/calendar.dart';
@@ -15,6 +16,8 @@ import 'dashboard/dashboard_screen.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<DashboardBloc>(

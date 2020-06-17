@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/authentication/authentication_bloc.dart';
 import 'package:gulmate/bloc/login/login_bloc.dart';
+import 'package:gulmate/const/resources.dart';
 import 'package:gulmate/screens/views/sign_in/widgets/social_login_button.dart';
 
 class Signin extends StatelessWidget {
@@ -30,12 +31,12 @@ class Signin extends StatelessWidget {
                   Center(
                       child: Image(
                           image: AssetImage(
-                              'images/logo_symbol/logoSymbolYy.png'))),
+                              GulmateResources.GULMATE_LOGO_SYMBOL))),
                   SizedBox(height: 30.0),
                   Center(
                       child: Image(
                           image: AssetImage(
-                              'images/logo_symbol/logoTypeface_white.png'))),
+                              GulmateResources.GULMATE_LOGO_TYPEFACE_WHITE))),
                   SizedBox(
                     height: 20.0,
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gulmate/const/resources.dart';
 
 class FindMoreScreen extends StatelessWidget {
   @override
@@ -9,7 +10,7 @@ class FindMoreScreen extends StatelessWidget {
             Container(
               child: Column(
                 children: <Widget>[
-                  Image.asset("images/profile_placeholder.png"),
+                  Image.asset(GulmateResources.PROFILE_PLACEHOLDER),
                   Text("홍길동"),
                   Text("가족 그룹 명"),
                 ],

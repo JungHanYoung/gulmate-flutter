@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
 import 'package:gulmate/bloc/blocs.dart';
+import 'package:gulmate/const/resources.dart';
 import 'package:gulmate/screens/home/setting/invite_key_bottom_sheet.dart';
 import 'package:gulmate/screens/home/settings_new/edit_my_profile_screen.dart';
 
@@ -20,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
               SizedBox(height: 20,),
               Image(
                 height: 40,
-                  image: AssetImage("images/logo_symbol/logoTypeface_accent.png")),
+                  image: AssetImage(GulmateResources.GULMATE_LOGO_TYPEFACE_ACCENT)),
               SizedBox(height: 36,),
               Expanded(child: Column(
                 children: <Widget>[
@@ -107,7 +108,7 @@ class SettingsScreen extends StatelessWidget {
                                     print("확인");
                                     BlocProvider.of<FamilyBloc>(context).add(WithdrawFamily());
                                     Navigator.of(context).pop();
-                                  }, child: Text("확인")),
+                                  }, child: Text("확인", style: TextStyle(color: Colors.red),)),
                                 ],
                               ));
                             }, child: Text("가족 탈퇴하기", style: TextStyle(color: Color.fromRGBO(224, 32, 32, 1), fontSize: 16),)),

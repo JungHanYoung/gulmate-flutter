@@ -127,7 +127,7 @@ class FamilyBloc extends Bloc<FamilyEvent, FamilyState> {
   }
 
   Stream<FamilyState> _mapUploadFamilyPhotoToState(UploadFamilyPhoto event) async* {
-    final imageFile = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final imageFile = await ImagePicker().getImage(source: ImageSource.gallery);
     if(imageFile != null) {
       final croppedImageFile = await ImageCropper.cropImage(sourcePath: imageFile.path, aspectRatio: CropAspectRatio(ratioX: 2, ratioY: 1));
       if(croppedImageFile != null) {

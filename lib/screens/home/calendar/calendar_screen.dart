@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/calendar/calendar.dart';
 import 'package:gulmate/const/color.dart';
 import 'package:gulmate/model/calendar.dart';
-import 'package:gulmate/screens/home/calendar/calendar_add_edit_bottom_sheet.dart';
 import 'package:gulmate/screens/home/calendar/calendar_add_edit_screen.dart';
 import 'package:gulmate/screens/home/calendar/table_calendar.dart';
 import 'package:gulmate/screens/home/calendar/widgets/event_item_widget.dart';
 import 'package:gulmate/utils/datetime_utils.dart';
+
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -170,7 +170,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _buildEventList(List<Calendar> calendarList) {
     return Expanded(
-      child: ListView(
+      child: calendarList.length == 0 ? Center(child: Text("일정이 없습니다")) : ListView(
         padding: const EdgeInsets.only(top: 24),
         children: calendarList.map((calendar) {
           return EventItemWidget(calendar);

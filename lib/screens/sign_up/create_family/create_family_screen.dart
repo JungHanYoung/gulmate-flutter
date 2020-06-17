@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gulmate/const/resources.dart';
 import 'package:gulmate/model/family_type.dart';
 import 'package:gulmate/screens/sign_up/create_family/show_invite_link_screen.dart';
 import 'package:gulmate/services/family_service.dart';
@@ -66,12 +67,12 @@ class _CreateFamilyScreenState extends State<CreateFamilyScreen> {
                 left: 25,
                 top: 216,
                 child:
-                    Image.asset("images/logo_symbol/logoTypeface_accent.png"),
+                    Image.asset(GulmateResources.GULMATE_LOGO_TYPEFACE_ACCENT),
               ),
               Positioned(
                 right: -22,
                 top: 105,
-                child: Image.asset("images/logo_symbol/logoSymbolYy.png"),
+                child: Image.asset(GulmateResources.GULMATE_LOGO_SYMBOL),
               )
             ],
           ),

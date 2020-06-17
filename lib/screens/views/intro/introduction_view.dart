@@ -2,6 +2,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gulmate/bloc/authentication/authentication.dart';
+import 'package:gulmate/const/resources.dart';
 
 const _pages = [
   {
@@ -26,49 +27,53 @@ class IntroductionView extends StatefulWidget {
 
 class _IntroductionViewState extends State<IntroductionView> {
   PageController _pageController;
-  double _currentPage = 0.0;
-  bool _isLastPage = false;
 
   @override
   void initState() {
     super.initState();
-    _currentPage = 0;
-    _pageController = PageController(initialPage: _currentPage.toInt());
+    _pageController = PageController(initialPage: 1)
+      ..addListener(() {
+        print(_pageController.page);
+        if(_pageController.page == _pages.length) {
+          print("last page");
+        }
+      });
   }
 
-  bool _onScroll(ScrollNotification notification) {
-    final PageMetrics metrics = notification.metrics;
-//    print(metrics.extentAfter);
-    final extentAfter = metrics.extentAfter;
-    final deviceWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-//    print(extentAfter < deviceWidth);
-    if (extentAfter < deviceWidth && !_isLastPage) {
-      print("page is last page $_currentPage");
-      setState(() {
-        _isLastPage = true;
-      });
-    } else if (extentAfter >= deviceWidth && _isLastPage) {
-      print("No page is last page $_currentPage");
-      setState(() {
-        _isLastPage = false;
-      });
-    }
-    setState(() {
-      _currentPage = metrics.page;
-    });
-    return false;
-  }
+//  bool _onScroll(ScrollNotification notification) {
+//    final PageMetrics metrics = notification.metrics;
+////    print(metrics.extentAfter);
+//    final extentAfter = metrics.extentAfter;
+//    final deviceWidth = MediaQuery
+//        .of(context)
+//        .size
+//        .width;
+////    print(extentAfter < deviceWidth);
+//    if (extentAfter < deviceWidth && !_isLastPage) {
+//      print("page is last page $_currentPage");
+//      setState(() {
+//        _isLastPage = true;
+//      });
+//    } else if (extentAfter >= deviceWidth && _isLastPage) {
+//      print("No page is last page $_currentPage");
+//      setState(() {
+//        _isLastPage = false;
+//      });
+//    }
+//    setState(() {
+//      _currentPage = metrics.page;
+//    });
+//    return false;
+//  }
 
   void _onNextButton() {
-    setState(() {
-      _currentPage = _currentPage + 1;
-    });
-    _pageController.animateToPage(
-        _currentPage.toInt(), duration: const Duration(milliseconds: 300),
-        curve: Curves.bounceInOut);
+//    setState(() {
+//      _currentPage = _currentPage + 1;
+//    });
+//    _pageController.animateToPage(
+//        _currentPage.toInt(), duration: const Duration(milliseconds: 300),
+//        curve: Curves.bounceInOut);
+    _pageController.animateToPage(_pageController.page.toInt() + 1, duration: const Duration(milliseconds: 300), curve: Curves.bounceIn);
   }
 
   @override
@@ -85,25 +90,22 @@ class _IntroductionViewState extends State<IntroductionView> {
             color: Colors.white,
             child: Stack(
               children: <Widget>[
-                NotificationListener<ScrollNotification>(
-                  onNotification: _onScroll,
-                  child: PageView(
-                    controller: _pageController,
-                    children: _pages
-                        .map((p) =>
-                        Center(
-                          child: _buildPage(p["title"], p["description"],
-                              deviceSize.height * 4 / 5),
-                        ))
-                        .toList(),
-                    scrollDirection: Axis.horizontal,
-                  ),
+                PageView(
+                  controller: _pageController,
+                  children: _pages
+                      .map((p) =>
+                      Center(
+                        child: _buildPage(p["title"], p["description"],
+                            deviceSize.height * 4 / 5),
+                      ))
+                      .toList(),
+                  scrollDirection: Axis.horizontal,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: deviceSize.height / 10),
                   child: Container(
                     child: Image(image: AssetImage(
-                        'images/logo_symbol/logoSymbolYy.png'),),
+                        GulmateResources.GULMATE_LOGO_SYMBOL),),
                     alignment: Alignment.topCenter,
                   ),
                 ),
@@ -114,7 +116,7 @@ class _IntroductionViewState extends State<IntroductionView> {
                   child: Center(
                     child: DotsIndicator(
                       dotsCount: _pages.length,
-                      position: _currentPage.toDouble(),
+                      position: _pageController.page,
                       decorator: DotsDecorator(activeColor: Color(0xFFFF6D00)),
                     ),
                   ),
@@ -124,13 +126,13 @@ class _IntroductionViewState extends State<IntroductionView> {
                   left: 0,
                   right: 0,
                   child: FlatButton(
-                    child: _isLastPage
+                    child: _pageController.page == _pages.length - 1
                         ? Text(
                       "로그인",
                       style: TextStyle(fontSize: 16.0),
                     )
                         : Text("다음", style: TextStyle(fontSize: 16.0)),
-                    onPressed: _pages.length - 1 == _currentPage.toInt()
+                    onPressed: _pages.length - 1 == _pageController.page.toInt()
                         ? () {
                       BlocProvider.of<AuthenticationBloc>(context).add(ReadySignIn());
 //                      BlocProvider.of<IntroBloc>(context).add(

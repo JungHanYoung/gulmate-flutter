@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gulmate/const/resources.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -10,7 +11,7 @@ class ProfileScreen extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           Container(
-            child: Image.asset("images/profile_placeholder.png"),
+            child: Image.asset(GulmateResources.PROFILE_PLACEHOLDER),
           ),
           Container(
             child: Column(
