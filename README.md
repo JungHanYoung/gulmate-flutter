@@ -1,8 +1,15 @@
-# 귤메이트 앱(Flutter)
+# 귤메이트 앱 <img alt="Swift" src="https://img.shields.io/badge/flutter-1.17.2-blue.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-ios-lightgrey.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-android-green.svg">
 
-귤메이트 앱은 가족끼리의 일정 및 할일관리를 할 수 있는 관리 서비스 앱입니다.
+## 팀원 정보
 
-귤메이트를 통해 당신은 다음과 같은 기능을 이용할 수 있습니다.
+**기획, 서버, 클라이언트**: 정한영
+
+## 앱 정보
+
+- 일정 공유
+- TODO 공유
+- 실시간 채팅
+- 배경사진 업로드
 
 ### 구글 로그인과 페이스북 로그인 지원
 
