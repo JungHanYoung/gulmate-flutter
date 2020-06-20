@@ -1,8 +1,10 @@
 # 귤메이트 앱 <img alt="Swift" src="https://img.shields.io/badge/flutter-1.17.2-blue.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-ios-lightgrey.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-android-green.svg">
 
+가족끼리의 일정 및 할일들을 공유할 수 있는 서비스입니다.
+
 ## 팀원 정보
 
-**기획, 서버, 클라이언트**: 정한영
+**기획, 서버, 클라이언트**: [정한영](https://github.com/JungHanYoung)
 
 ## 앱 정보
 
@@ -14,13 +16,13 @@
 - [x] 배경사진 업로드
 - [ ] 가족 앨범 갤러리
 
----
-
 ## 구동화면
 
 **iPhone 6**에 빌드하여 화면 녹화를 하였습니다. (로컬 웹서버 구동, AWS S3 사진업로드)
 
 ### 구글 로그인과 페이스북 로그인 지원
+<img src="images/gulmate_google.gif" width="200" />
+<img src="images/gulmate_facebook.gif" width="200" />
 
 ### 가족 생성 및 코드를 통한 초대
 
