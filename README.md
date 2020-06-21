@@ -18,16 +18,15 @@
 
 ## 구동화면
 
-**iPhone 6**에 빌드하여 화면 녹화를 하였습니다. (로컬 웹서버 구동, AWS S3 업로드)
+**iPhone 6**에 빌드하여 화면 녹화를 하였습니다. (로컬 웹서버 구동, AWS S3 사진업로드)
 
 ### 구글 로그인과 페이스북 로그인 지원
-<img align="left" src="images/gulmate_google.gif" width="200" />
-
-<img align="left" src="images/gulmate_facebook.gif" width="200" />
+<img src="images/gulmate_google.gif" width="200" />
+<img src="images/gulmate_facebook.gif" width="200" />
 
 ### 가족 생성 및 코드를 통한 초대
 
-<img align="left" src="images/gulmate_show_invite_key.gif" width="200" />
+<img src="images/gulmate_show_invite_key.gif" width="200" />
 <img src="images/gulmate_invite_key.gif" width="200" />
 
 ### 할일(장보기) 추가 및 조회
@@ -36,7 +35,7 @@
 
 ### 가족 단위의 일정 추가 및 조회
 
-<img align="left" src="images/gulmate_calendar.gif" width="200" />
+<img src="images/gulmate_calendar.gif" width="200" />
 
 <img src="images/gulmate_calendar_2.gif" width="200" />
 
