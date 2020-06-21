@@ -1,4 +1,4 @@
-# 귤메이트 앱 <img alt="Swift" src="https://img.shields.io/badge/flutter-1.17.2-blue.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-ios-lightgrey.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-android-green.svg">
+# 귤메이트 앱 <img alt="Flutter" src="https://img.shields.io/badge/flutter-1.17.2-blue.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-ios-lightgrey.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-android-green.svg">
 
 가족끼리의 일정 및 할일들을 공유할 수 있는 서비스입니다.
 
@@ -26,7 +26,8 @@
 
 ### 가족 생성 및 코드를 통한 초대
 
-<img src="images/share_key_screenshot.png" width="200" />
+<img src="images/gulmate_show_invite_key.gif" width="200" />
+<img src="images/gulmate_invite_key.gif" width="200" />
 
 ### 할일(장보기) 추가 및 조회
 
