@@ -1,6 +1,6 @@
 # 귤메이트 앱 <img alt="Flutter" src="https://img.shields.io/badge/flutter-1.17.2-blue.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-ios-lightgrey.svg"> <img alt="Platform" src="https://img.shields.io/badge/platform-android-green.svg">
 
-가족끼리의 일정 및 할일들을 공유할 수 있는 서비스입니다.
+가족끼리의 일정 및 할일들을 공유할 수 있는 서비스입니다. [귤메이트 백엔드 저장소](https://github.com/JungHanYoung/gulmate-backend)
 
 ## 팀원 정보
 
